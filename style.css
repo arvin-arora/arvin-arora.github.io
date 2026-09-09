@@ -296,7 +296,7 @@ h1 em,h2 em{color:var(--accent-2)}
 .project-card h3{margin:0 0 10px;font-size:21px;letter-spacing:-.03em;transition:color .25s ease}
 .project-card:hover h3{color:var(--accent)}
 .project-card p{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 22px}
-.project-card .card-cta{margin:-12px 0 18px;font:800 12.5px 'DM Mono',monospace;letter-spacing:.04em;color:var(--accent-2);filter:drop-shadow(0 0 8px #315e8d33)}
+.project-card .card-cta{display:inline-block;align-self:flex-start;margin:-8px 0 18px;padding:9px 14px;border-radius:4px;background:var(--accent);color:#ffffff;font:700 13.5px 'Space Grotesk',Arial,sans-serif;letter-spacing:.02em;box-shadow:0 2px 10px #315e8d4d}
 @keyframes ctaShine{to{background-position:-220% 0}}
 .project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
 .project-tags span{padding:5px 10px;border:1px solid #e2e0db;border-radius:20px;font:500 9.5px 'DM Mono',monospace;color:#315e8d;transition:border-color .25s ease,color .25s ease}
