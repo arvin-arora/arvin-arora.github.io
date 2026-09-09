@@ -462,6 +462,7 @@ body.app-zone .phone-caption{color:#93A0B0;font-size:11.5px}
   .roadmap-rows{padding-left:26px}
   .rm-progress{left:0}
   .rm-row::before{left:-5px}
+  .rm-year small{padding-left:14px}
   .showcase-grid{grid-template-columns:1fr;gap:46px}
 }
 @media(max-width:640px){
