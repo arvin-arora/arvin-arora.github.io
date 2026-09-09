@@ -825,11 +825,6 @@
             tone(392, 0.12, { gain: 0.05 });
             tone(587.33, 0.1, { gain: 0.04, delay: 0.06 });
             break;
-          case 'hyper':
-            whoosh(0.6, { gain: 0.3, from: 700, to: 6500 }); // rising warp sweep
-            tone(320, 0.55, { gain: 0.12, slideTo: 1280 });
-            tone(1046.5, 0.4, { gain: 0.08, delay: 0.15, slideTo: 2093 });
-            break;
           case 'portal':
             whoosh(0.75, { gain: 0.24, from: 260, to: 2600 });
             tone(220, 0.75, { gain: 0.1, slideTo: 880 });
@@ -1247,35 +1242,6 @@
     } else {
       setTimeout(showIntro, 900); // right after the portal step-out
     }
-  }
-
-  /* ---------- hyperjump: flash + warp sound + jump to the next level ---------- */
-  const NEXT_PAGE = { 'index.html': 'about.html', 'about.html': 'journey.html', 'journey.html': 'projects.html', 'projects.html': 'hostel-app.html', 'hostel-app.html': 'contact.html', 'contact.html': 'index.html' };
-  const hyperDest = NEXT_PAGE[pageFile];
-  if (hyperDest) {
-    const hbtn = document.createElement('button');
-    hbtn.type = 'button';
-    hbtn.className = 'hyper-btn';
-    hbtn.textContent = 'HYPERJUMP →';
-    hbtn.setAttribute('aria-label', 'Hyperjump to the next level');
-    const host = document.querySelector('.page-next');
-    if (host) host.appendChild(hbtn);
-    else {
-      hbtn.classList.add('hyper-fixed'); // home has no exit arrow — dock it bottom-right
-      document.body.appendChild(hbtn);
-    }
-    let jumping = false;
-    hbtn.addEventListener('click', () => {
-      if (jumping) return;
-      jumping = true;
-      sfx.play('hyper');
-      if (!reduceMotion) {
-        const fl = document.createElement('div');
-        fl.className = 'hyper-flash';
-        document.body.appendChild(fl);
-      }
-      setTimeout(() => { window.location.href = hyperDest; }, reduceMotion ? 120 : 500);
-    });
   }
 
   /* ---------- cinematic sky: shooting stars + a passing rocket ---------- */

@@ -674,17 +674,6 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;bac
 .level-intro b{display:block;font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-.03em;color:var(--text)}
 .level-intro p{margin:8px 0 0;font-size:13px;color:var(--muted)}
 
-/* ---------- hyperjump button + full-screen warp flash ---------- */
-.hyper-btn{display:inline-flex;align-items:center;gap:8px;margin-left:26px;padding:12px 18px;border-radius:4px;border:1px solid #315e8d66;background:#315e8d14;color:var(--accent-2);font:700 11px 'DM Mono',monospace;letter-spacing:.12em;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease,background .3s ease}
-.hyper-btn:hover{transform:translateY(-3px);background:#315e8d26;box-shadow:0 0 24px #315e8d40;animation:none;opacity:1}
-.hyper-btn.hyper-fixed{position:fixed;right:18px;bottom:18px;z-index:180;margin:0;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.page-next{align-items:center}
-.page-next.pn-edge{flex-direction:column;align-items:flex-end;gap:12px}
-.page-next.pn-edge .hyper-btn{margin-left:0}
-.page-next.pn-center .hyper-btn,.page-next.pn-mini .hyper-btn{margin-left:20px}
-.hyper-flash{position:fixed;inset:0;z-index:400;pointer-events:none;background:radial-gradient(circle at 50% 45%,#fff 0 55%,#cfe4ff 78%,#315e8d 100%);opacity:0;animation:hyperFlash .8s linear forwards}
-@keyframes hyperFlash{0%{opacity:0}18%{opacity:1}60%{opacity:1}100%{opacity:0}}
-
 /* ---------- floating home warp ---------- */
 .home-warp{position:fixed;right:18px;bottom:18px;z-index:180;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:30px;background:#ffffffe6;border:1px solid #315e8d40;box-shadow:0 12px 30px #00000012;color:var(--text);font:700 11px 'DM Mono',monospace;letter-spacing:.1em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
 .home-warp:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 16px 36px #00000015,0 0 30px #315e8d40;color:var(--accent)}
@@ -852,5 +841,5 @@ body.app-zone .ambient{display:none}
   .rn-oval,.rn-step.checking .rn-snum{animation:none!important}
   .planet::before,.planet::after,.oring,.oring .sat,.orbit-cap{animation:none!important}
   .shooting-star,.sky-rocket{display:none!important}
-  .project-card .card-cta,.hyper-btn{animation:none!important}
+  .project-card .card-cta{animation:none!important}
 }
