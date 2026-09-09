@@ -701,6 +701,8 @@ body.app-zone .ambient{display:none}
 .rn-sim small{display:block;font-size:6.5px}
 .rn-sim.on{background:#0369A1;border-color:#38BDF8}
 .rn-reset{width:100%;background:#450A0A;border:1px solid #991B1B;color:#FCA5A5;border-radius:6px;padding:5px;font-size:8px;cursor:pointer;font-family:inherit}
+/* display:flex would defeat the hidden attribute — force it */
+.rn-camera[hidden],.rn-verify[hidden]{display:none!important}
 .rn-camera{position:absolute;inset:0;z-index:5;background:#0F172A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
 .rn-oval{position:absolute;width:170px;height:215px;border:3px solid rgba(248,250,252,.6);border-radius:110px;animation:ovalPulse 1.6s ease-in-out infinite}
 @keyframes ovalPulse{0%,100%{box-shadow:0 0 0 0 #38BDF833}50%{box-shadow:0 0 0 12px #38BDF800}}
