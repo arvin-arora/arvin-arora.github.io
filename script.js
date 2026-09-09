@@ -364,42 +364,17 @@
     });
   }
 
-  /* ---------- details reveal (hover/tap the ⓘ buttons) ---------- */
+  /* ---------- details reveal: hover the item itself (tap on touch) ---------- */
   const canHover = window.matchMedia('(hover: hover)').matches;
-  document.querySelectorAll('.details-btn').forEach((btn) => {
-    const host = btn.closest('.project-card, .section-label-row, .focus-item');
-    if (!host) return;
-    let openedAt = 0;
-    // On touch devices hover events fire on tap and fight the click toggle,
-    // so hover-open/leave-close only bind where real hover exists.
+  document.querySelectorAll('.project-card, .section-label-row, .focus-item').forEach((host) => {
+    if (!host.querySelector('.project-details, .section-details, .focus-details')) return;
     if (canHover) {
-      btn.addEventListener('pointerenter', () => {
-        host.classList.add('show-details');
-        openedAt = performance.now();
-      });
+      host.addEventListener('pointerenter', () => host.classList.add('show-details'));
       host.addEventListener('pointerleave', () => host.classList.remove('show-details'));
-    }
-    // Tap/keyboard toggle (touchscreens have no hover); don't follow any parent link.
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      // A tap fires pointerenter+click together — don't let the click undo the open.
-      if (performance.now() - openedAt < 500 && host.classList.contains('show-details')) return;
-      host.classList.toggle('show-details');
-    });
-    btn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
+    } else {
+      host.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return; // let real links navigate
         host.classList.toggle('show-details');
-      }
-    });
-    // Let the panel itself dismiss on tap too.
-    const panel = host.querySelector('.project-details, .section-details');
-    if (panel) {
-      panel.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        host.classList.remove('show-details');
       });
     }
   });
