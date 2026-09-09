@@ -22,6 +22,12 @@
   const heroSec = document.querySelector('.hero');
   const heroInner = document.querySelector('.hero-inner');
   const topoLayer = document.getElementById('topoLayer');
+  const heroKicker = document.querySelector('.hero-kicker');
+  const heroFirst = document.querySelector('.name-first');
+  const heroLast = document.querySelector('.name-last');
+  const heroCard = document.querySelector('.next-card');
+  const heroCue = document.querySelector('.hero .scroll-cue');
+  const heroMeter = document.querySelector('.scroll-meter b');
   const dome = document.getElementById('heroDome');
   const domePaths = dome ? Array.from(dome.querySelectorAll('path')) : [];
   const domeNode = dome ? dome.querySelector('.d-node') : null;
@@ -31,6 +37,7 @@
 
   /* ---------- cursor ring: desktop pointers only, eased in the motion loop ---------- */
   let curRing = null;
+  let parallaxX = 0, parallaxY = 0, parallaxTX = 0, parallaxTY = 0;
   let curX = 0, curY = 0, ringX = 0, ringY = 0, curSeen = false;
   if (window.matchMedia('(pointer: fine)').matches && !reduceMotion) {
     curRing = document.createElement('span');
@@ -39,6 +46,8 @@
     document.body.appendChild(curRing);
     window.addEventListener('mousemove', (e) => {
       curX = e.clientX; curY = e.clientY;
+      parallaxTX = (e.clientX / window.innerWidth - .5) * 2;
+      parallaxTY = (e.clientY / window.innerHeight - .5) * 2;
       if (!curSeen) { curSeen = true; ringX = curX; ringY = curY; curRing.classList.add('show'); }
       wake();
     }, { passive: true });
@@ -108,6 +117,8 @@
 
   /* the rAF loop sleeps once every value has settled and wakes on scroll/resize/mouse */
   let rafOn = false;
+  let heroMotionReady = reduceMotion || !heroSec;
+  if (!heroMotionReady) setTimeout(() => { heroMotionReady = true; wake(); }, 1450);
   const wake = () => {
     if (!rafOn && !reduceMotion) { rafOn = true; requestAnimationFrame(applyMotion); }
   };
@@ -119,27 +130,41 @@
     st.line = lerp(st.line, tg.line, 0.12);
     st.topo = lerp(st.topo, tg.topo, 0.1);
     if (topoLayer) topoLayer.style.opacity = st.topo.toFixed(3);
-    // hero scrub, two phases like the reference: the crown draws itself in and
-    // settles onto the head, then every layer parallax-exits at its own depth
+    // Hero is a continuously scrubbed composition: each physical layer has
+    // a distinct depth, then exits through the marquee rather than simply scrolling away.
     const hp = st.heroP;
     const clamp01 = (v) => Math.min(1, Math.max(0, v));
-    const drawP = clamp01(hp * 2.4);
-    const limeP = clamp01((hp - 0.42) * 4);
-    const exitP = clamp01((hp - 0.52) * 2.3);
+    const ease = (v) => v * v * (3 - 2 * v);
+    const drawP = clamp01(hp * 2.15);
+    const limeP = clamp01((hp - .34) * 3.2);
+    const exitP = ease(clamp01((hp - .46) / .54));
+    const midP = ease(clamp01(hp / .62));
     const exitE = exitP * exitP;
-    if (heroInner) {
-      heroInner.style.transform = `translateY(${(-exitP * 80).toFixed(1)}px) scale(${(1 - exitP * 0.14).toFixed(3)})`;
-      heroInner.style.opacity = Math.max(0, 1 - exitP * 1.25).toFixed(3);
+    parallaxX = lerp(parallaxX, parallaxTX, .075);
+    parallaxY = lerp(parallaxY, parallaxTY, .075);
+    if (heroMotionReady && heroInner) {
+      heroInner.style.transform = `translate3d(${(parallaxX * 2.4 + hp * 8).toFixed(1)}px, ${(-midP * 26 - exitP * 148 + parallaxY * 1.2).toFixed(1)}px, 0) scale(${(1 + midP * .035 - exitP * .1).toFixed(3)})`;
+      heroInner.style.opacity = Math.max(0, 1 - exitP * 1.18).toFixed(3);
     }
-    if (heroPhoto) heroPhoto.style.transform = `translate3d(0, ${(exitE * 130).toFixed(1)}px, 0)`;
-    if (dome) {
+    if (heroMotionReady && heroFirst) heroFirst.style.transform = `translate3d(${(-midP * 18 - exitP * 90 + parallaxX * 1.5).toFixed(1)}px, 0, 0)`;
+    if (heroMotionReady && heroLast) heroLast.style.transform = `translate3d(${(midP * 20 + exitP * 112 + parallaxX * 2.2).toFixed(1)}px, ${(-exitP * 24).toFixed(1)}px, 0)`;
+    if (heroMotionReady && heroKicker) heroKicker.style.transform = `translate3d(${(parallaxX * .8).toFixed(1)}px, ${(-midP * 10 - exitP * 50).toFixed(1)}px, 0)`;
+    if (heroMotionReady && heroPhoto) heroPhoto.style.transform = `translate3d(${(parallaxX * 10 + midP * 14).toFixed(1)}px, ${(midP * -18 + exitE * 178 + parallaxY * 7).toFixed(1)}px, 0) scale(${(1 + midP * .105 - exitP * .035).toFixed(3)})`;
+    if (heroMotionReady && heroCard) {
+      heroCard.style.transform = `translate3d(${(parallaxX * 6 + midP * 32).toFixed(1)}px, ${(midP * -20 + exitP * 132 + parallaxY * 4).toFixed(1)}px, 0) scale(${(1 - exitP * .08).toFixed(3)})`;
+      heroCard.style.opacity = Math.max(0, 1 - exitP * 1.4).toFixed(3);
+    }
+    if (heroMotionReady && heroCue) heroCue.style.opacity = Math.max(0, 1 - ease(clamp01((hp - .36) * 2.1))).toFixed(3);
+    if (heroMotionReady && heroMeter) heroMeter.style.transform = `scaleX(${clamp01(hp * 1.35).toFixed(3)})`;
+    if (heroMotionReady && topoLayer) topoLayer.style.transform = `translate3d(${(parallaxX * 3 - hp * 16).toFixed(1)}px, ${(parallaxY * 2 - hp * 28).toFixed(1)}px, 0) scale(${(1 + hp * .035).toFixed(3)})`;
+    if (heroMotionReady && dome) {
       domePaths.forEach((p, i) => {
         p.style.strokeDashoffset = (100 * (1 - clamp01(drawP * 1.15 - i * 0.12))).toFixed(2);
         const g = Math.round(139 + (184 - 139) * limeP);
         p.style.stroke = `rgb(${Math.round(139 - limeP * (139 - 143))},${g},${Math.round(131 - limeP * 131)})`;
       });
       if (domeNode) domeNode.style.opacity = clamp01((drawP - 0.85) * 6).toFixed(2);
-      dome.style.transform = `translateY(${(-34 * (1 - drawP) + exitE * 160).toFixed(1)}px) rotate(${(exitP * -8).toFixed(2)}deg)`;
+      dome.style.transform = `translate3d(${(parallaxX * 4).toFixed(1)}px, ${(-34 * (1 - drawP) - midP * 14 + exitE * 176 + parallaxY * 3).toFixed(1)}px, 0) rotate(${(exitP * -8).toFixed(2)}deg)`;
     }
     if (fanCards.length) {
       // deck starts half-fanned (CSS default) and deals fully open early in the pin

@@ -88,20 +88,20 @@ body.menu-open{overflow:hidden}
 .text-link:hover{color:var(--accent);letter-spacing:.16em}
 
 /* ---------- hero: white topo entry — portrait, wireframe dome, real signature ---------- */
-.hero{position:relative;height:200vh;--pw:min(560px,88vw,64vh);--ph:calc(var(--pw)*0.953)}
-.hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:112px 40px 0}
+.hero{position:relative;height:220vh;--pw:min(560px,88vw,64vh);--ph:calc(var(--pw)*.953)}
+.hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:112px 40px 0;isolation:isolate}
 .hero-inner{position:relative;z-index:1;text-align:center;transform-origin:center top;will-change:transform,opacity}
-.hero-kicker{margin:0 0 16px;font:600 11px 'DM Mono',monospace;letter-spacing:.28em;text-transform:uppercase;color:#2e2e29}
+.hero-kicker{margin:0 0 16px;font:600 11px 'DM Mono',monospace;letter-spacing:.28em;text-transform:uppercase;color:#2e2e29;clip-path:inset(0 0 100% 0);transform:translateY(14px)}
 .hero h1{margin:0 -40px;font-size:clamp(52px,11.4vw,215px);line-height:.88;font-weight:700;text-transform:uppercase;letter-spacing:-.035em;white-space:nowrap;text-align:center;color:#101010}
-.hero-photo{position:absolute;bottom:0;left:50%;margin-left:calc(var(--pw)/-2);width:var(--pw);z-index:2;will-change:transform}
+.hero-photo{position:absolute;bottom:0;left:50%;margin-left:calc(var(--pw)/-2);width:var(--pw);z-index:2;will-change:transform;clip-path:inset(0 0 0 0)}
 .hero-photo img{width:100%;height:auto;display:block;filter:contrast(1.05) saturate(1.06) drop-shadow(0 26px 44px #0a0a0a26);transform-origin:bottom center}
-@keyframes heroZoom{from{transform:scale(1.06) translateY(14px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+@keyframes heroZoom{from{transform:scale(1.08) translateY(38px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 /* the real signature — extracted ink, wiped on like it's being signed */
-.sig-real{position:absolute;z-index:3;left:50%;bottom:22px;width:min(200px,42vw);aspect-ratio:846/572;margin-left:calc(min(200px,42vw)/-2);clip-path:inset(0 100% 0 0);animation:sigWipe 1.5s cubic-bezier(.5,0,.25,1) 1.15s forwards}
+.sig-real{position:absolute;z-index:3;left:50%;bottom:22px;width:min(200px,42vw);aspect-ratio:846/572;margin-left:calc(min(200px,42vw)/-2);clip-path:inset(0 100% 0 0);animation:sigWipe 1.1s cubic-bezier(.5,0,.25,1) 1.1s forwards}
 .sig-ink{display:block;width:100%;height:100%;background:#fff;-webkit-mask:url('assets/sign.png') center/contain no-repeat;mask:url('assets/sign.png') center/contain no-repeat}
 @keyframes sigWipe{to{clip-path:inset(0 0 0 0)}}
 /* wireframe crown — draws itself in and settles onto the head as you scroll */
-.dome{position:absolute;z-index:3;left:50%;bottom:calc(var(--ph) - 36px);width:calc(var(--pw)*0.76);margin-left:calc(var(--pw)*-0.38);height:auto;pointer-events:none;will-change:transform}
+.dome{position:absolute;z-index:3;left:50%;bottom:calc(var(--ph) - 36px);width:calc(var(--pw)*.76);margin-left:calc(var(--pw)*-.38);height:auto;pointer-events:none;will-change:transform}
 .dome path{fill:none;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
 .dome .d-solid{stroke:#8b8b83;stroke-width:1.6}
 .dome .d-soft{stroke:#9a9a94;stroke-width:1.1}
@@ -110,15 +110,15 @@ body.menu-open{overflow:hidden}
 .dome-idle{transform-origin:50% 100%;animation:domeFloat 6.5s ease-in-out infinite}
 @keyframes domeFloat{0%,100%{transform:translateY(0) rotate(-1.3deg)}50%{transform:translateY(-7px) rotate(1.3deg)}}
 @keyframes nodePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.7)}}
-.hero-photo img{animation:heroZoom 2.4s cubic-bezier(.22,1,.36,1) both,heroBreathe 7s ease-in-out 2.4s infinite}
+.hero-photo img{animation:heroZoom 1.05s cubic-bezier(.22,1,.36,1) .58s both,heroBreathe 7s ease-in-out 1.7s infinite}
 @keyframes heroBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.008)}}
 .topo{animation:topoDrift 90s linear infinite}
 @keyframes topoDrift{from{background-position:0 0}to{background-position:900px 450px}}
 .next-card svg path{stroke-dasharray:100;animation:squiggleRun 4.2s ease-in-out infinite}
 @keyframes squiggleRun{0%{stroke-dashoffset:100}55%,70%{stroke-dashoffset:0}100%{stroke-dashoffset:-100}}
 /* next-race style card, our real data */
-.next-card{position:absolute;z-index:3;left:40px;bottom:36px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:18px 22px;border:1.6px solid #101010b3;border-radius:18px;background:#f4f4ef99;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#101010;text-align:center;transition:transform .3s ease,border-color .3s ease;opacity:0;animation:fadeIn .8s ease 1.25s forwards}
-.next-card:hover{transform:translateY(-4px);border-color:#101010}
+.next-card{position:absolute;z-index:3;left:40px;bottom:36px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:18px 22px;border:1.6px solid #101010b3;border-radius:18px;background:#f4f4ef99;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#101010;text-align:center;transition:border-color .3s ease,box-shadow .3s ease;opacity:0;transform:translateY(22px) scale(.94);animation:cardIn .7s cubic-bezier(.22,1,.36,1) 1.12s forwards;will-change:transform,opacity}
+.next-card:hover{border-color:#101010;box-shadow:0 12px 28px #10101014}
 .next-card small{font:700 9px 'DM Mono',monospace;letter-spacing:.24em;text-transform:uppercase;color:#5b5b56}
 .next-card svg{width:88px;height:auto}
 .next-card svg path{fill:none;stroke:#101010;stroke-width:2;stroke-linecap:round}
@@ -127,12 +127,15 @@ body.menu-open{overflow:hidden}
 .nc-div{width:72%;height:1px;background:#10101033;margin:3px 0}
 .next-card em{font:600 9px 'DM Mono',monospace;font-style:normal;letter-spacing:.18em;text-transform:uppercase;color:#5b5b56;line-height:1.7}
 .scroll-cue{font:500 10px 'DM Mono',monospace;letter-spacing:.3em;color:#5b5b56;text-transform:uppercase;animation:cueFloat 2.6s ease-in-out infinite}
-.hero .scroll-cue{position:absolute;z-index:3;right:44px;bottom:44px;opacity:0;animation:fadeIn .8s ease 1.25s forwards,cueFloat 2.6s ease-in-out 2s infinite}
+.hero .scroll-cue{position:absolute;z-index:3;right:44px;bottom:44px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);animation:cueIn .65s cubic-bezier(.22,1,.36,1) 1.38s forwards,cueFloat 2.6s ease-in-out 2s infinite;will-change:transform,opacity}
+.scroll-meter{display:block;width:42px;height:2px;background:#10101025;overflow:hidden}.scroll-meter b{display:block;width:100%;height:100%;background:#101010;transform:scaleX(0);transform-origin:left}
 @keyframes cueFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.hline{display:block;overflow:hidden}
-.hline span{display:block;transform:translateY(112%);animation:lineUp .9s cubic-bezier(.22,1,.36,1) .1s forwards}
+.hline{display:block;overflow:hidden;padding:.08em 0}.hline span{display:inline-block;transform:translateY(112%);animation:lineUp .82s cubic-bezier(.22,1,.36,1) forwards}.hline .name-first{animation-delay:.2s}.hline .name-last{animation-delay:.32s}
 @keyframes lineUp{to{transform:translateY(0)}}
-.hero-kicker{opacity:0;animation:fadeIn .8s ease .45s forwards}
+.hero-kicker{opacity:0;animation:kickerIn .52s cubic-bezier(.22,1,.36,1) .08s forwards}
+@keyframes kickerIn{to{opacity:1;clip-path:inset(0 0 0 0);transform:translateY(0)}}
+@keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes cueIn{to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{to{opacity:1}}
 
 /* ---------- marquee ticker ---------- */
