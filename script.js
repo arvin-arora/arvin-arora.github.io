@@ -2,9 +2,9 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
 
-  /* ---------- particle constellation background ---------- */
+  /* ---------- particle constellation background (desktop only — too costly on phones) ---------- */
   const canvas = document.getElementById('bgCanvas');
-  if (canvas && !reduceMotion) {
+  if (canvas && !reduceMotion && finePointer) {
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let w, h, particles;
@@ -277,7 +277,8 @@
     if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
     if (progressBar) {
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = max > 0 ? `${(window.scrollY / max) * 100}%` : '0%';
+      const ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+      progressBar.style.transform = `scaleX(${ratio})`;
     }
   };
   onScroll();
