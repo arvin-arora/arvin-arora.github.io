@@ -83,7 +83,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(167,139,250,.5)';
+        ctx.fillStyle = 'rgba(88,166,255,.5)';
         ctx.fill();
       }
       for (let i = 0; i < particles.length; i++) {
@@ -95,7 +95,7 @@
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(167,139,250,${0.14 * (1 - d / LINK_DIST)})`;
+            ctx.strokeStyle = `rgba(88,166,255,${0.14 * (1 - d / LINK_DIST)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -644,6 +644,34 @@
       src.start(t);
       src.stop(t + dur + 0.05);
     };
+    const rumble = (dur, o = {}) => {
+      // brown-ish noise through a lowpass — the deep engine bed of a real launch
+      const t = ctx.currentTime + (o.delay || 0);
+      const len = Math.ceil(ctx.sampleRate * dur);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < len; i++) {
+        const w = Math.random() * 2 - 1;
+        last = (last + 0.02 * w) / 1.02;
+        d[i] = last * 3.5;
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const f = ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.Q.value = 0.5;
+      f.frequency.setValueAtTime(o.from || 60, t);
+      f.frequency.exponentialRampToValueAtTime(o.to || 140, t + dur * 0.6);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(o.gain || 0.4, t + 0.25);
+      g.gain.setValueAtTime(o.gain || 0.4, t + dur * 0.7);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(f).connect(g).connect(ctx.destination);
+      src.start(t);
+      src.stop(t + dur + 0.05);
+    };
     const play = (name) => {
       ensure();
       if (!ctx || ctx.state !== 'running') return; // pre-gesture: stay silent
@@ -656,14 +684,19 @@
           case 'hover':
             tone(540, 0.045, { gain: 0.02 });
             break;
+          case 'pop':
+            tone(392, 0.12, { gain: 0.05 });
+            tone(587.33, 0.1, { gain: 0.04, delay: 0.06 });
+            break;
           case 'portal':
             whoosh(0.75, { gain: 0.16, from: 260, to: 2600 });
             tone(220, 0.75, { gain: 0.08, slideTo: 880 });
             break;
           case 'rocket':
-            whoosh(2.2, { gain: 0.26, from: 70, to: 1400 });
-            tone(55, 2, { type: 'sawtooth', gain: 0.1, slideTo: 220 });
-            whoosh(1.2, { gain: 0.12, from: 900, to: 3200, delay: 1.1 });
+            whoosh(0.35, { gain: 0.3, from: 220, to: 2800 }); // ignition burst
+            rumble(2.9, { gain: 0.5, from: 55, to: 140 }); // engine rumble bed
+            whoosh(2.6, { gain: 0.16, from: 160, to: 1900, delay: 0.25 }); // rising exhaust roar
+            tone(38, 2.6, { gain: 0.2, slideTo: 90 }); // sub-bass swell
             break;
           case 'unlock':
             [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, 0.28, { gain: 0.07, delay: i * 0.09 }));
@@ -719,6 +752,17 @@
       if (launchBtn) launchBtn.addEventListener('click', () => {
         sfx.play('rocket');
         entry.classList.add('launching');
+        // launchpad smoke billowing out during ignition
+        for (let i = 0; i < 14; i++) {
+          setTimeout(() => {
+            if (!entry.isConnected) return;
+            const puff = document.createElement('div');
+            puff.className = 'r-smoke';
+            puff.style.setProperty('--sx', `${(Math.random() * 2 - 1) * 110}px`);
+            entry.appendChild(puff);
+            setTimeout(() => puff.remove(), 2500);
+          }, i * 90);
+        }
         setTimeout(done, 2100);
       });
     }
@@ -809,7 +853,53 @@
     '<span class="q-orb"></span><b class="q-count">0/8</b><span class="q-bar"><i></i></span></button>' +
     '<div class="quest-panel"><h4>EXPLORER LOG</h4><p class="q-sub">Discover everything this universe hides…</p><ul></ul></div>';
   document.body.appendChild(hud);
-  hud.querySelector('.quest-pill').addEventListener('click', () => hud.classList.toggle('open'));
+  const pill = hud.querySelector('.quest-pill');
+  let dragMoved = false;
+  pill.addEventListener('click', () => {
+    if (dragMoved) { dragMoved = false; return; } // that was a drag, not a click
+    const r = hud.getBoundingClientRect();
+    hud.classList.toggle('panel-down', r.top < window.innerHeight / 2);
+    hud.classList.toggle('panel-right', r.left > window.innerWidth - 300);
+    hud.classList.toggle('open');
+  });
+  // the HUD is draggable — park it anywhere; the spot is remembered
+  const applyHudPos = (x, y) => {
+    const r = hud.getBoundingClientRect();
+    hud.style.left = `${Math.min(Math.max(8, x), window.innerWidth - r.width - 8)}px`;
+    hud.style.top = `${Math.min(Math.max(8, y), window.innerHeight - r.height - 8)}px`;
+    hud.style.bottom = 'auto';
+    hud.style.right = 'auto';
+  };
+  try {
+    const savedPos = JSON.parse(localStorage.getItem('aa_hud_pos') || 'null');
+    if (savedPos && typeof savedPos.x === 'number') applyHudPos(savedPos.x, savedPos.y);
+  } catch (e) {}
+  let hudDrag = null;
+  pill.addEventListener('pointerdown', (e) => {
+    const r = hud.getBoundingClientRect();
+    hudDrag = { sx: e.clientX, sy: e.clientY, ox: r.left, oy: r.top };
+    dragMoved = false;
+    pill.setPointerCapture(e.pointerId);
+  });
+  pill.addEventListener('pointermove', (e) => {
+    if (!hudDrag) return;
+    const dx = e.clientX - hudDrag.sx;
+    const dy = e.clientY - hudDrag.sy;
+    if (!dragMoved && Math.hypot(dx, dy) < 6) return;
+    dragMoved = true;
+    applyHudPos(hudDrag.ox + dx, hudDrag.oy + dy);
+  });
+  pill.addEventListener('pointerup', () => {
+    if (!hudDrag) return;
+    hudDrag = null;
+    if (dragMoved) {
+      const r = hud.getBoundingClientRect();
+      try { localStorage.setItem('aa_hud_pos', JSON.stringify({ x: r.left, y: r.top })); } catch (e) {}
+    }
+  });
+  window.addEventListener('resize', () => {
+    if (hud.style.top) applyHudPos(parseFloat(hud.style.left), parseFloat(hud.style.top));
+  });
 
   const renderQuests = () => {
     const done = QUESTS.filter((q) => questState[q.id]).length;
@@ -948,6 +1038,90 @@
       window.addEventListener('scroll', checkEnd, { passive: true });
       setTimeout(checkEnd, 1500); // short levels fit one screen — count as explored
     }
+  }
+
+  /* ---------- random encounters: RPG-style popups while scrolling ---------- */
+  const ENCOUNTERS = [
+    { id: 'cf', q: 'A wild stat appeared! Arvin’s solved-problem count updates itself on every visit. Wanna catch it live?', a: 'Catch it →', href: 'journey.html', skipOn: 'journey.html' },
+    { id: 'proj', q: 'Somewhere in this universe there’s an app that refuses to mark you present unless your face AND your GPS agree. Dare to inspect it?', a: 'Inspect the build →', href: 'projects.html', skipOn: 'projects.html' },
+    { id: 'who', q: 'You’ve been walking through someone’s universe this whole time. Care to meet the architect?', a: 'Meet the architect →', href: 'about.html', skipOn: 'about.html' },
+    { id: 'hi', q: 'Side quest available: say hello to a real human. Reward: an actual reply from Arvin.', a: 'Accept side quest →', href: 'contact.html', skipOn: 'contact.html' },
+    { id: 'log', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
+    { id: 'music', q: 'This universe has a soundtrack — synthesized live in your browser, zero audio files. Want it on?', a: 'Play the soundtrack', action: 'music' },
+    { id: 'term', q: 'Blink and you’ll miss it: the home screen has a terminal typing real facts about Arvin. Seen it run?', a: 'Watch it type →', href: 'index.html', skipOn: 'index.html' },
+  ];
+  const encShown = (() => { try { return JSON.parse(sessionStorage.getItem('aa_enc') || '[]'); } catch (e) { return []; } })();
+  const encEligible = ENCOUNTERS.filter((x) => encShown.indexOf(x.id) === -1 && x.skipOn !== pageFile);
+  if (encEligible.length) {
+    const showEncounter = (enc) => {
+      try { sessionStorage.setItem('aa_enc', JSON.stringify(encShown.concat(enc.id))); } catch (e) {}
+      const ov = document.createElement('div');
+      ov.className = 'encounter';
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.setAttribute('aria-label', 'Random encounter');
+      const card = document.createElement('div');
+      card.className = 'enc-card';
+      card.innerHTML = '<p class="enc-eyebrow">⚡ RANDOM ENCOUNTER</p>';
+      const h = document.createElement('h3');
+      h.textContent = enc.q;
+      card.appendChild(h);
+      const actions = document.createElement('div');
+      actions.className = 'enc-actions';
+      card.appendChild(actions);
+      ov.appendChild(card);
+      const dismiss = () => {
+        ov.classList.remove('show');
+        document.removeEventListener('keydown', onKey);
+        setTimeout(() => ov.remove(), 380);
+      };
+      const onKey = (e) => { if (e.key === 'Escape') dismiss(); };
+      let primary;
+      if (enc.href) {
+        primary = document.createElement('a');
+        primary.href = enc.href; // the portal transition handler takes over on click
+      } else {
+        primary = document.createElement('button');
+        primary.type = 'button';
+        primary.addEventListener('click', () => {
+          if (enc.action === 'log') hud.classList.add('open');
+          if (enc.action === 'music') {
+            const m = document.getElementById('musicToggle');
+            if (m && !m.classList.contains('is-playing')) m.click();
+          }
+          dismiss();
+        });
+      }
+      primary.className = 'button button-primary';
+      primary.textContent = enc.a;
+      const skip = document.createElement('button');
+      skip.type = 'button';
+      skip.className = 'enc-skip';
+      skip.textContent = 'skip — keep exploring';
+      skip.addEventListener('click', dismiss);
+      actions.appendChild(primary);
+      actions.appendChild(skip);
+      ov.addEventListener('click', (e) => { if (e.target === ov) dismiss(); });
+      document.addEventListener('keydown', onKey);
+      document.body.appendChild(ov);
+      requestAnimationFrame(() => ov.classList.add('show'));
+      sfx.play('pop');
+      primary.focus();
+    };
+    // trigger: after real scrolling plus a little time on the level — feels random, never instant
+    const encThreshold = 400 + Math.random() * 800;
+    const encStart = Date.now();
+    let encScrolled = 0;
+    let encLastY = window.scrollY;
+    const onScrollEnc = () => {
+      encScrolled += Math.abs(window.scrollY - encLastY);
+      encLastY = window.scrollY;
+      if (encScrolled < encThreshold || Date.now() - encStart < 5000) return;
+      if (document.body.classList.contains('entry-hold')) return;
+      window.removeEventListener('scroll', onScrollEnc);
+      showEncounter(encEligible[Math.floor(Math.random() * encEligible.length)]);
+    };
+    window.addEventListener('scroll', onScrollEnc, { passive: true });
   }
 
   /* ---------- nav highlight for section in view ---------- */
