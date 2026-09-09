@@ -1244,13 +1244,26 @@
       ov.setAttribute('aria-label', 'Random encounter');
       const card = document.createElement('div');
       card.className = 'enc-card';
+      // always greet by the freshest saved name (it may have been logged after page load)
+      let liveName = pilot;
+      try { liveName = ((localStorage.getItem('aa_pilot') || '').trim() || 'Explorer').slice(0, 24); } catch (e) {}
       const eyebrow = document.createElement('p');
       eyebrow.className = 'enc-eyebrow';
-      eyebrow.textContent = `⚡ ${pilot.toUpperCase()} · RANDOM ENCOUNTER`;
+      eyebrow.textContent = `⚡ ${liveName.toUpperCase()} · RANDOM ENCOUNTER`;
       card.appendChild(eyebrow);
       const h = document.createElement('h3');
-      h.textContent = enc.q.replace('{p}', pilot);
+      h.textContent = enc.q.replace('{p}', liveName);
       card.appendChild(h);
+      let nameField = null;
+      if (enc.input) {
+        nameField = document.createElement('input');
+        nameField.type = 'text';
+        nameField.maxLength = 24;
+        nameField.placeholder = 'your name, pilot';
+        nameField.className = 'enc-input';
+        nameField.setAttribute('aria-label', 'Your name');
+        card.appendChild(nameField);
+      }
       const actions = document.createElement('div');
       actions.className = 'enc-actions';
       card.appendChild(actions);
@@ -1264,6 +1277,14 @@
       const primary = document.createElement('button');
       primary.type = 'button';
       primary.addEventListener('click', () => {
+        if (enc.input && nameField) {
+          const v = nameField.value.trim().slice(0, 24);
+          if (v) {
+            try { localStorage.setItem('aa_pilot', v); } catch (e) {}
+            toast(`🫡 Logged, ${v}. This universe knows you now.`);
+            sfx.play('unlock');
+          }
+        }
         if (enc.action === 'log') hud.classList.add('open');
         if (enc.action === 'music') {
           const m = document.getElementById('musicToggle');
@@ -1297,7 +1318,12 @@
       document.body.appendChild(ov);
       requestAnimationFrame(() => ov.classList.add('show'));
       sfx.play('pop');
-      primary.focus();
+      if (nameField) {
+        nameField.addEventListener('keydown', (e) => { if (e.key === 'Enter') primary.click(); });
+        nameField.focus();
+      } else {
+        primary.focus();
+      }
     };
   if (encPool.length) {
     // trigger: after real scrolling plus a little time on the level — feels random, never instant
@@ -1311,7 +1337,14 @@
       if (encScrolled < encThreshold || Date.now() - encStart < 9000) return;
       if (document.body.classList.contains('entry-hold')) return;
       window.removeEventListener('scroll', onScrollEnc);
-      showEncounter(encPool[Math.floor(Math.random() * encPool.length)]);
+      let storedName = '';
+      try { storedName = (localStorage.getItem('aa_pilot') || '').trim(); } catch (e) {}
+      if (!storedName) {
+        // no pilot on record — the first encounter recruits them by name
+        showEncounter({ id: 'name', q: 'Hold up — who’s exploring this universe? The log needs a name.', a: 'Log me in ✓', input: true });
+      } else {
+        showEncounter(encPool[Math.floor(Math.random() * encPool.length)]);
+      }
     };
     window.addEventListener('scroll', onScrollEnc, { passive: true });
   }

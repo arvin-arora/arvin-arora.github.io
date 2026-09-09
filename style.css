@@ -582,6 +582,9 @@ body.entry-hold .hero-in{animation-play-state:paused}
 .enc-card h3{margin:0 0 22px;font-size:clamp(19px,3vw,25px);letter-spacing:-.03em;line-height:1.35}
 .enc-actions{display:flex;flex-direction:column;gap:12px;align-items:center}
 .enc-actions .button{justify-content:center;border:none;cursor:pointer;font-family:inherit}
+.enc-input{width:100%;max-width:280px;margin:0 auto 20px;display:block;padding:12px 14px;background:#040711;border:1px solid #6fb7ff44;border-radius:6px;color:var(--text);font:600 13px 'DM Mono',monospace;text-align:center;outline:none;transition:border-color .25s ease}
+.enc-input:focus{border-color:var(--accent)}
+.enc-input::placeholder{color:var(--muted);opacity:.7}
 .enc-skip{background:none;border:none;color:var(--muted);font:600 11px 'DM Mono',monospace;cursor:pointer;transition:color .25s ease}
 .enc-skip:hover{color:var(--accent)}
 .enc-glow{outline:2px solid var(--accent);outline-offset:6px;border-radius:8px;animation:encGlow 1.2s ease-in-out 3}
