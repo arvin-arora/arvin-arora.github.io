@@ -2,7 +2,7 @@
 
 My personal developer portfolio: hand-written HTML, CSS, and JavaScript — no frameworks.
 
-**Live site:** https://aroraarvin8-commits.github.io
+**Live site:** https://arvin-arora.github.io
 
 ## Features
 
