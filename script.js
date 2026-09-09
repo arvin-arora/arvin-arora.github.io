@@ -88,7 +88,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(49,94,141,.5)';
+        ctx.fillStyle = 'rgba(125,95,199,.5)';
         ctx.fill();
       }
       for (let i = 0; i < particles.length; i++) {
@@ -100,7 +100,7 @@
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(49,94,141,${0.14 * (1 - d / LINK_DIST)})`;
+            ctx.strokeStyle = `rgba(125,95,199,${0.14 * (1 - d / LINK_DIST)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -322,7 +322,11 @@
   const ghostSections = finePointer && !reduceMotion ? Array.from(document.querySelectorAll('.section[data-ghost]')) : [];
   const scrollName = document.getElementById('scrollName');
   const onScroll = () => {
-    if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
+    if (header) {
+      // hysteresis: collapse past 40px, expand only back under 10px — no flicker at the threshold
+      if (window.scrollY > 40) header.classList.add('is-scrolled');
+      else if (window.scrollY < 10) header.classList.remove('is-scrolled');
+    }
     if (scrollName) {
       // ink the name in as it travels from 90% to 30% of the viewport height
       const r = scrollName.getBoundingClientRect();
