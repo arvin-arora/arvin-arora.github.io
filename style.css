@@ -177,7 +177,7 @@ main{position:relative;z-index:1}
 .fan-card{position:absolute;left:50%;bottom:-6%;margin:0;width:min(300px,56vw);aspect-ratio:2/3;margin-left:calc(min(300px,56vw)/-2);overflow:hidden;border-radius:22px;box-shadow:0 30px 70px #0a0a0a2e;border:4px solid #fff;transform-origin:50% 132%;will-change:transform}
 .fan-card img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;transition:transform .5s ease}
 .fan-card:hover img{transform:scale(1.07)}
-.fan-card figcaption{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font:600 9.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#0a0a0ab3;padding:6px 12px;border-radius:9px;white-space:nowrap}
+.fan-card figcaption{position:absolute;left:50%;top:14px;transform:translateX(-50%);font:600 9.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#0a0a0ab3;padding:6px 12px;border-radius:9px;white-space:nowrap}
 .fan-card.mid{box-shadow:0 40px 90px #0a0a0a3d}
 /* default fan (no JS needed) — scroll finishes the deal */
 .fan-card:nth-child(1){transform:translateY(8.1%) rotate(-12.8deg);z-index:4}
@@ -459,6 +459,9 @@ body.app-zone .phone-caption{color:#93A0B0;font-size:11.5px}
   .mf-grid{grid-template-columns:1fr;gap:36px}
   .rm-row{grid-template-columns:96px 1fr;gap:18px}
   .rm-tag{grid-column:2;justify-self:start;padding:5px 9px;font-size:9px}
+  .roadmap-rows{padding-left:26px}
+  .rm-progress{left:0}
+  .rm-row::before{left:-5px}
   .showcase-grid{grid-template-columns:1fr;gap:46px}
 }
 @media(max-width:640px){
@@ -471,6 +474,7 @@ body.app-zone .phone-caption{color:#93A0B0;font-size:11.5px}
   .hero{--pw:min(370px,92vw,52vh)}
   .hero-sticky{padding:96px 20px 0}
   .stat b{font-size:19px}
+  .oc-cue{right:14px;bottom:14px;background:#f4f4efd9;padding:7px 10px;border-radius:8px}
   .hero h1{margin:0 -20px}
   .next-card{left:14px;bottom:20px;padding:12px 14px;transform:scale(.85);transform-origin:left bottom}
   .next-card:hover{transform:scale(.85)}
