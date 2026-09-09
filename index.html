@@ -36,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=62">
+  <link rel="stylesheet" href="style.css?v=63">
 </head>
 <body>
   <header class="site-header" id="siteHeader">
@@ -46,10 +46,11 @@
   </header>
   <main>
     <section class="hero" id="home">
+      <div class="hero-sticky">
       <div class="hero-photo" aria-hidden="true"><img src="assets/arvin-1.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
       <div class="hero-inner">
         <p class="hero-kicker">Aspiring Software Developer · Scaler School of Technology</p>
-        <h1 aria-label="Arvin Arora"><span class="hline"><span>Arvin</span></span><span class="hline"><span>Arora</span></span></h1>
+        <h1 aria-label="Arvin Arora"><span class="hline"><span>Arvin&nbsp;Arora</span></span></h1>
         <svg class="sig" viewBox="0 0 320 80" aria-hidden="true"><path d="M10 62 C 22 20, 34 10, 40 12 C 46 14, 46 34, 40 62 M22 44 L 52 40 M56 58 C 58 46, 60 42, 66 42 C 62 50, 64 60, 74 56 M80 42 C 86 54, 88 58, 90 58 C 96 50, 100 44, 102 40 M112 44 C 110 50, 108 56, 110 58 C 114 60, 118 54, 120 46 M132 58 C 134 48, 136 42, 140 42 C 148 42, 148 50, 150 58 C 154 44, 162 40, 170 44 C 190 52, 230 54, 300 34"/><circle class="sig-dot" cx="116" cy="32" r="3.4"/></svg>
         <p class="hero-sub">First-year student sharpening the fundamentals through consistent problem-solving and competitive programming — building things that are real, one problem at a time.</p>
         <div class="hero-row">
@@ -57,6 +58,7 @@
           <a class="stat-card" href="#journey"><small>Scaler SST</small><b>Year <em>01</em></b></a>
           <span class="scroll-cue">Scroll ↓</span>
         </div>
+      </div>
       </div>
     </section>
 
@@ -68,17 +70,19 @@
     </section>
 
     <section class="section mark" aria-label="The mark">
-      <div class="cube-stage reveal" aria-hidden="true">
-        <div class="cube" id="cube3d">
-          <div class="cf f-front">A</div>
-          <div class="cf f-back">A</div>
-          <div class="cf f-right">&lt;/&gt;</div>
-          <div class="cf f-left">{ }</div>
-          <div class="cf f-top">SST</div>
-          <div class="cf f-bottom"><span class="cf-count">89+</span></div>
+      <div class="mark-sticky">
+        <div class="cube-stage" aria-hidden="true">
+          <div class="cube" id="cube3d">
+            <div class="cf f-front">A</div>
+            <div class="cf f-back">A</div>
+            <div class="cf f-right">&lt;/&gt;</div>
+            <div class="cf f-left">{ }</div>
+            <div class="cf f-top">SST</div>
+            <div class="cf f-bottom"><span class="cf-count">89+</span></div>
+          </div>
         </div>
+        <p class="mark-cap">The mark — hand-built in CSS, spun by your scroll.</p>
       </div>
-      <p class="mark-cap reveal">The mark — hand-built in CSS, spun by your scroll.</p>
     </section>
 
     <section class="section" id="journey">
@@ -148,6 +152,6 @@
     </div>
     <div class="foot-base"><span>© 2026 Arvin Arora. All rights reserved.</span><span>Hand-coded · no frameworks</span><a href="#home">Back to top ↑</a></div>
   </footer>
-  <script src="script.js?v=61"></script>
+  <script src="script.js?v=63"></script>
 </body>
 </html>

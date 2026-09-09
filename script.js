@@ -18,45 +18,66 @@
     .map((a) => document.getElementById(a.dataset.nav))
     .filter(Boolean);
 
-  let ticking = false;
-  const onScroll = () => {
+  /* ---------- lerped motion engine: values chase the scroll with easing ---------- */
+  const cube = document.getElementById('cube3d');
+  const heroSec = document.querySelector('.hero');
+  const heroInner = document.querySelector('.hero-inner');
+  const markSec = document.querySelector('.mark');
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const st = { heroP: 0, spin: 24, fill: 0, line: 0 };
+  const tg = { heroP: 0, spin: 24, fill: 0, line: 0 };
+
+  const computeTargets = () => {
     if (header) {
       // hysteresis: collapse past 40px, expand under 10px — never flickers
       if (window.scrollY > 40) header.classList.add('is-scrolled');
       else if (window.scrollY < 10) header.classList.remove('is-scrolled');
     }
-    const cube = document.getElementById('cube3d');
-    if (cube && !reduceMotion) {
-      // the monogram cube turns with the scroll, like a turntable you drive
-      cube.style.setProperty('--spin', `${(window.scrollY * 0.22).toFixed(1)}deg`);
+    if (heroSec) {
+      const r = heroSec.getBoundingClientRect();
+      const span = r.height - window.innerHeight;
+      tg.heroP = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
     }
-    if (heroPhoto && !reduceMotion) {
-      // parallax: the photo drifts slower than the page
-      heroPhoto.style.transform = `translate3d(0, ${(window.scrollY * 0.22).toFixed(1)}px, 0)`;
-    }
-    if (rmRows && rmProgress && !reduceMotion) {
-      // a lime line grows down the roadmap as you travel through it
-      const r = rmRows.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (window.innerHeight * 0.75 - r.top) / r.height));
-      rmProgress.style.height = `${(p * 100).toFixed(1)}%`;
+    if (markSec) {
+      const r = markSec.getBoundingClientRect();
+      const span = r.height - window.innerHeight;
+      const p = span > 0 ? Math.max(-0.2, Math.min(1.2, -r.top / span)) : 0;
+      tg.spin = 24 + p * 540; // a full-and-a-half turntable turn while pinned
     }
     if (scrollName) {
-      // the name inks itself in as it travels up the viewport
       const r = scrollName.getBoundingClientRect();
-      const startY = window.innerHeight * 0.9;
-      const endY = window.innerHeight * 0.3;
-      const p = Math.min(1, Math.max(0, (startY - r.top) / (startY - endY)));
-      scrollName.style.setProperty('--fill', `${(p * 100).toFixed(1)}%`);
+      tg.fill = Math.min(100, Math.max(0, ((window.innerHeight * 0.9 - r.top) / (window.innerHeight * 0.6)) * 100));
     }
-    ticking = false;
+    if (rmRows) {
+      const r = rmRows.getBoundingClientRect();
+      tg.line = Math.min(100, Math.max(0, ((window.innerHeight * 0.75 - r.top) / r.height) * 100));
+    }
   };
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(onScroll);
+
+  const applyMotion = () => {
+    st.heroP = lerp(st.heroP, tg.heroP, 0.09);
+    st.spin = lerp(st.spin, tg.spin, 0.09);
+    st.fill = lerp(st.fill, tg.fill, 0.12);
+    st.line = lerp(st.line, tg.line, 0.12);
+    if (heroInner) {
+      heroInner.style.transform = `translateY(${(-st.heroP * 60).toFixed(1)}px) scale(${(1 - st.heroP * 0.16).toFixed(3)})`;
+      heroInner.style.opacity = Math.max(0, 1 - st.heroP * 1.1).toFixed(3);
     }
-  }, { passive: true });
-  onScroll();
+    if (heroPhoto) heroPhoto.style.transform = `translate3d(0, ${(st.heroP * 130).toFixed(1)}px, 0) scale(${(1 + st.heroP * 0.1).toFixed(3)})`;
+    if (cube) cube.style.setProperty('--spin', `${st.spin.toFixed(2)}deg`);
+    if (scrollName) scrollName.style.setProperty('--fill', `${st.fill.toFixed(2)}%`);
+    if (rmProgress) rmProgress.style.height = `${st.line.toFixed(2)}%`;
+    requestAnimationFrame(applyMotion);
+  };
+
+  window.addEventListener('scroll', computeTargets, { passive: true });
+  window.addEventListener('resize', computeTargets, { passive: true });
+  computeTargets();
+  if (!reduceMotion) {
+    requestAnimationFrame(applyMotion);
+  } else if (scrollName) {
+    scrollName.style.setProperty('--fill', '100%');
+  }
 
   /* ---------- active nav link per section in view ---------- */
   if (navSections.length && 'IntersectionObserver' in window) {
