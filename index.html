@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arvin Aroa — aspiring software developer and first-year student at Scaler School of Technology, sharpening fundamentals through competitive programming on Codeforces.">
+  <meta name="theme-color" content="#08060f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Arvin Aroa | Aspiring Software Developer">
+  <meta property="og:description" content="First-year student at Scaler School of Technology, building fundamentals one Codeforces problem at a time.">
+  <title>Arvin Aroa | Aspiring Software Developer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23150f26'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' font-weight='700' fill='%23a78bfa' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#home" aria-label="Arvin Aroa home">AA<span>.</span></a>
+    <div class="header-right">
+      <nav aria-label="Main navigation"><a href="#about" data-nav="about">About</a><a href="#journey" data-nav="journey">Journey</a><a href="#projects" data-nav="projects">Projects</a><a href="#contact" data-nav="contact">Contact</a></nav>
+      <button class="music-toggle" id="musicToggle" type="button" aria-label="Play background music" aria-pressed="false" title="Ambient music"><span class="eq"><i></i><i></i><i></i></span></button>
+    </div>
+    <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+  </header>
+  <main>
+    <section class="hero" id="home">
+      <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="hero-copy">
+        <p class="eyebrow hero-in" style="--d:0s"><span></span> Currently: building the foundation</p>
+        <h1 class="hero-in" style="--d:.1s" aria-label="Hey, I’m Arvin — an aspiring Software Developer.">Hey, I’m <span class="glitch" data-text="Arvin">Arvin</span> —<br>an Aspiring<br><span class="type-slot"><span id="typeText">Software Developer.</span><span class="type-caret" aria-hidden="true"></span></span></h1>
+        <p class="hero-description hero-in" style="--d:.22s">First-year student at Scaler School of Technology, sharpening my fundamentals through consistent problem-solving and competitive programming.</p>
+        <div class="hero-actions hero-in" style="--d:.32s"><a class="button button-primary" href="#journey">Explore my journey <span aria-hidden="true">↓</span></a><a class="text-link" href="#contact">Get in touch <span aria-hidden="true">↗</span></a></div>
+        <div class="hero-stats hero-in" style="--d:.42s">
+          <div class="stat-chip"><b>Year 1</b><span>Scaler School of Tech</span></div>
+          <div class="stat-chip"><b id="heroCfCount">—</b><span>Solved on Codeforces</span></div>
+          <div class="stat-chip"><b>01</b><span>Project built</span></div>
+        </div>
+      </div>
+      <div class="hero-art hero-in" style="--d:.18s" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="terminal"><div class="terminal-bar"><i></i><i></i><i></i><span>arvin@sst — bash</span></div><div class="terminal-body" id="termBody"></div></div><div class="floating-card card-code"><span>&lt;/&gt;</span><small>learning by doing</small></div><div class="floating-card card-dot"><i></i><small>open to learning</small></div></div>
+    </section>
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Codeforces</span><i>◆</i><span class="outline">Problem Solving</span><i>◆</i><span>Web Development</span><i>◆</i><span class="outline">Algorithms</span><i>◆</i><span>Data Structures</span><i>◆</i><span class="outline">Fundamentals</span><i>◆</i><span>Codeforces</span><i>◆</i><span class="outline">Problem Solving</span><i>◆</i><span>Web Development</span><i>◆</i><span class="outline">Algorithms</span><i>◆</i><span>Data Structures</span><i>◆</i><span class="outline">Fundamentals</span><i>◆</i></div></div>
+    <section class="about section" id="about" data-ghost="01">
+      <div class="section-label-row reveal"><p class="section-label">01 / ABOUT ME</p><span class="details-btn" role="button" tabindex="0">ⓘ details</span><div class="section-details"><h4>Quick facts</h4><ul><li>First-year student at Scaler School of Technology</li><li>Focus: fundamentals, DSA &amp; competitive programming</li><li><span class="cf-count">89+</span> problems solved on Codeforces (Arvin2417)</li><li>First real project shipped: Hostel Attendance App</li></ul></div></div>
+      <div class="about-grid"><h2 class="reveal">Growing one<br><em>problem</em> at a time.</h2><div class="about-copy reveal"><p>Hey! I’m Arvin Aroa, a first-year student at Scaler School of Technology and an aspiring software developer.</p><p>I’m currently focused on strengthening my programming fundamentals and problem-solving skills — rather than rushing into large projects, I’m taking the time to get the basics right and stress-test my thinking against real problems.</p><p>A major part of that process is Codeforces, where I regularly practice reasoning through approaches, algorithms, and edge cases.</p></div></div>
+    </section>
+    <section class="journey section" id="journey" data-ghost="02">
+      <div class="section-heading reveal"><div><div class="section-label-row"><p class="section-label">02 / MY CODING JOURNEY</p><span class="details-btn" role="button" tabindex="0">ⓘ details</span><div class="section-details"><h4>CP snapshot</h4><ul><li>Codeforces handle: Arvin2417</li><li><span class="cf-count">89+</span> problems solved and counting</li><li><span id="cfStreak">15</span>-day max solving streak</li><li>Unrated yet — rated contests come after the foundations</li></ul></div></div><h2>Learning in <em>public.</em></h2></div><p>Building the fundamentals first — the projects will follow once they have something real to stand on.</p></div>
+      <div class="journey-grid"><article class="journey-feature reveal"><div class="feature-top"><a class="codeforces-mark" href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">CF</a><span class="status">IN PROGRESS</span></div><h3>Competitive<br>Programming</h3><p>Solving problems on Codeforces, breaking down algorithms, and learning to write cleaner, sharper solutions.</p><div class="codeforces-note"><span class="pulse"></span><a href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener"><span id="cfStat">View Codeforces profile ↗</span></a></div></article><div class="focus-list"><article class="focus-item reveal"><span>01</span><div><h3>Programming Fundamentals</h3><p>The core concepts everything else gets built on.</p></div></article><article class="focus-item reveal"><span>02</span><div><h3>Problem Solving</h3><p>Breaking challenges down, testing ideas, and learning from every attempt.</p></div></article><article class="focus-item reveal"><span>03</span><div><h3>Web Development</h3><p>Learning by building — this portfolio is hand-built with HTML, CSS, and JavaScript.</p></div></article></div></div>
+    </section>
+    <section class="projects section" id="projects" data-ghost="03">
+      <div class="section-heading reveal"><div><p class="section-label">03 / PROJECTS</p><h2>Things I’ve <em>built.</em></h2></div><p>Real builds only, no filler — this list grows as I do.</p></div>
+      <div class="projects-grid"><div class="project-card reveal"><a class="card-link" href="https://github.com/aroraarvin8-commits/Hostel-Attendance-app" target="_blank" rel="noopener" aria-label="Open Hostel Attendance App on GitHub"></a><div class="project-top"><span class="project-icon">📱</span><span class="top-actions"><span class="details-btn" role="button" tabindex="0">ⓘ details</span><span class="project-arrow">↗</span></span></div><h3>Hostel Attendance App</h3><p>Attendance through face verification and GPS geofencing — built end-to-end with its own backend.</p><div class="project-tags"><span>React Native</span><span>TypeScript</span><span>ML Kit</span><span>Geofencing</span></div><div class="project-details"><h4>Under the hood</h4><ul><li>Live face verification with liveness detection (ML Kit)</li><li>GPS geofencing — check-in only works inside the hostel</li><li>Wi-Fi subnet check &amp; mock-location (GPS spoof) detection</li><li>Per-device binding with server-side attestation</li><li>Admin dashboard, PDF &amp; Google Sheets reports, scheduled absentee alerts</li></ul></div></div><div class="project-card reveal"><a class="card-link" href="https://github.com/aroraarvin8-commits" target="_blank" rel="noopener" aria-label="Open Arvin's GitHub profile"></a><div class="project-top"><span class="project-icon">🌐</span><span class="top-actions"><span class="details-btn" role="button" tabindex="0">ⓘ details</span><span class="project-arrow">↗</span></span></div><h3>This Portfolio</h3><p>The site you’re on — hand-coded, animated, and honest about where I am.</p><div class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="project-details"><h4>Under the hood</h4><ul><li>Live Codeforces stats fetched from the public API on every visit</li><li>Generative ambient music synthesized with the Web Audio API</li><li>Interactive particle constellation &amp; custom cursor</li><li>Typewriter headline and an animated coding terminal</li><li>Hand-written HTML, CSS &amp; JavaScript — no frameworks</li></ul></div></div><div class="project-card coming reveal"><div class="project-top"><span class="project-icon">⚡</span><span class="status">COMING SOON</span></div><h3>Next Project</h3><p>In the works — fueled by fundamentals and a growing problem count.</p><div class="project-tags"><span>TBD</span></div></div></div>
+    </section>
+    <section class="quote section"><p class="reveal">“Every problem solved is one step closer to becoming a better programmer.”</p></section>
+    <section class="contact section" id="contact" data-ghost="04"><div class="section-label-row reveal"><p class="section-label">04 / CONTACT</p><span class="details-btn" role="button" tabindex="0">ⓘ details</span><div class="section-details"><h4>Reach me</h4><ul><li>Email: aroraarvin8@gmail.com</li><li>GitHub: aroraarvin8-commits</li><li>LinkedIn: arvin-arora</li><li>Codeforces: Arvin2417</li></ul></div></div><div class="contact-content reveal"><h2>Let’s connect<br>and <em>learn.</em></h2><p>Early in the journey and always up for connecting with fellow learners and builders.</p><a class="button button-primary" href="mailto:aroraarvin8@gmail.com">Say hello <span aria-hidden="true">↗</span></a><div class="social-links"><a href="https://github.com/aroraarvin8-commits" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.linkedin.com/in/arvin-arora-0bb939426/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">Codeforces ↗</a></div></div></section>
+  </main>
+  <footer><a class="brand" href="#home">AA<span>.</span></a><p>© 2026 Arvin Aroa. Built while learning.</p><a href="#home">Back to top ↑</a></footer>
+  <script src="script.js"></script>
+</body>
+</html>
