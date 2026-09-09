@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Case study of Arvin Arora's Hostel Attendance App — face verification, GPS geofencing, network checks and device binding, with an interactive demo of the check-in flow.">
-  <meta name="theme-color" content="#0b0f14">
+  <meta name="description" content="Case study of Arvin Arora's Hostel Attendance App — a working recreation of the real app's check-in flow: liveness challenge, Face++ verification, geofence, Wi-Fi gateway checks and a server-authoritative attendance record.">
+  <meta name="theme-color" content="#090D16">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Hostel Attendance App | Arvin Arora">
-  <meta property="og:description" content="Attendance that can’t be faked — face, location, network and device all have to agree. Run the interactive demo.">
+  <meta property="og:description" content="Attendance that can’t be faked — run a faithful simulation of the real app’s check-in flow.">
   <meta property="og:url" content="https://arvin-arora.github.io/hostel-app.html">
-  <meta property="og:image" content="https://arvin-arora.github.io/assets/arvin-1.jpg">
+  <meta property="og:image" content="https://arvin-arora.github.io/assets/hostel-logo.jpeg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Hostel Attendance App | Arvin Arora">
-  <meta name="twitter:description" content="Attendance that can’t be faked — run the interactive check-in demo.">
+  <meta name="twitter:description" content="Attendance that can’t be faked — run a faithful simulation of the real app’s check-in flow.">
   <link rel="canonical" href="https://arvin-arora.github.io/hostel-app.html">
   <title>Hostel Attendance App | Arvin Arora</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23131a23'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' font-weight='700' fill='%2358a6ff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="assets/hostel-logo.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
 </head>
-<body>
+<body class="app-zone">
   <canvas id="bgCanvas" aria-hidden="true"></canvas>
   <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
@@ -34,41 +34,50 @@
     </div>
     <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
   </header>
+  <div class="zone-tape">⚠ SIMULATION ZONE — YOU’VE LEFT THE PORTFOLIO UNIVERSE · THIS LEVEL RUNS ON THE APP’S OWN THEME ⚠</div>
   <main>
     <section class="showcase section" id="hostel" data-ghost="✦">
-      <div class="section-heading reveal"><div><p class="section-label">LEVEL 03★ / CASE STUDY</p><h2>Hostel Attendance <em>App.</em></h2></div><p>Attendance that can’t be faked — your face, your location, your network and your device all have to agree.</p></div>
+      <div class="section-heading reveal"><div><p class="section-label">LEVEL 03★ / PLAY AREA</p><h2><img class="app-logo" src="assets/hostel-logo.jpeg" alt="Hostel Attendance App logo">Hostel Attendance <em>App.</em></h2></div><p>Attendance that can’t be faked — your face, your location, your network and your device all have to agree.</p></div>
       <div class="showcase-grid">
         <div class="reveal">
           <div class="phone">
-            <div class="phone-screen">
-              <div class="app-top"><b>● Hostel Attendance</b><span>v1.0</span></div>
-              <div class="demo-stage" id="demoStage"><p class="demo-hint">This is a live simulation of the app’s check-in flow.<br><br>Press <b>▶ Run a check-in</b> and watch every security gate fire in order.</p></div>
-              <button class="button button-primary demo-btn" id="demoBtn" type="button">▶ Run a check-in</button>
+            <div class="phone-screen rn-screen">
+              <div class="rn-head"><div><b>Uniworld 2</b><small id="rnDate"></small></div><div class="rn-head-r"><span class="rn-badge b-open" id="rnBadge">🟢 ATTENDANCE OPEN</span><span class="rn-signout">Sign Out</span></div></div>
+              <div class="rn-profile"><span class="rn-avatar">AA</span><div><small>Good evening,</small><b>Arvin Arora</b><div class="rn-chips"><i class="hl">Uniworld 2</i><i>Demo Mode</i><i>SST</i></div></div></div>
+              <div class="rn-card b-open" id="rnCard"></div>
+              <div id="rnAction"></div>
+              <div class="rn-rules"><h5>SECURITY &amp; ROLL-CALL RULES</h5><p><b>Facial Verification:</b> Your attendance selfie is compared against your enrolled signup photo to confirm it’s you.</p><p><b>Hostel Geofence:</b> You must be inside the hostel property boundary.</p><p><b>Deadline:</b> Normal closes at 11:00 PM. Grace period ends strictly at 11:10 PM.</p></div>
+              <div class="rn-devbar"><small>🛠️ Dev Time Simulation Mode: <b id="rnSimLabel">10:35 PM (Normal Open)</b></small><div class="rn-sims" id="rnSims"></div><button class="rn-reset" id="rnReset" type="button">Reset My Attendance Record</button></div>
+              <div class="rn-camera" id="rnCamera" hidden><div class="rn-oval" aria-hidden="true"></div><div class="rn-facemoji" aria-hidden="true">🙂</div><p id="rnCamStatus">Position your face in the frame</p></div>
+              <div class="rn-verify" id="rnVerify" hidden><div class="rn-vcard"><h6 id="rnVTitle">⚡ Live Attendance Verification</h6><p id="rnVSub">Performing server-authoritative multi-factor checks.</p><div id="rnVSteps"></div><p class="rn-vfoot" id="rnVFoot">Validating with authorized servers...</p><button id="rnVDone" class="rn-done" type="button" hidden>Done</button></div></div>
             </div>
           </div>
-          <p class="phone-caption">Simulated walkthrough of the real check-in pipeline — recreated in hand-written CSS/JS for this site, not actual app screenshots. The real app runs on React Native.</p>
+          <p class="phone-caption">A faithful, working recreation of the real app — its actual colors, screens and on-screen text, straight from the codebase. The real app is Android-only; even the 🛠️ time-simulation bar is a real feature of its dev build. Try the scenario buttons, then hit MARK ATTENDANCE.</p>
         </div>
         <div class="showcase-copy reveal">
           <h3>What it is</h3>
-          <p>A hostel attendance system built end-to-end — mobile app plus its own backend. Marking yourself present only works if you pass every check: you’re physically inside the hostel, on the hostel network, on your own registered device, and it’s really your live face in front of the camera.</p>
-          <div class="project-tags"><span>React Native</span><span>TypeScript</span><span>ML Kit</span><span>Geofencing</span><span>Own backend</span></div>
+          <p>A hostel attendance system built end-to-end for the Uniworld hostels at Scaler School of Technology — a React Native app plus its own Node.js backend. The attendance window is real and server-enforced: it opens at 10:30 PM, closes at 11:00 PM, and a strict grace period ends at 11:10 PM IST. Changing your phone’s clock does nothing — the server keeps its own time.</p>
+          <div class="project-tags"><span>React Native</span><span>TypeScript</span><span>Node.js + Express</span><span>PostgreSQL</span><span>Prisma</span><span>Face++</span><span>ML Kit</span><span>JWT</span><span>Google Sheets</span><span>Docker</span></div>
           <h3>How a check-in flows through the system</h3>
           <ol class="road">
-            <li class="done reveal"><span class="node"></span><div><b>Check-in request</b><p>The app sends the device identity, a live face capture, the GPS fix and network info to the backend.</p><em>REQUEST</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Device attestation</b><p>Server-side check that the request comes from the student’s own registered device — one account, one phone.</p><em>GATE 1</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Location &amp; network gates</b><p>GPS must land inside the hostel geofence, the Wi-Fi subnet must match the hostel network, and mock-location (GPS spoofing) is detected and rejected.</p><em>GATE 2</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Face verification</b><p>ML Kit runs live face verification with liveness detection — a photo of a photo doesn’t pass.</p><em>GATE 3</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Attendance recorded</b><p>Only after every gate passes is the attendance written and synced to the admin dashboard.</p><em>WRITE</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Reports &amp; alerts</b><p>Admins get PDF and Google Sheets exports, plus scheduled absentee alerts — no manual chasing.</p><em>ADMIN</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Liveness challenge issued</b><p>POST /attendance/liveness-challenge — the server hands the phone a one-time task: blink once, blink twice, or turn your head left or right.</p><em>REQUEST</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Live camera + ML Kit</b><p>An in-app camera opens (no swappable camera apps), and ML Kit tracks eyes and head pose on-device while frames are captured inside the oval guide.</p><em>ON DEVICE</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Face verified on the server</b><p>POST /attendance/verify-face — duplicate frames are rejected by hash, the challenge is re-derived from the actual pixels via Face++, and the selfie is compared against the enrolled signup photo. A signed face-attestation token comes back.</p><em>GATE 1</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Geofence + anti-spoof</b><p>The GPS fix must fall inside the hostel’s mapped property boundary (with a 100 m allowance). Fake-GPS “mock location” apps are detected natively and rejected.</p><em>GATE 2</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Hostel Wi-Fi challenge</b><p>The Wi-Fi SSID must be an authorized hostel network, the device IP must sit in the router’s subnet, and the app runs a real reachability probe to the hostel gateway — a copied network name isn’t enough.</p><em>GATE 3</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Server-authoritative mark</b><p>POST /attendance/mark — the server re-checks the time window on its own clock, validates the attestation token, geofence and network again, blocks duplicates, and only then records PRESENT.</p><em>WRITE</em></div></li>
+            <li class="done reveal"><span class="node"></span><div><b>Nightly automation at 11:10 PM</b><p>The absentee list is computed, a Google Sheet is created for the night, the monthly register is updated, and a PDF report is generated — all waiting on the warden dashboard.</p><em>ADMIN</em></div></li>
           </ol>
+          <h3>The warden side</h3>
+          <p>A separate web dashboard for hostel staff (no public signup — accounts are provisioned per warden): per-night present/absent counts, a Download PDF button for the absent list, View Sheet for the night’s Google Sheet, and a Monthly Register — one row per student, one column per day.</p>
           <p style="margin-top:26px"><a class="text-link" href="https://github.com/arvin-arora/Hostel-Attendance-app" target="_blank" rel="noopener">Prefer reading code? View the source on GitHub <span aria-hidden="true">↗</span></a></p>
         </div>
       </div>
     </section>
     <div class="page-next pn-left"><a href="contact.html"><small>LEVEL 04 PORTAL — THIS ONE HIDES ON THE LEFT</small><b>Let’s Connect <i>→</i></b></a></div>
   </main>
-  <footer><a class="brand" href="index.html">AA<span>.</span></a><p>© 2026 Arvin Arora. Built while learning. <span class="whisper-inline">· running the demo counts as a discovery…</span></p><a href="#">Back to top ↑</a></footer>
+  <footer><a class="brand" href="index.html">AA<span>.</span></a><p>© 2026 Arvin Arora. Built while learning. <span class="whisper-inline">· running the check-in counts as a discovery…</span></p><a href="#">Back to top ↑</a></footer>
   <div class="portal-overlay" id="portalOverlay" aria-hidden="true"><div class="iris"></div><div class="ring"></div></div>
-  <script src="script.js?v=15"></script>
+  <script src="script.js?v=16"></script>
 </body>
 </html>

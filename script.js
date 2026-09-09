@@ -183,21 +183,19 @@
   if (termBody) {
     const lines = () => [
       { cmd: true, text: 'whoami' },
-      { cls: 'out', text: 'arvin · year-1 @ scaler sst' },
-      { cmd: true, text: 'vim solve.cpp' },
-      { cls: 'code', text: '#include <bits/stdc++.h>' },
-      { cls: 'code', text: 'using namespace std;' },
-      { cls: 'code', text: 'int main() {' },
-      { cls: 'code', text: '  solve(); // one problem at a time' },
-      { cls: 'code', text: '}' },
-      { cmd: true, text: 'g++ -O2 solve.cpp && ./a.out' },
-      { cls: 'out hi', text: 'tests: ✓ ✓ ✓  →  Accepted' },
+      { cls: 'out', text: 'Arvin Arora — aspiring software developer' },
+      { cmd: true, text: 'cat education.txt' },
+      { cls: 'out', text: 'Scaler School of Technology · Year 1 · CS' },
+      { cmd: true, text: 'arvin --stats' },
+      { cls: 'out hi', text: `codeforces: Arvin2417 · ${cfSolvedCount} solved` },
+      { cls: 'out', text: 'focus: fundamentals · DSA · web dev' },
       { cmd: true, text: 'ls ~/projects' },
-      { cls: 'out', text: 'hostel-attendance-app/  (react-native · ts)' },
-      { cmd: true, text: 'codeforces --user Arvin2417 --solved' },
-      { cls: 'out hi', text: `${cfSolvedCount} problems accepted ✓` },
+      { cls: 'out', text: 'hostel-attendance-app/  portfolio-universe/' },
+      { cls: 'out hi', text: 'hostel app: face + GPS + wi-fi verified attendance' },
+      { cmd: true, text: 'cat contact.txt' },
+      { cls: 'out', text: 'aroraarvin8@gmail.com · github.com/arvin-arora' },
       { cmd: true, text: 'echo $STATUS' },
-      { cls: 'out', text: 'building the foundation' },
+      { cls: 'out hi', text: 'building the foundation 🚀 open to connect' },
     ];
 
     const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -1016,6 +1014,12 @@
   const pageNext = document.querySelector('.page-next');
   const LEVELS = { 'about.html': '01', 'journey.html': '02', 'projects.html': '03', 'hostel-app.html': '03★', 'contact.html': '04' };
   const pageFile = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  // remember every page this browser has visited — encounters never pitch a page you've already seen
+  const visitedPages = (() => { try { return JSON.parse(localStorage.getItem('aa_visited') || '[]'); } catch (e) { return []; } })();
+  if (visitedPages.indexOf(pageFile) === -1) {
+    visitedPages.push(pageFile);
+    try { localStorage.setItem('aa_visited', JSON.stringify(visitedPages)); } catch (e) {}
+  }
   const lvl = LEVELS[pageFile];
   if (pageNext && lvl) {
     let cleared = false;
@@ -1075,7 +1079,14 @@
     { id: 'term', q: 'Blink and you’ll miss it: the home screen has a terminal typing real facts about Arvin. Seen it run?', a: 'Watch it type →', href: 'index.html', skipOn: 'index.html' },
   ];
   const encShown = (() => { try { return JSON.parse(sessionStorage.getItem('aa_enc') || '[]'); } catch (e) { return []; } })();
-  const encEligible = ENCOUNTERS.filter((x) => encShown.indexOf(x.id) === -1 && [].concat(x.skipOn || []).indexOf(pageFile) === -1);
+  const encEligible = ENCOUNTERS.filter((x) => {
+    if (encShown.indexOf(x.id) !== -1) return false;
+    if ([].concat(x.skipOn || []).indexOf(pageFile) !== -1) return false;
+    if (x.href && visitedPages.indexOf(x.href) !== -1) return false; // already been there — don't pitch it
+    if (x.id === 'music' && questState.music) return false;
+    if (x.id === 'log' && QUESTS.every((q) => questState[q.id])) return false;
+    return true;
+  });
   if (encEligible.length) {
     const showEncounter = (enc) => {
       try { sessionStorage.setItem('aa_enc', JSON.stringify(encShown.concat(enc.id))); } catch (e) {}
@@ -1148,68 +1159,166 @@
     window.addEventListener('scroll', onScrollEnc, { passive: true });
   }
 
-  /* ---------- hostel app: interactive check-in demo ---------- */
-  const demoBtn = document.getElementById('demoBtn');
-  const demoStage = document.getElementById('demoStage');
-  if (demoBtn && demoStage) {
-    const GATES = [
-      ['Device binding', 'registered device verified'],
-      ['GPS geofence', 'inside the hostel zone'],
-      ['Wi-Fi subnet', 'hostel network confirmed'],
-      ['Mock-location scan', 'no GPS spoofing detected'],
+  /* ---------- hostel app: faithful simulator of the real app's screens ---------- */
+  const rnAction = document.getElementById('rnAction');
+  if (rnAction) {
+    const $id = (x) => document.getElementById(x);
+    const rnBadge = $id('rnBadge'), rnCard = $id('rnCard'), rnSims = $id('rnSims'), rnSimLabel = $id('rnSimLabel');
+    const rnCamera = $id('rnCamera'), rnCamStatus = $id('rnCamStatus'), rnVerify = $id('rnVerify');
+    const rnVTitle = $id('rnVTitle'), rnVSub = $id('rnVSub'), rnVSteps = $id('rnVSteps'), rnVFoot = $id('rnVFoot'), rnVDone = $id('rnVDone');
+    $id('rnDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+    const SCHED = 'Open: 10:30 PM • Deadline: 11:00 PM • Grace: 11:10 PM';
+    // every string below is verbatim from the real app's source
+    const RN = {
+      notstarted: { badge: ['⏳', 'NOT STARTED', 'ns'], card: ['ns', 'ATTENDANCE NOT STARTED', 'Opens tonight at 10:30 PM', 'Opens in {t}'], btn: ['🔒', 'ATTENDANCE NOT OPEN', 'Opens tonight at 10:30 PM', false, ''], seed: 899 },
+      open: { badge: ['🟢', 'ATTENDANCE OPEN', 'open'], card: ['open', 'ATTENDANCE OPEN', 'Please mark your attendance before 11:00 PM', 'Normal time ends in {t}'], btn: ['📸', 'MARK ATTENDANCE', 'Face + Location + Wi-Fi Verification', true, ''], seed: 1499, marked: '10:37 PM' },
+      grace: { badge: ['⚠️', 'GRACE PERIOD', 'grace'], card: ['grace', 'GRACE PERIOD ACTIVE', '⚠️ Normal attendance closed. Final grace countdown!', 'Final closing in {t}'], btn: ['⚠️', 'MARK ATTENDANCE (GRACE)', 'Face + Location + Wi-Fi Verification', true, 'rn-btn-grace'], seed: 599, marked: '11:05 PM' },
+      closed: { badge: ['❌', 'ABSENT', 'closed'], card: ['closed', 'MARKED ABSENT', 'Attendance closed permanently at 11:10 PM', 'Attendance closed for tonight'], btn: ['🔒', 'ATTENDANCE CLOSED', 'Closed at 11:10 PM', false, ''], seed: null },
+    };
+    const SIM_BTNS = [
+      ['10:15 PM', 'Not Started', 'notstarted', '10:15 PM (Not Started)'],
+      ['10:35 PM', 'Open (Normal)', 'open', '10:35 PM (Normal Open)'],
+      ['11:05 PM', '⚠️ Grace (10m)', 'grace', '11:05 PM (Grace)'],
+      ['11:15 PM', 'Closed / Absent', 'closed', '11:15 PM (Closed)'],
     ];
-    let demoRunning = false;
-    const runGate = (i) => {
-      if (i < GATES.length) {
-        const row = document.createElement('div');
-        row.className = 'app-row';
-        const label = document.createElement('span');
-        label.textContent = GATES[i][0];
-        const state = document.createElement('em');
-        state.className = 'ar-wait';
-        state.textContent = 'checking…';
-        row.appendChild(label);
-        row.appendChild(state);
-        demoStage.appendChild(row);
-        demoStage.scrollTop = demoStage.scrollHeight;
-        setTimeout(() => {
-          state.className = 'ar-ok';
-          state.textContent = `✓ ${GATES[i][1]}`;
-          sfx.play('click');
-          setTimeout(() => runGate(i + 1), 240);
-        }, 560);
+    let rnState = 'open';
+    let rnMarkedAt = null;
+    let rnFlow = false;
+    let rnTick = null;
+    let rnRemain = 0;
+
+    const rnCount = () => {
+      const c = RN[rnState];
+      const line = rnMarkedAt
+        ? 'Attendance recorded successfully for tonight'
+        : c.card[3].replace('{t}', `${Math.floor(rnRemain / 60)}m ${String(rnRemain % 60).padStart(2, '0')}s`);
+      const el = rnCard.querySelector('.rn-count');
+      if (el) el.textContent = line;
+    };
+
+    let rnStartFlow = null; // assigned below
+    const rnRender = () => {
+      clearInterval(rnTick);
+      const c = RN[rnState];
+      rnBadge.className = `rn-badge b-${rnMarkedAt ? 'present' : c.badge[2]}`;
+      rnBadge.textContent = rnMarkedAt ? '✅ PRESENT' : `${c.badge[0]} ${c.badge[1]}`;
+      rnCard.className = `rn-card b-${rnMarkedAt ? 'present' : c.card[0]}`;
+      rnCard.innerHTML = `<h6>${rnMarkedAt ? 'ATTENDANCE MARKED' : c.card[1]}</h6><p>${rnMarkedAt ? `Verified at ${rnMarkedAt}` : c.card[2]}</p><div class="rn-count"></div><small>${SCHED}</small>`;
+      if (rnMarkedAt) {
+        rnAction.innerHTML = `<div class="rn-success"><b>🎉</b><h6>Attendance Recorded</h6><p>Marked at ${rnMarkedAt} • Server Verified</p><div class="rn-vchips"><i>✓ Face Biometric Valid</i><i>✓ Geofence Verified</i><i>✓ Wi-Fi Validated</i></div></div>`;
       } else {
-        const face = document.createElement('div');
-        face.className = 'face-scan';
-        face.innerHTML = '<div class="fs-wrap"><div class="fs-ring"></div><div class="fs-avatar">🙂</div></div><p>Scanning face · liveness check…</p>';
-        demoStage.appendChild(face);
-        demoStage.scrollTop = demoStage.scrollHeight;
-        sfx.play('pop');
-        setTimeout(() => {
-          face.querySelector('p').textContent = 'Liveness verified ✓ — it’s really you';
-          const doneEl = document.createElement('div');
-          doneEl.className = 'app-done';
-          doneEl.innerHTML = '<b>✓</b><p>Attendance marked</p><small>synced to the admin dashboard</small>';
-          demoStage.appendChild(doneEl);
-          demoStage.scrollTop = demoStage.scrollHeight;
-          sfx.play('unlock');
-          if (!reduceMotion) {
-            const r = demoStage.getBoundingClientRect();
-            sparkBurst(r.left + r.width / 2, r.top + r.height / 2, 12);
-          }
-          unlock('demo');
-          demoBtn.textContent = '↻ Run it again';
-          demoRunning = false;
-        }, 1700);
+        rnAction.innerHTML = `<button type="button" class="rn-mark ${c.btn[4]}" ${c.btn[3] ? '' : 'disabled'}><b>${c.btn[0]} ${c.btn[1]}</b><small>${c.btn[2]}</small></button>`;
+        if (c.btn[3]) rnAction.querySelector('.rn-mark').addEventListener('click', () => rnStartFlow && rnStartFlow());
+      }
+      rnRemain = c.seed || 0;
+      rnCount();
+      if (!rnMarkedAt && c.seed) {
+        rnTick = setInterval(() => {
+          if (rnRemain > 0) { rnRemain--; rnCount(); }
+        }, 1000);
       }
     };
-    demoBtn.addEventListener('click', () => {
-      if (demoRunning) return;
-      demoRunning = true;
-      demoBtn.textContent = 'Verifying…';
-      demoStage.innerHTML = '';
-      runGate(0);
+
+    const CHALLENGES = [
+      'Great — now blink naturally',
+      'Great — now blink twice',
+      'Great — now turn your head left, then back to center',
+      'Great — now turn your head right, then back to center',
+    ];
+    const V_STEPS = [
+      ['Identity & Session', 'Checking session window and student enrollment'],
+      ['Facial Verification', 'Comparing live selfie against your enrolled photo'],
+      ['Hostel Geofence', 'Verifying device is within the hostel property boundary'],
+      ['Hostel Wi-Fi Challenge', 'Validating authorized network gateway connection'],
+      ['Server Confirmation', 'Issuing tamper-proof attendance record'],
+    ];
+
+    const rnRunVerify = () => {
+      rnVerify.hidden = false;
+      rnVTitle.textContent = '⚡ Live Attendance Verification';
+      rnVSub.textContent = 'Performing server-authoritative multi-factor checks.';
+      rnVFoot.hidden = false;
+      rnVDone.hidden = true;
+      rnVSteps.innerHTML = '';
+      const rows = V_STEPS.map(([label, desc], i) => {
+        const row = document.createElement('div');
+        row.className = 'rn-step';
+        row.innerHTML = `<span class="rn-snum">${i + 1}</span><div><b>${label}</b><small>${desc}</small></div><em>QUEUED</em>`;
+        rnVSteps.appendChild(row);
+        return row;
+      });
+      const step = (i) => {
+        if (i >= rows.length) {
+          rnVTitle.textContent = '✅ Attendance Verified';
+          rnVSub.textContent = 'Your attendance has been recorded on the server.';
+          rnVFoot.hidden = true;
+          rnVDone.hidden = false;
+          sfx.play('unlock');
+          return;
+        }
+        rows[i].classList.add('checking');
+        rows[i].querySelector('em').textContent = 'CHECKING';
+        setTimeout(() => {
+          rows[i].classList.remove('checking');
+          rows[i].classList.add('passed');
+          rows[i].querySelector('.rn-snum').textContent = '✓';
+          rows[i].querySelector('em').textContent = 'PASSED';
+          sfx.play('click');
+          setTimeout(() => step(i + 1), 170);
+        }, 700);
+      };
+      step(0);
+    };
+
+    rnStartFlow = () => {
+      if (rnFlow) return;
+      rnFlow = true;
+      rnCamera.hidden = false;
+      rnCamStatus.textContent = 'Position your face in the frame';
+      sfx.play('pop');
+      const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
+      const twoBlink = challenge === CHALLENGES[1];
+      setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 1200);
+      if (twoBlink) setTimeout(() => { rnCamStatus.textContent = 'Blink once more'; }, 2300);
+      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); }, twoBlink ? 3300 : 2600);
+      setTimeout(() => { rnCamera.hidden = true; rnRunVerify(); }, twoBlink ? 3900 : 3200);
+    };
+
+    rnVDone.addEventListener('click', () => {
+      rnVerify.hidden = true;
+      rnMarkedAt = RN[rnState].marked || '10:37 PM';
+      rnFlow = false;
+      rnRender();
+      unlock('demo');
+      if (!reduceMotion) {
+        const r = rnAction.getBoundingClientRect();
+        sparkBurst(r.left + r.width / 2, Math.max(60, r.top + 30), 12);
+      }
     });
+
+    SIM_BTNS.forEach(([time, label, key, full]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = key === 'open' ? 'rn-sim on' : 'rn-sim';
+      b.innerHTML = `<b>${time}</b><small>${label}</small>`;
+      b.addEventListener('click', () => {
+        rnState = key;
+        rnSimLabel.textContent = full;
+        rnSims.querySelectorAll('.rn-sim').forEach((x) => x.classList.remove('on'));
+        b.classList.add('on');
+        rnRender();
+      });
+      rnSims.appendChild(b);
+    });
+    $id('rnReset').addEventListener('click', () => {
+      rnMarkedAt = null;
+      rnFlow = false;
+      rnVerify.hidden = true;
+      rnCamera.hidden = true;
+      rnRender();
+    });
+    rnRender();
   }
 
   /* ---------- nav highlight for section in view ---------- */
