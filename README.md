@@ -1,26 +1,25 @@
-# Arvin Arora — Portfolio Universe
+# Arvin Arora — Portfolio
 
-My personal developer portfolio, built as a small game-like universe: hand-written HTML, CSS, and JavaScript — **no frameworks, no libraries, no build step**.
+My personal site: a single-page, editorial portfolio hand-written in HTML, CSS and JavaScript — **no frameworks, no libraries, no build step**.
 
-**Live site:** https://arvin-arora.github.io
+**Live:** https://arvin-arora.github.io
 
-## The experience
+## Design
 
-- 🚀 **Rocket entry sequence** — a fake "access terminal" login launches you through a star-warp into the site (once per session)
-- 🌀 **Portal page transitions** — every internal navigation opens a swirling portal that swallows the screen from your click point; the next page steps out of a shrinking portal
-- 🏆 **Explorer quest log** — 9 hidden discoveries tracked across pages (localStorage), with unlock toasts, a draggable progress HUD, and locked `???` entries to hunt down
-- 🧪 **Interactive app case study** — the Hostel Attendance App has its own experience page with a simulated check-in demo (device → GPS → Wi-Fi → anti-spoof → face liveness) and the full API flow
-- 🎵 **Generative music, a different track per level** — synthesized live with the Web Audio API: each page has its own chords, scale, tempo and tone, with a lo-fi rhythm section (kick, snare, hats, bassline) under the pads
-- ✨ **Interactive effects** — particle constellation canvas, custom cursor, magnetic buttons, click star-bursts, 3D card tilt, glitch text, typewriter headline, animated coding terminal, parallax ghost numerals, drifting aurora backdrop
+Dark editorial layout inspired by top athlete-brand sites: near-black base, a single fluorescent accent, giant uppercase typography, full-bleed black-and-white photography, and an all-text-link interaction model (no buttons).
+
+- Cinematic entry — the hero photo slow-zooms while the name slides up out of masked lines and a hand-drawn signature stroke draws itself
+- Logo morph — the header reads "Arvin Arora." at the top of the page and folds into "AA." as you scroll
+- Career-style roadmap — giant year numerals, hairline dividers, honest milestones (done / live / next)
+- Scroll-fill name wall, live-updating Codeforces stats with count-up, ticker marquee, staggered scroll reveals
+
+## The app case study
+
+The Hostel Attendance App has its own page with a **working in-browser recreation** of the real check-in flow: liveness challenge, live selfie camera (never recorded or uploaded), the 5-step verification modal, a time-scenario simulator from the app's real dev build, and a pipeline diagram that lights up stage by stage as the demo runs.
 
 ## Engineering notes
 
-- **Multi-page static site** (Home / About / Journey / Projects / Contact) sharing one stylesheet and one script; every feature is guarded so any page can omit any element
-- **Live Codeforces stats** fetched from the public API on every visit — solved count and max streak update themselves
-- **Performance-aware**: hero loops pause offscreen via IntersectionObserver, canvas and heavy effects are desktop-only, scroll work is rAF-throttled, phones get a lite mode
-- **Accessible & respectful**: full `prefers-reduced-motion` support (portals, rocket, and sparkles all disable), keyboard-visible focus, semantic landmarks
-- **SEO**: per-page titles/descriptions/canonicals, Open Graph/Twitter cards, JSON-LD person schema, sitemap
-
-## Honesty policy
-
-Everything on the site is real: real solved-problem counts (live from the API), real projects only, and "Coming Soon" where things don't exist yet.
+- Live Codeforces stats fetched from the public API on every visit
+- Performance-aware: rAF-throttled scroll work, IntersectionObserver reveals, GPU-only animations
+- Full `prefers-reduced-motion` support, semantic landmarks, keyboard-visible focus
+- Honest content policy: real numbers (live from the API), real projects only, "Next" where things don't exist yet
