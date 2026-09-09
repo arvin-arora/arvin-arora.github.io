@@ -227,6 +227,17 @@
     navSections.forEach((s) => navIO.observe(s));
   }
 
+  /* scene hand-offs: major visual worlds open as the viewport enters them */
+  const scenes = Array.from(document.querySelectorAll('main > section, main > figure, main > .marquee'));
+  if (scenes.length && 'IntersectionObserver' in window) {
+    const sceneIO = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle('scene-active', entry.isIntersecting));
+    }, { rootMargin: '-12% 0px -12% 0px', threshold: 0.01 });
+    scenes.forEach((scene) => sceneIO.observe(scene));
+  } else {
+    scenes.forEach((scene) => scene.classList.add('scene-active'));
+  }
+
   /* ---------- scroll reveals ---------- */
   const reveals = document.querySelectorAll('.reveal');
   if (reveals.length && 'IntersectionObserver' in window && !reduceMotion) {
