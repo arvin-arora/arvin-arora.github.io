@@ -243,7 +243,7 @@
   /* ---------- scroll-triggered reveal ---------- */
   const revealGroups = new Map();
   document.querySelectorAll('.reveal').forEach((el) => {
-    const parent = el.closest('.about-grid, .journey-grid, .projects-grid, .contact-content, .quote, .section-heading') || el.parentElement;
+    const parent = el.closest('.about-grid, .journey-grid, .projects-grid, .contact-grid, .quote, .section-heading') || el.parentElement;
     if (!revealGroups.has(parent)) revealGroups.set(parent, []);
     revealGroups.get(parent).push(el);
   });
@@ -342,6 +342,35 @@
       });
     }
   });
+
+  /* ---------- copy email from the connect card ---------- */
+  const copyRow = document.getElementById('copyEmail');
+  const copyLabel = document.getElementById('copyLabel');
+  if (copyRow && copyLabel) {
+    const doCopy = () => {
+      const email = 'aroraarvin8@gmail.com';
+      const done = () => {
+        copyLabel.textContent = 'copied ✓';
+        setTimeout(() => {
+          copyLabel.textContent = 'copy';
+        }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(done).catch(() => {
+          window.location.href = `mailto:${email}`;
+        });
+      } else {
+        window.location.href = `mailto:${email}`;
+      }
+    };
+    copyRow.addEventListener('click', doCopy);
+    copyRow.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        doCopy();
+      }
+    });
+  }
 
   /* ---------- click ripple on buttons ---------- */
   if (!reduceMotion) {

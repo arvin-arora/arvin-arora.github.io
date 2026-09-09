@@ -272,7 +272,17 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 
 /* contact */
 .contact{padding-top:100px;padding-bottom:100px;border-top:1px solid var(--line)}
-.contact-content{margin-top:28px}
+.contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:8%;align-items:center;margin-top:28px}
+.contact-content{margin-top:0}
+.connect-card{display:flex;flex-direction:column;gap:11px;padding:22px;background:var(--surface);border:1px solid #a78bfa2e;border-radius:10px;box-shadow:0 24px 60px #000a;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease}
+.connect-card:hover{transform:translateY(-4px);border-color:#a78bfa55;box-shadow:0 30px 70px #000c,0 0 40px #a78bfa1f}
+.cc-top{display:flex;gap:9px;align-items:center;font:500 9.5px 'DM Mono',monospace;letter-spacing:.12em;color:var(--accent);margin-bottom:5px}
+.cc-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid #ffffff0f;border-radius:8px;background:#ffffff05;cursor:pointer;transition:border-color .3s ease,background-color .3s ease,transform .3s ease}
+.cc-row:hover{border-color:#a78bfa55;background:#a78bfa12;transform:translateX(5px)}
+.cc-row small{display:block;margin-bottom:3px;font:500 8.5px 'DM Mono',monospace;letter-spacing:.1em;color:var(--muted)}
+.cc-row b{font:600 12.5px 'DM Mono',monospace;color:var(--text);word-break:break-all}
+.cc-action{flex:none;font:600 10px 'DM Mono',monospace;color:var(--accent);transition:transform .3s ease}
+.cc-row:hover .cc-action{transform:translate(2px,-2px)}
 .contact-content>p{max-width:430px;color:var(--muted);line-height:1.75;font-size:15px}
 .contact .button{margin-top:12px}
 .social-links{display:flex;gap:22px;margin-top:22px;font:600 12px 'DM Mono',monospace}
@@ -307,6 +317,7 @@ footer>a:last-child:hover{transform:translateY(-3px);color:var(--accent)}
   .section{padding:80px 8%}
   .about-grid,.journey-grid{grid-template-columns:1fr;gap:40px}
   .projects-grid{grid-template-columns:1fr;gap:22px;margin-top:40px}
+  .contact-grid{grid-template-columns:1fr;gap:44px}
   .section-heading{display:block}
   .section-heading>p{margin-top:18px}
   .journey-grid{margin-top:40px}
