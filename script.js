@@ -19,13 +19,28 @@
     .filter(Boolean);
 
   /* ---------- lerped motion engine: values chase the scroll with easing ---------- */
-  const cube = document.getElementById('cube3d');
   const heroSec = document.querySelector('.hero');
   const heroInner = document.querySelector('.hero-inner');
-  const markSec = document.querySelector('.mark');
+  const topoLayer = document.getElementById('topoLayer');
+  const dome = document.getElementById('heroDome');
+  const ocSec = document.querySelector('.offclock');
+  const ocImg = document.getElementById('ocImg');
+  const ocWord = document.getElementById('ocWord');
+  const ocGhost = document.getElementById('ocGhost');
+  const ocCountEl = document.getElementById('ocCount');
+  const ocCard = document.getElementById('ocCard');
+  const ocTicks = Array.from(document.querySelectorAll('#ocTicks i'));
+  const OC_STEPS = [
+    { img: 'assets/arvin-4.jpg', word: 'Driving' },
+    { img: 'assets/arvin-5.jpg', word: 'Gym' },
+    { img: 'assets/arvin-6.jpg', word: 'Code' },
+    { img: 'assets/arvin-7.jpg', word: 'Punjabi Beats' },
+  ];
+  OC_STEPS.forEach((s) => { const im = new Image(); im.src = s.img; });
+  let ocIdx = 0;
   const lerp = (a, b, t) => a + (b - a) * t;
-  const st = { heroP: 0, spin: 24, fill: 0, line: 0, bg: [10, 10, 10] };
-  const tg = { heroP: 0, spin: 24, fill: 0, line: 0, bg: [10, 10, 10] };
+  const st = { heroP: 0, oc: 0, fill: 0, line: 0, topo: 1, bg: [244, 244, 239] };
+  const tg = { heroP: 0, oc: 0, fill: 0, line: 0, topo: 1, bg: [244, 244, 239] };
 
   // color worlds: the page background cross-fades between each section's declared color
   const hexRgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -42,11 +57,10 @@
       const span = r.height - window.innerHeight;
       tg.heroP = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
     }
-    if (markSec) {
-      const r = markSec.getBoundingClientRect();
+    if (ocSec) {
+      const r = ocSec.getBoundingClientRect();
       const span = r.height - window.innerHeight;
-      const p = span > 0 ? Math.max(-0.2, Math.min(1.2, -r.top / span)) : 0;
-      tg.spin = 24 + p * 540; // a full-and-a-half turntable turn while pinned
+      tg.oc = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
     }
     if (scrollName) {
       const r = scrollName.getBoundingClientRect();
@@ -60,22 +74,58 @@
       const mid = window.innerHeight * 0.55;
       for (const z of zones) {
         const r = z.el.getBoundingClientRect();
-        if (r.top <= mid && r.bottom >= mid) { tg.bg = z.rgb; break; }
+        if (r.top <= mid && r.bottom >= mid) {
+          tg.bg = z.rgb;
+          // topo contour lines live only on the paper-white worlds
+          tg.topo = (z.rgb[0] + z.rgb[1] + z.rgb[2]) > 700 ? 1 : 0;
+          break;
+        }
       }
+    }
+    if (header) {
+      const lum = 0.299 * tg.bg[0] + 0.587 * tg.bg[1] + 0.114 * tg.bg[2];
+      header.classList.toggle('on-light', lum > 140);
+    }
+    if (reduceMotion) {
+      document.body.style.backgroundColor = `rgb(${tg.bg.join(',')})`;
+      if (topoLayer) topoLayer.style.opacity = tg.topo;
     }
   };
 
   const applyMotion = () => {
     st.heroP = lerp(st.heroP, tg.heroP, 0.09);
-    st.spin = lerp(st.spin, tg.spin, 0.09);
+    st.oc = lerp(st.oc, tg.oc, 0.09);
     st.fill = lerp(st.fill, tg.fill, 0.12);
     st.line = lerp(st.line, tg.line, 0.12);
+    st.topo = lerp(st.topo, tg.topo, 0.1);
+    if (topoLayer) topoLayer.style.opacity = st.topo.toFixed(3);
     if (heroInner) {
       heroInner.style.transform = `translateY(${(-st.heroP * 60).toFixed(1)}px) scale(${(1 - st.heroP * 0.16).toFixed(3)})`;
       heroInner.style.opacity = Math.max(0, 1 - st.heroP * 1.1).toFixed(3);
     }
-    if (heroPhoto) heroPhoto.style.transform = `translate3d(0, ${(st.heroP * 130).toFixed(1)}px, 0) scale(${(1 + st.heroP * 0.1).toFixed(3)})`;
-    if (cube) cube.style.setProperty('--spin', `${st.spin.toFixed(2)}deg`);
+    if (heroPhoto) heroPhoto.style.transform = `translate3d(0, ${(st.heroP * 110).toFixed(1)}px, 0) scale(${(1 + st.heroP * 0.06).toFixed(3)})`;
+    if (dome) dome.style.transform = `rotate(${(st.heroP * -9).toFixed(2)}deg) translateY(${(st.heroP * 74).toFixed(1)}px)`;
+    if (ocImg) {
+      const t = Math.min(3.999, Math.max(0, st.oc * 4));
+      const idx = Math.min(3, Math.floor(t));
+      if (idx !== ocIdx) {
+        ocIdx = idx;
+        const s = OC_STEPS[idx];
+        ocImg.src = s.img;
+        ocWord.textContent = s.word;
+        ocGhost.textContent = `0${idx + 1}`;
+        ocCountEl.textContent = `0${idx + 1} / 04`;
+        ocTicks.forEach((el, i) => el.classList.toggle('on', i <= idx));
+        ocCard.classList.remove('swap');
+        ocWord.classList.remove('swap');
+        void ocCard.offsetWidth; // restart the swap animation
+        ocCard.classList.add('swap');
+        ocWord.classList.add('swap');
+      }
+      const f = t - idx - 0.5;
+      ocCard.style.transform = `rotate(${(f * 5).toFixed(2)}deg)`;
+      ocGhost.style.transform = `translate(calc(-50% + ${(f * -46).toFixed(1)}px), -50%)`;
+    }
     if (scrollName) scrollName.style.setProperty('--fill', `${st.fill.toFixed(2)}%`);
     if (rmProgress) rmProgress.style.height = `${st.line.toFixed(2)}%`;
     if (zones.length) {
