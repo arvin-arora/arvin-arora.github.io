@@ -180,8 +180,21 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .section>*{position:relative;z-index:1}
 .section[data-ghost]::before{content:attr(data-ghost);position:absolute;top:44px;right:5%;font:800 clamp(110px,17vw,220px)/1 Manrope,sans-serif;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1.5px #a78bfa24;pointer-events:none;z-index:0}
 .about{border-bottom:1px solid var(--line)}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:11%;margin-top:30px}
+.about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:8%;margin-top:30px;align-items:center}
 .about h2,.section-heading h2,.contact h2{margin:0;font-size:clamp(38px,4.6vw,62px);line-height:1.06}
+.about-left h2{margin-bottom:28px}
+.about-photos{position:relative;height:470px}
+.photo{position:absolute;margin:0;border-radius:12px;overflow:hidden;border:1px solid #a78bfa33;box-shadow:0 24px 60px #000c;transition:transform .6s cubic-bezier(.22,1,.36,1),box-shadow .5s ease,filter .5s ease}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92) contrast(1.03)}
+.p1{width:62%;height:84%;right:4%;top:8%;z-index:3;transform:rotate(2deg)}
+.p1 img{object-position:50% 18%}
+.p2{width:46%;height:58%;left:0;top:0;z-index:2;transform:rotate(-7deg);filter:brightness(.8)}
+.p2 img{object-position:50% 28%}
+.p3{width:48%;height:54%;left:3%;bottom:0;z-index:1;transform:rotate(6deg);filter:brightness(.72)}
+.p3 img{object-position:42% 32%}
+.about-photos:hover .p1{transform:rotate(0) scale(1.04);box-shadow:0 30px 72px #000d,0 0 44px #a78bfa30}
+.about-photos:hover .p2{transform:rotate(-10deg) translate(-12px,-8px);filter:brightness(.95)}
+.about-photos:hover .p3{transform:rotate(10deg) translate(-8px,10px);filter:brightness(.85)}
 .about-copy{max-width:490px;color:var(--muted);font-size:15px;line-height:1.8}
 .about-copy p{margin-bottom:20px;transition:color .35s ease,transform .35s ease}
 .about-copy p:hover{color:#d9d1f4;transform:translateX(6px)}
@@ -298,6 +311,7 @@ footer>a:last-child:hover{transform:translateY(-3px);color:var(--accent)}
   .terminal-body{font-size:10.5px}
   .section{padding:80px 8%}
   .about-grid,.journey-grid{grid-template-columns:1fr;gap:40px}
+  .about-photos{height:360px;max-width:420px}
   .projects-grid{grid-template-columns:1fr;gap:22px;margin-top:40px}
   .section-heading{display:block}
   .section-heading>p{margin-top:18px}
