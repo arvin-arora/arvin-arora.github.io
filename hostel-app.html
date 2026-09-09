@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body class="app-zone">
   <canvas id="bgCanvas" aria-hidden="true"></canvas>
@@ -48,11 +48,11 @@
               <div id="rnAction"></div>
               <div class="rn-rules"><h5>SECURITY &amp; ROLL-CALL RULES</h5><p><b>Facial Verification:</b> Your attendance selfie is compared against your enrolled signup photo to confirm it’s you.</p><p><b>Hostel Geofence:</b> You must be inside the hostel property boundary.</p><p><b>Deadline:</b> Normal closes at 11:00 PM. Grace period ends strictly at 11:10 PM.</p></div>
               <div class="rn-devbar"><small>🛠️ Dev Time Simulation Mode: <b id="rnSimLabel">10:35 PM (Normal Open)</b></small><div class="rn-sims" id="rnSims"></div><button class="rn-reset" id="rnReset" type="button">Reset My Attendance Record</button></div>
-              <div class="rn-camera" id="rnCamera" hidden><div class="rn-oval" aria-hidden="true"></div><div class="rn-facemoji" aria-hidden="true">🙂</div><p id="rnCamStatus">Position your face in the frame</p></div>
+              <div class="rn-camera" id="rnCamera" hidden><video id="rnCamFeed" autoplay playsinline muted hidden></video><div class="rn-oval" aria-hidden="true"></div><div class="rn-facemoji" id="rnFacemoji" aria-hidden="true">🙂</div><p id="rnCamStatus">Position your face in the frame</p></div>
               <div class="rn-verify" id="rnVerify" hidden><div class="rn-vcard"><h6 id="rnVTitle">⚡ Live Attendance Verification</h6><p id="rnVSub">Performing server-authoritative multi-factor checks.</p><div id="rnVSteps"></div><p class="rn-vfoot" id="rnVFoot">Validating with authorized servers...</p><button id="rnVDone" class="rn-done" type="button" hidden>Done</button></div></div>
             </div>
           </div>
-          <p class="phone-caption">A faithful, working recreation of the real app — its actual colors, screens and on-screen text, straight from the codebase. The real app is Android-only; even the 🛠️ time-simulation bar is a real feature of its dev build. Try the scenario buttons, then hit MARK ATTENDANCE.</p>
+          <p class="phone-caption">A faithful, working recreation of the real app — its actual colors, screens and on-screen text, straight from the codebase. Allow camera access during the face step and you’ll see your own live selfie feed, exactly like the real app — it never leaves your browser, nothing is recorded or uploaded. The 🛠️ time-simulation bar is a real feature of its dev build too.</p>
         </div>
         <div class="showcase-copy reveal">
           <h3>What it is</h3>
@@ -78,6 +78,6 @@
   </main>
   <footer><a class="brand" href="index.html">AA<span>.</span></a><p>© 2026 Arvin Arora. Built while learning. <span class="whisper-inline">· running the check-in counts as a discovery…</span></p><a href="#">Back to top ↑</a></footer>
   <div class="portal-overlay" id="portalOverlay" aria-hidden="true"><div class="iris"></div><div class="ring"></div></div>
-  <script src="script.js?v=19"></script>
+  <script src="script.js?v=20"></script>
 </body>
 </html>

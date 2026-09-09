@@ -1,6 +1,10 @@
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
+  // the visitor's chosen pilot name (asked on the entry screen) personalizes the whole run
+  let pilotStored = '';
+  try { pilotStored = (localStorage.getItem('aa_pilot') || '').trim(); } catch (e) {}
+  const pilot = pilotStored ? pilotStored.slice(0, 24) : 'Explorer';
   // Slower typing cadence on touch devices = fewer layouts per second = smoother.
   const pace = finePointer ? 1 : 1.8;
 
@@ -83,7 +87,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(88,166,255,.5)';
+        ctx.fillStyle = 'rgba(111,183,255,.5)';
         ctx.fill();
       }
       for (let i = 0; i < particles.length; i++) {
@@ -95,7 +99,7 @@
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(88,166,255,${0.14 * (1 - d / LINK_DIST)})`;
+            ctx.strokeStyle = `rgba(111,183,255,${0.14 * (1 - d / LINK_DIST)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -758,10 +762,26 @@
         document.body.classList.remove('entry-hold');
         setTimeout(() => entry.remove(), 700);
       };
+      const nameInput = document.getElementById('pilotName');
+      if (nameInput && pilotStored) nameInput.value = pilotStored;
+      const savePilot = () => {
+        const v = nameInput ? nameInput.value.trim().slice(0, 24) : '';
+        if (v) { try { localStorage.setItem('aa_pilot', v); } catch (e) {} }
+        return v || pilot;
+      };
       const skipBtn = document.getElementById('entrySkip');
-      if (skipBtn) skipBtn.addEventListener('click', done);
+      if (skipBtn) skipBtn.addEventListener('click', () => {
+        const who = savePilot();
+        done();
+        setTimeout(() => toast(`🚀 Welcome aboard, ${who}.`), 700);
+      });
       const launchBtn = document.getElementById('entryBtn');
+      if (nameInput && launchBtn) nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') launchBtn.click();
+      });
       if (launchBtn) launchBtn.addEventListener('click', () => {
+        const who = savePilot();
+        setTimeout(() => toast(`🚀 Welcome aboard, ${who}. 9 discoveries await.`), 2600);
         sfx.play('rocket');
         entry.classList.add('launching');
         // launchpad smoke billowing out during ignition
@@ -856,7 +876,8 @@
     { id: 'deep', icon: '🌌', name: 'Deep Diver', hint: 'scroll to the very bottom' },
     { id: 'demo', icon: '🧪', name: 'App Autopsy', hint: 'run the Hostel App check-in demo' },
   ];
-  const loadQuests = () => { try { return JSON.parse(localStorage.getItem('aa_quests') || '{}'); } catch (e) { return {}; } };
+  // per-visit progress: the log starts at 0/9 for every fresh visit (survives page hops, resets next visit)
+  const loadQuests = () => { try { return JSON.parse(sessionStorage.getItem('aa_quests') || '{}'); } catch (e) { return {}; } };
   const questState = loadQuests();
 
   const hud = document.createElement('div');
@@ -961,7 +982,7 @@
     const q = QUESTS.find((x) => x.id === id);
     if (!q) return;
     questState[id] = 1;
-    try { localStorage.setItem('aa_quests', JSON.stringify(questState)); } catch (e) {}
+    try { sessionStorage.setItem('aa_quests', JSON.stringify(questState)); } catch (e) {}
     renderQuests();
     const done = QUESTS.filter((x) => questState[x.id]).length;
     toast(`🏆 ${q.icon} ${q.name} discovered · ${done}/${QUESTS.length}`);
@@ -969,7 +990,7 @@
     if (!reduceMotion) sparkBurst(window.innerWidth / 2, 130, 14);
     if (done === QUESTS.length) {
       setTimeout(() => {
-        toast('🌟 100% EXPLORED — you’ve seen the whole universe. Respect!');
+        toast(`🌟 100% EXPLORED — ${pilot}, you’ve seen the whole universe. Respect!`);
         sfx.play('complete');
         if (!reduceMotion) {
           sparkBurst(window.innerWidth * 0.3, window.innerHeight * 0.4, 16);
@@ -1044,7 +1065,7 @@
           pnLink.removeAttribute('aria-disabled');
         }
         try { sessionStorage.setItem('lvl' + lvl, '1'); } catch (e) {}
-        toast(`✅ LEVEL ${lvl} CLEARED — a portal has been revealed`);
+        toast(`✅ LEVEL ${lvl} CLEARED — nice run, ${pilot}. A portal has been revealed`);
         sfx.play('unlock');
         if (!reduceMotion) {
           const r = pageNext.getBoundingClientRect();
@@ -1107,14 +1128,14 @@
   /* ---------- random encounters: RPG-style popups while scrolling ---------- */
   // every encounter is about the page the visitor is currently on — no cross-page pitches
   const ENCOUNTERS = [
-    { id: 'home-terminal', page: 'index.html', q: 'That terminal in the hero is typing Arvin’s real details — did you catch it before it loops?', a: 'Show me →', target: '.terminal' },
-    { id: 'home-portals', page: 'index.html', q: 'Four portals are waiting on this page — each level hides something the others don’t.', a: 'Take me to them →', target: '.explore-grid' },
+    { id: 'home-terminal', page: 'index.html', q: '{p}, that terminal in the hero is typing Arvin’s real details — did you catch it before it loops?', a: 'Show me →', target: '.terminal' },
+    { id: 'home-portals', page: 'index.html', q: 'Four portals are waiting on this page — each hides something the others don’t. Skip one, and you’ll never know what you missed…', a: 'Take me to them →', target: '.explore-grid' },
     { id: 'about-facts', page: 'about.html', q: 'A quick-facts panel is hiding right under the [ LEVEL 01 ] label. Want a peek?', a: 'Reveal it →', target: '.section-label-row', reveal: true },
     { id: 'journey-roadmap', page: 'journey.html', q: 'Further down this page sits the full roadmap of the run — cleared levels and locked ones. Seen it?', a: 'Jump to the roadmap →', target: '.roadmap' },
     { id: 'journey-snapshot', page: 'journey.html', q: 'A CP snapshot hides under the [ LEVEL 02 ] label — live solve count included.', a: 'Reveal it →', target: '.section-label-row', reveal: true },
-    { id: 'projects-hood', page: 'projects.html', q: 'Every project card here hides an “under the hood” panel. Want one opened for you?', a: 'Open one →', target: '.project-card', reveal: true },
+    { id: 'projects-hood', page: 'projects.html', q: 'Most visitors never find these: every project card hides an “under the hood” panel. Want one opened — or will you hunt them yourself?', a: 'Open one →', target: '.project-card', reveal: true },
     { id: 'app-sim', page: 'hostel-app.html', q: 'That 🛠️ bar at the bottom of the phone is a real dev tool from the app — you can flip time itself.', a: 'Show me →', target: '.rn-devbar' },
-    { id: 'contact-copy', page: 'contact.html', q: 'Tap the email row on the connect card and it copies instantly — one tap, no typing.', a: 'Show me →', target: '.connect-card' },
+    { id: 'contact-copy', page: 'contact.html', q: '{p}, tap the email row on the connect card and it copies instantly — one tap, no typing.', a: 'Show me →', target: '.connect-card' },
     { id: 'log', page: '*', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
     { id: 'music', page: '*', q: 'This universe has a soundtrack — synthesized live in your browser, zero audio files. Want it on?', a: 'Play the soundtrack', action: 'music' },
   ];
@@ -1130,8 +1151,7 @@
   // prefer a hint specific to this page; the generic ones are a fallback
   const encPageSpecific = encEligible.filter((x) => x.page !== '*');
   const encPool = encPageSpecific.length ? encPageSpecific : encEligible;
-  if (encPool.length) {
-    const showEncounter = (enc) => {
+  const showEncounter = (enc) => {
       try { sessionStorage.setItem('aa_enc', JSON.stringify(encShown.concat(enc.id))); } catch (e) {}
       const ov = document.createElement('div');
       ov.className = 'encounter';
@@ -1142,7 +1162,7 @@
       card.className = 'enc-card';
       card.innerHTML = '<p class="enc-eyebrow">⚡ RANDOM ENCOUNTER</p>';
       const h = document.createElement('h3');
-      h.textContent = enc.q;
+      h.textContent = enc.q.replace('{p}', pilot);
       card.appendChild(h);
       const actions = document.createElement('div');
       actions.className = 'enc-actions';
@@ -1181,7 +1201,7 @@
       const skip = document.createElement('button');
       skip.type = 'button';
       skip.className = 'enc-skip';
-      skip.textContent = 'skip — keep exploring';
+      skip.textContent = 'skip — i can handle missing out 😏';
       skip.addEventListener('click', dismiss);
       actions.appendChild(primary);
       actions.appendChild(skip);
@@ -1192,6 +1212,7 @@
       sfx.play('pop');
       primary.focus();
     };
+  if (encPool.length) {
     // trigger: after real scrolling plus a little time on the level — feels random, never instant
     const encThreshold = 700 + Math.random() * 900;
     const encStart = Date.now();
@@ -1208,6 +1229,24 @@
     window.addEventListener('scroll', onScrollEnc, { passive: true });
   }
 
+  /* ---------- final level: has the pilot really cleared 9/9? ---------- */
+  if (pageFile === 'contact.html') {
+    let finalAsked = false;
+    try { finalAsked = sessionStorage.getItem('aa_final') === '1'; } catch (e) {}
+    if (!finalAsked) {
+      setTimeout(() => {
+        try { sessionStorage.setItem('aa_final', '1'); } catch (e) {}
+        const doneCount = QUESTS.filter((q) => questState[q.id]).length;
+        const total = QUESTS.length;
+        if (doneCount >= total) {
+          showEncounter({ id: 'final', q: `${pilot}, ${total}/${total} — a fully cleared universe. Legends only. One thing left: actually say hello.`, a: 'Take a bow 🏆', action: 'log' });
+        } else {
+          showEncounter({ id: 'final', q: `Hold on, ${pilot} — this is the FINAL LEVEL and your log says ${doneCount}/${total}. ${total - doneCount} discoveries are still hiding out there. Leaving already?`, a: 'Open my log', action: 'log' });
+        }
+      }, 7000);
+    }
+  }
+
   /* ---------- hostel app: faithful simulator of the real app's screens ---------- */
   const rnAction = document.getElementById('rnAction');
   if (rnAction) {
@@ -1216,6 +1255,13 @@
     const rnCamera = $id('rnCamera'), rnCamStatus = $id('rnCamStatus'), rnVerify = $id('rnVerify');
     const rnVTitle = $id('rnVTitle'), rnVSub = $id('rnVSub'), rnVSteps = $id('rnVSteps'), rnVFoot = $id('rnVFoot'), rnVDone = $id('rnVDone');
     $id('rnDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    // the visitor plays the student in the demo — log them in by their pilot name
+    if (pilotStored) {
+      const nameEl = document.querySelector('.rn-profile b');
+      const avEl = document.querySelector('.rn-avatar');
+      if (nameEl) nameEl.textContent = pilot;
+      if (avEl) avEl.textContent = pilot.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+    }
 
     const SCHED = 'Open: 10:30 PM • Deadline: 11:00 PM • Grace: 11:10 PM';
     // every string below is verbatim from the real app's source
@@ -1320,18 +1366,44 @@
       step(0);
     };
 
+    // real selfie feed for the face step — stays in the browser, never recorded or uploaded
+    const rnFeed = $id('rnCamFeed');
+    const rnFacemoji = $id('rnFacemoji');
+    let rnStream = null;
+    const rnStopCam = () => {
+      if (rnStream) {
+        rnStream.getTracks().forEach((t) => t.stop());
+        rnStream = null;
+      }
+      if (rnFeed) {
+        rnFeed.srcObject = null;
+        rnFeed.hidden = true;
+      }
+      if (rnFacemoji) rnFacemoji.hidden = false;
+    };
     rnStartFlow = () => {
       if (rnFlow) return;
       rnFlow = true;
       rnCamera.hidden = false;
       rnCamStatus.textContent = 'Position your face in the frame';
       sfx.play('pop');
+      if (rnFeed && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+          .then((stream) => {
+            if (rnCamera.hidden) { stream.getTracks().forEach((t) => t.stop()); return; } // flow already over
+            rnStream = stream;
+            rnFeed.srcObject = stream;
+            rnFeed.hidden = false;
+            if (rnFacemoji) rnFacemoji.hidden = true;
+          })
+          .catch(() => {}); // denied or no camera — the stand-in avatar stays
+      }
       const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
       const twoBlink = challenge === CHALLENGES[1];
-      setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 1200);
-      if (twoBlink) setTimeout(() => { rnCamStatus.textContent = 'Blink once more'; }, 2300);
-      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); }, twoBlink ? 3300 : 2600);
-      setTimeout(() => { rnCamera.hidden = true; rnRunVerify(); }, twoBlink ? 3900 : 3200);
+      setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 1600);
+      if (twoBlink) setTimeout(() => { rnCamStatus.textContent = 'Blink once more'; }, 2700);
+      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); }, twoBlink ? 3700 : 3000);
+      setTimeout(() => { rnStopCam(); rnCamera.hidden = true; rnRunVerify(); }, twoBlink ? 4300 : 3600);
     };
 
     rnVDone.addEventListener('click', () => {
@@ -1365,6 +1437,7 @@
       rnFlow = false;
       rnVerify.hidden = true;
       rnCamera.hidden = true;
+      rnStopCam();
       rnRender();
     });
     rnRender();
