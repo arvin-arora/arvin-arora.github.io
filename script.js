@@ -316,8 +316,12 @@
   /* ---------- header shadow + scroll progress ---------- */
   const header = document.getElementById('siteHeader');
   const progressBar = document.getElementById('progressBar');
+  const ghostSections = finePointer && !reduceMotion ? Array.from(document.querySelectorAll('.section[data-ghost]')) : [];
   const onScroll = () => {
     if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
+    ghostSections.forEach((s) => {
+      s.style.setProperty('--gy', `${s.getBoundingClientRect().top * 0.12}px`);
+    });
     if (progressBar) {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
@@ -351,7 +355,7 @@
 
   /* ---------- 3D tilt on the Codeforces card ---------- */
   if (finePointer && !reduceMotion) {
-    document.querySelectorAll('.journey-feature').forEach((card) => {
+    document.querySelectorAll('.journey-feature, .portal-card').forEach((card) => {
       card.addEventListener('pointermove', (e) => {
         const r = card.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5;
@@ -511,24 +515,27 @@
       else stopMusic();
     };
 
+    let userToggled = false; // an explicit user choice beats any auto-start logic
     musicBtn.addEventListener('click', () => {
+      userToggled = true;
       setPlaying(!musicBtn.classList.contains('is-playing'));
     });
 
     // Autostart: try immediately; if the browser blocks audio before a user
-    // gesture, start on the first interaction anywhere on the page instead.
+    // gesture, start on the first interaction anywhere on the page instead —
+    // but never against an explicit on/off choice the user already made.
     const armGestureStart = () => {
       const onFirstGesture = (e) => {
-        if (musicBtn.contains(e.target)) return; // let the button's own handler decide
         ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.removeEventListener(ev, onFirstGesture));
-        if (!musicBtn.classList.contains('is-playing')) setPlaying(true);
+        if (musicBtn.contains(e.target)) return; // let the button's own handler decide
+        if (!userToggled && !musicBtn.classList.contains('is-playing')) setPlaying(true);
       };
       ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.addEventListener(ev, onFirstGesture));
     };
 
     setPlaying(true);
     setTimeout(() => {
-      if (actx && actx.state !== 'running') {
+      if (!userToggled && actx && actx.state !== 'running') {
         setPlaying(false); // silently blocked — reset so scheduled notes don't pile up
         armGestureStart();
       }
@@ -555,10 +562,22 @@
 
       cfSolvedCount = cfDisplay(solved.size);
       if (cfStat) cfStat.textContent = `${cfDisplay(solved.size)} problems solved on Codeforces ↗`;
-      if (heroCfCount) heroCfCount.textContent = cfDisplay(solved.size);
-      document.querySelectorAll('.cf-count').forEach((el) => {
-        el.textContent = cfDisplay(solved.size);
-      });
+      // count-up animation for the number displays
+      const target = Math.max(solved.size + CF_PRIVATE_OFFSET, CF_SOLVED_FLOOR);
+      const animateCount = (el) => {
+        if (reduceMotion) { el.textContent = `${target}+`; return; }
+        const t0 = performance.now();
+        const dur = 1300;
+        const stepFrame = (now) => {
+          const p = Math.min((now - t0) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = `${Math.round(target * eased)}+`;
+          if (p < 1) requestAnimationFrame(stepFrame);
+        };
+        requestAnimationFrame(stepFrame);
+      };
+      if (heroCfCount) animateCount(heroCfCount);
+      document.querySelectorAll('.cf-count').forEach(animateCount);
 
       // Longest run of consecutive days with at least one accepted submission.
       const days = [...solveDays].sort((a, b) => a - b);
@@ -576,6 +595,360 @@
     .catch(() => {
       // The known floor is already displayed; nothing to roll back.
     });
+
+  /* ---------- sound effects (synthesized, no audio files) ---------- */
+  const sfx = (() => {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return { play: () => {} };
+    let ctx = null;
+    const ensure = () => {
+      try {
+        if (!ctx) ctx = new AC();
+        if (ctx.state === 'suspended') ctx.resume();
+      } catch (e) {}
+    };
+    // audio can only start after a user gesture — arm it on the first one
+    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.addEventListener(ev, ensure, { passive: true }));
+    const tone = (freq, dur, o = {}) => {
+      const t = ctx.currentTime + (o.delay || 0);
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = o.type || 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      if (o.slideTo) osc.frequency.exponentialRampToValueAtTime(o.slideTo, t + dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(o.gain || 0.1, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      osc.connect(g).connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + dur + 0.05);
+    };
+    const whoosh = (dur, o = {}) => {
+      const t = ctx.currentTime + (o.delay || 0);
+      const len = Math.ceil(ctx.sampleRate * dur);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const f = ctx.createBiquadFilter();
+      f.type = 'bandpass';
+      f.Q.value = 0.8;
+      f.frequency.setValueAtTime(o.from || 300, t);
+      f.frequency.exponentialRampToValueAtTime(o.to || 1600, t + dur);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(o.gain || 0.15, t + 0.06);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(f).connect(g).connect(ctx.destination);
+      src.start(t);
+      src.stop(t + dur + 0.05);
+    };
+    const play = (name) => {
+      ensure();
+      if (!ctx || ctx.state !== 'running') return; // pre-gesture: stay silent
+      try {
+        switch (name) {
+          case 'click':
+            tone(660, 0.07, { type: 'triangle', gain: 0.06 });
+            tone(990, 0.05, { gain: 0.035, delay: 0.03 });
+            break;
+          case 'hover':
+            tone(540, 0.045, { gain: 0.02 });
+            break;
+          case 'portal':
+            whoosh(0.75, { gain: 0.16, from: 260, to: 2600 });
+            tone(220, 0.75, { gain: 0.08, slideTo: 880 });
+            break;
+          case 'rocket':
+            whoosh(2.2, { gain: 0.26, from: 70, to: 1400 });
+            tone(55, 2, { type: 'sawtooth', gain: 0.1, slideTo: 220 });
+            whoosh(1.2, { gain: 0.12, from: 900, to: 3200, delay: 1.1 });
+            break;
+          case 'unlock':
+            [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, 0.28, { gain: 0.07, delay: i * 0.09 }));
+            break;
+          case 'complete':
+            [523.25, 659.25, 783.99, 1046.5, 1318.5, 1568].forEach((f, i) => tone(f, 0.4, { gain: 0.08, delay: i * 0.11 }));
+            whoosh(1, { gain: 0.1, from: 500, to: 3000 });
+            break;
+        }
+      } catch (e) {}
+    };
+    return { play };
+  })();
+  // click blips on anything interactive; soft hover ticks on desktop
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('a, button, [role="button"]')) sfx.play('click');
+  });
+  if (finePointer) {
+    document.querySelectorAll('a, button, .project-card, .portal-card, .focus-item, .stat-chip, .cc-row').forEach((el) => {
+      el.addEventListener('pointerenter', () => sfx.play('hover'));
+    });
+  }
+
+  /* ---------- entry screen: rocket launch into the universe ---------- */
+  const entry = document.getElementById('entryScreen');
+  if (entry) {
+    let seen = false;
+    try { seen = sessionStorage.getItem('entrySeen') === '1'; } catch (e) {}
+    if (seen || reduceMotion) {
+      entry.remove();
+    } else {
+      document.body.classList.add('entry-hold');
+      const starBox = document.getElementById('entryStars');
+      if (starBox) {
+        for (let i = 0; i < 60; i++) {
+          const s = document.createElement('i');
+          s.style.left = `${Math.random() * 100}%`;
+          s.style.top = `${Math.random() * 100}%`;
+          s.style.setProperty('--spd', `${0.6 + Math.random()}s`);
+          s.style.setProperty('--dl', `${Math.random()}`);
+          starBox.appendChild(s);
+        }
+      }
+      const done = () => {
+        try { sessionStorage.setItem('entrySeen', '1'); } catch (e) {}
+        entry.classList.add('is-done');
+        document.body.classList.remove('entry-hold');
+        setTimeout(() => entry.remove(), 700);
+      };
+      const skipBtn = document.getElementById('entrySkip');
+      if (skipBtn) skipBtn.addEventListener('click', done);
+      const launchBtn = document.getElementById('entryBtn');
+      if (launchBtn) launchBtn.addEventListener('click', () => {
+        sfx.play('rocket');
+        entry.classList.add('launching');
+        setTimeout(done, 2100);
+      });
+    }
+  }
+
+  /* ---------- portal page transitions ---------- */
+  const portalEl = document.getElementById('portalOverlay');
+  if (portalEl && !reduceMotion) {
+    // arrival: step out of a shrinking portal
+    portalEl.classList.add('is-enter');
+    setTimeout(() => portalEl.classList.remove('is-enter'), 850);
+    // never leave the portal stuck over the page (back/forward cache restores)
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) portalEl.classList.remove('is-open', 'is-enter');
+    });
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      // only internal page hops — anchors, mailto:, https:// etc. keep default behavior
+      if (!href || href.startsWith('#') || link.target === '_blank' || /^[a-z]+:/i.test(href)) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      if (e.clientX || e.clientY) {
+        portalEl.style.setProperty('--px', `${e.clientX}px`);
+        portalEl.style.setProperty('--py', `${e.clientY}px`);
+      } else {
+        portalEl.style.removeProperty('--px'); // keyboard activation: open from center
+        portalEl.style.removeProperty('--py');
+      }
+      sfx.play('portal');
+      portalEl.classList.remove('is-enter');
+      portalEl.classList.add('is-open');
+      setTimeout(() => { window.location.href = href; }, 780);
+    });
+  }
+
+  /* ---------- magnetic buttons ---------- */
+  if (finePointer && !reduceMotion) {
+    document.querySelectorAll('.button, .music-toggle').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.22}px, ${(e.clientY - r.top - r.height / 2) * 0.22}px)`;
+      });
+      el.addEventListener('pointerleave', () => {
+        el.style.transform = '';
+      });
+    });
+  }
+
+  /* ---------- star bursts ---------- */
+  const sparkBurst = (x, y, count) => {
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('span');
+      s.className = i % 2 ? 'spark alt' : 'spark';
+      const a = (Math.PI * 2 * i) / count + Math.random() * 0.6;
+      const d = 26 + Math.random() * 34;
+      s.style.left = `${x}px`;
+      s.style.top = `${y}px`;
+      s.style.setProperty('--sx', `${Math.cos(a) * d}px`);
+      s.style.setProperty('--sy', `${Math.sin(a) * d}px`);
+      document.body.appendChild(s);
+      s.addEventListener('animationend', () => s.remove());
+    }
+  };
+  if (finePointer && !reduceMotion) {
+    window.addEventListener('pointerdown', (e) => sparkBurst(e.clientX, e.clientY, 7));
+  }
+
+  /* ---------- explorer quests: gamified exploration ---------- */
+  const QUESTS = [
+    { id: 'liftoff', icon: '🚀', name: 'Liftoff', hint: 'enter the universe' },
+    { id: 'about', icon: '🪐', name: 'Identity Found', hint: 'visit the About portal' },
+    { id: 'journey', icon: '🛰️', name: 'Path Walker', hint: 'visit the Journey portal' },
+    { id: 'projects', icon: '🛠️', name: 'Builder’s Vault', hint: 'visit the Projects portal' },
+    { id: 'contact', icon: '📡', name: 'Signal Sent', hint: 'visit the Contact portal' },
+    { id: 'music', icon: '🎵', name: 'Sound of Space', hint: 'toggle the ambient music' },
+    { id: 'secret', icon: '🔍', name: 'Secret Panel', hint: 'uncover a hidden details panel' },
+    { id: 'deep', icon: '🌌', name: 'Deep Diver', hint: 'scroll to the very bottom' },
+  ];
+  const loadQuests = () => { try { return JSON.parse(localStorage.getItem('aa_quests') || '{}'); } catch (e) { return {}; } };
+  const questState = loadQuests();
+
+  const hud = document.createElement('div');
+  hud.className = 'quest-hud';
+  hud.innerHTML =
+    '<button class="quest-pill" type="button" aria-label="Explorer progress — open quest log">' +
+    '<span class="q-orb"></span><b class="q-count">0/8</b><span class="q-bar"><i></i></span></button>' +
+    '<div class="quest-panel"><h4>EXPLORER LOG</h4><p class="q-sub">Discover everything this universe hides…</p><ul></ul></div>';
+  document.body.appendChild(hud);
+  hud.querySelector('.quest-pill').addEventListener('click', () => hud.classList.toggle('open'));
+
+  const renderQuests = () => {
+    const done = QUESTS.filter((q) => questState[q.id]).length;
+    hud.querySelector('.q-count').textContent = `${done}/${QUESTS.length}`;
+    hud.querySelector('.q-bar i').style.width = `${(done / QUESTS.length) * 100}%`;
+    const ul = hud.querySelector('.quest-panel ul');
+    ul.innerHTML = '';
+    QUESTS.forEach((q) => {
+      const li = document.createElement('li');
+      if (questState[q.id]) {
+        li.innerHTML = `<span>${q.icon}</span><b>${q.name}</b>`;
+      } else {
+        li.className = 'locked';
+        li.innerHTML = `<span>❓</span><b>???</b><em>· ${q.hint}</em>`;
+      }
+      ul.appendChild(li);
+    });
+  };
+  renderQuests();
+
+  // toasts queue up instead of clobbering each other (quest + level-clear can land close together)
+  let toastEl = null, toastBusy = false;
+  const toastQueue = [];
+  const showNextToast = () => {
+    if (!toastQueue.length) { toastBusy = false; return; }
+    toastBusy = true;
+    toastEl.textContent = toastQueue.shift();
+    toastEl.classList.add('show');
+    setTimeout(() => {
+      toastEl.classList.remove('show');
+      setTimeout(showNextToast, 450); // let the hide transition finish
+    }, 2600);
+  };
+  const toast = (msg) => {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'quest-toast';
+      document.body.appendChild(toastEl);
+    }
+    toastQueue.push(msg);
+    if (!toastBusy) showNextToast();
+  };
+
+  const unlock = (id) => {
+    if (questState[id]) return;
+    const q = QUESTS.find((x) => x.id === id);
+    if (!q) return;
+    questState[id] = 1;
+    try { localStorage.setItem('aa_quests', JSON.stringify(questState)); } catch (e) {}
+    renderQuests();
+    const done = QUESTS.filter((x) => questState[x.id]).length;
+    toast(`🏆 ${q.icon} ${q.name} discovered · ${done}/${QUESTS.length}`);
+    sfx.play('unlock');
+    if (!reduceMotion) sparkBurst(window.innerWidth / 2, 130, 14);
+    if (done === QUESTS.length) {
+      setTimeout(() => {
+        toast('🌟 100% EXPLORED — you’ve seen the whole universe. Respect!');
+        sfx.play('complete');
+        if (!reduceMotion) {
+          sparkBurst(window.innerWidth * 0.3, window.innerHeight * 0.4, 16);
+          sparkBurst(window.innerWidth * 0.7, window.innerHeight * 0.55, 16);
+        }
+      }, 3600);
+    }
+  };
+
+  // page-visit discoveries (small delay so it lands after the portal reveal)
+  setTimeout(() => {
+    const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (path.startsWith('about')) unlock('about');
+    else if (path.startsWith('journey')) unlock('journey');
+    else if (path.startsWith('projects')) unlock('projects');
+    else if (path.startsWith('contact')) unlock('contact');
+  }, 1100);
+
+  // liftoff — launching (or skipping) the entry rocket
+  ['entryBtn', 'entrySkip'].forEach((id) => {
+    const b = document.getElementById(id);
+    if (b) b.addEventListener('click', () => unlock('liftoff'));
+  });
+  // reduced-motion visitors never see the entry screen — grant liftoff on the home page so 8/8 stays reachable
+  if (reduceMotion && document.querySelector('.hero')) unlock('liftoff');
+
+  // music toggle
+  const musicQ = document.getElementById('musicToggle');
+  if (musicQ) musicQ.addEventListener('click', () => unlock('music'));
+
+  // secret details panels
+  document.querySelectorAll('.project-card, .section-label-row, .focus-item').forEach((host) => {
+    if (!host.querySelector('.project-details, .section-details, .focus-details')) return;
+    ['pointerenter', 'click'].forEach((ev) => host.addEventListener(ev, () => unlock('secret')));
+  });
+
+  // deep diver — reach the bottom
+  window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60) unlock('deep');
+  }, { passive: true });
+
+  /* ---------- level-clear: exit portals unlock when you finish the level ---------- */
+  const pageNext = document.querySelector('.page-next');
+  const LEVELS = { 'about.html': '01', 'journey.html': '02', 'projects.html': '03', 'contact.html': '04' };
+  const pageFile = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  const lvl = LEVELS[pageFile];
+  if (pageNext && lvl) {
+    let cleared = false;
+    try { cleared = sessionStorage.getItem('lvl' + lvl) === '1'; } catch (e) {}
+    const pnLink = pageNext.querySelector('a');
+    if (cleared) {
+      pageNext.classList.add('pn-unlocked');
+    } else {
+      pageNext.classList.add('pn-locked');
+      // keep the locked portal out of the tab order too — pointer-events only blocks the mouse
+      if (pnLink) {
+        pnLink.setAttribute('tabindex', '-1');
+        pnLink.setAttribute('aria-disabled', 'true');
+      }
+      const clearLevel = () => {
+        if (pageNext.classList.contains('pn-unlocked')) return;
+        pageNext.classList.remove('pn-locked');
+        pageNext.classList.add('pn-unlocked');
+        if (pnLink) {
+          pnLink.removeAttribute('tabindex');
+          pnLink.removeAttribute('aria-disabled');
+        }
+        try { sessionStorage.setItem('lvl' + lvl, '1'); } catch (e) {}
+        toast(`✅ LEVEL ${lvl} CLEARED — a portal has been revealed`);
+        sfx.play('unlock');
+        if (!reduceMotion) {
+          const r = pageNext.getBoundingClientRect();
+          sparkBurst(r.left + r.width / 2, Math.max(60, Math.min(r.top + 40, window.innerHeight - 60)), 12);
+        }
+      };
+      const checkEnd = () => {
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80) clearLevel();
+      };
+      window.addEventListener('scroll', checkEnd, { passive: true });
+      setTimeout(checkEnd, 1500); // short levels fit one screen — count as explored
+    }
+  }
 
   /* ---------- nav highlight for section in view ---------- */
   const navLinks = document.querySelectorAll('nav a[data-nav]');
