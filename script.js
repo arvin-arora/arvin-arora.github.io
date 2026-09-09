@@ -4,6 +4,15 @@
   /* ---------- header: shrink + brand morph with hysteresis ---------- */
   const header = document.getElementById('siteHeader');
   const scrollName = document.getElementById('scrollName');
+  const heroPhoto = document.querySelector('.hero-photo');
+  const rmRows = document.querySelector('.roadmap-rows');
+  let rmProgress = null;
+  if (rmRows) {
+    rmProgress = document.createElement('span');
+    rmProgress.className = 'rm-progress';
+    rmProgress.setAttribute('aria-hidden', 'true');
+    rmRows.appendChild(rmProgress);
+  }
   const navLinks = Array.from(document.querySelectorAll('nav a[data-nav]'));
   const navSections = navLinks
     .map((a) => document.getElementById(a.dataset.nav))
@@ -15,6 +24,21 @@
       // hysteresis: collapse past 40px, expand under 10px — never flickers
       if (window.scrollY > 40) header.classList.add('is-scrolled');
       else if (window.scrollY < 10) header.classList.remove('is-scrolled');
+    }
+    const cube = document.getElementById('cube3d');
+    if (cube && !reduceMotion) {
+      // the monogram cube turns with the scroll, like a turntable you drive
+      cube.style.setProperty('--spin', `${(window.scrollY * 0.22).toFixed(1)}deg`);
+    }
+    if (heroPhoto && !reduceMotion) {
+      // parallax: the photo drifts slower than the page
+      heroPhoto.style.transform = `translate3d(0, ${(window.scrollY * 0.22).toFixed(1)}px, 0)`;
+    }
+    if (rmRows && rmProgress && !reduceMotion) {
+      // a lime line grows down the roadmap as you travel through it
+      const r = rmRows.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (window.innerHeight * 0.75 - r.top) / r.height));
+      rmProgress.style.height = `${(p * 100).toFixed(1)}%`;
     }
     if (scrollName) {
       // the name inks itself in as it travels up the viewport

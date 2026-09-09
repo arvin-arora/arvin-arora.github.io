@@ -46,7 +46,7 @@ nav a.is-active{color:var(--accent)}
 
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 40px 60px;overflow:hidden}
-.hero-photo{position:absolute;inset:0;z-index:0}
+.hero-photo{position:absolute;inset:-12% 0 0 0;z-index:0;will-change:transform}
 .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 15%;filter:grayscale(1) contrast(1.12) brightness(.62)}
 .hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0a0a0a66 0%,transparent 35%,#0a0a0a 96%)}
 .hero-inner{position:relative;z-index:1}
@@ -100,8 +100,23 @@ main{position:relative;z-index:1}
 .message p em{font-style:italic;color:var(--accent)}
 .message .signoff{display:block;margin-top:34px;font:500 12px 'DM Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
 
+/* ---------- the mark: scroll-spun 3D monogram cube ---------- */
+.mark{text-align:center;padding-top:60px;padding-bottom:60px}
+.cube-stage{perspective:900px;width:240px;height:240px;margin:0 auto}
+.cube{position:relative;width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(-18deg) rotateY(var(--spin,0deg));transition:transform .1s linear;will-change:transform}
+.cf{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 84px 'Space Grotesk',Arial,sans-serif;letter-spacing:-.03em;color:var(--accent);background:#0e0e0e;border:1px solid #2c2c2c;backface-visibility:hidden}
+.cf .cf-count{font-size:56px}
+.f-front{transform:translateZ(120px)}
+.f-back{transform:rotateY(180deg) translateZ(120px)}
+.f-right{transform:rotateY(90deg) translateZ(120px)}
+.f-left{transform:rotateY(-90deg) translateZ(120px)}
+.f-top{transform:rotateX(90deg) translateZ(120px);font-size:56px}
+.f-bottom{transform:rotateX(-90deg) translateZ(120px)}
+.mark-cap{margin:34px 0 0;font:500 10px 'DM Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+
 /* ---------- roadmap: career rows, giant numerals ---------- */
-.roadmap-rows{margin-top:70px;border-top:1px solid var(--line)}
+.roadmap-rows{position:relative;margin-top:70px;border-top:1px solid var(--line)}
+.rm-progress{position:absolute;left:-24px;top:0;width:2px;height:0;background:var(--accent);box-shadow:0 0 12px #c6ff0066}
 .rm-row{display:grid;grid-template-columns:220px 1fr auto;gap:40px;align-items:center;padding:44px 0;border-bottom:1px solid var(--line);transition:background .3s ease,padding-left .3s ease}
 .rm-row:hover{background:#101010;padding-left:18px}
 .rm-year{font-size:clamp(40px,6vw,84px);font-weight:700;line-height:1;letter-spacing:-.03em;color:#2c2c2c;transition:color .35s ease}
@@ -310,5 +325,6 @@ body.app-zone .site-header.is-scrolled{background:#090d16f5;border-bottom-color:
   .reveal{opacity:1!important;transform:none!important;transition:none!important}
   .marquee-track,.scroll-cue,.rn-oval,.rn-step.checking .rn-snum{animation:none!important}
   .hero-photo img,.hline span,.hero-kicker,.hero-sub,.hero-row,.sig path{animation:none!important;transform:none!important;opacity:1!important;stroke-dashoffset:0!important}
+  .cube{transform:rotateX(-18deg) rotateY(24deg)!important;transition:none!important}
   .brand i{transition:none!important}
 }
