@@ -8,7 +8,8 @@ My personal developer portfolio, built as a small game-like universe: hand-writt
 
 - 🚀 **Rocket entry sequence** — a fake "access terminal" login launches you through a star-warp into the site (once per session)
 - 🌀 **Portal page transitions** — every internal navigation opens a swirling portal that swallows the screen from your click point; the next page steps out of a shrinking portal
-- 🏆 **Explorer quest log** — 8 hidden discoveries tracked across pages (localStorage), with unlock toasts, a progress HUD, and locked `???` entries to hunt down
+- 🏆 **Explorer quest log** — 9 hidden discoveries tracked across pages (localStorage), with unlock toasts, a draggable progress HUD, and locked `???` entries to hunt down
+- 🧪 **Interactive app case study** — the Hostel Attendance App has its own experience page with a simulated check-in demo (device → GPS → Wi-Fi → anti-spoof → face liveness) and the full API flow
 - 🎵 **Generative ambient music** — synthesized live with the Web Audio API (chord pads + sparse pentatonic notes through a delay line)
 - ✨ **Interactive effects** — particle constellation canvas, custom cursor, magnetic buttons, click star-bursts, 3D card tilt, glitch text, typewriter headline, animated coding terminal, parallax ghost numerals, drifting aurora backdrop
 

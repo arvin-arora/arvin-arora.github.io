@@ -855,6 +855,7 @@
     { id: 'music', icon: '🎵', name: 'Sound of Space', hint: 'toggle the ambient music' },
     { id: 'secret', icon: '🔍', name: 'Secret Panel', hint: 'uncover a hidden details panel' },
     { id: 'deep', icon: '🌌', name: 'Deep Diver', hint: 'scroll to the very bottom' },
+    { id: 'demo', icon: '🧪', name: 'App Autopsy', hint: 'run the Hostel App check-in demo' },
   ];
   const loadQuests = () => { try { return JSON.parse(localStorage.getItem('aa_quests') || '{}'); } catch (e) { return {}; } };
   const questState = loadQuests();
@@ -1013,7 +1014,7 @@
 
   /* ---------- level-clear: exit portals unlock when you finish the level ---------- */
   const pageNext = document.querySelector('.page-next');
-  const LEVELS = { 'about.html': '01', 'journey.html': '02', 'projects.html': '03', 'contact.html': '04' };
+  const LEVELS = { 'about.html': '01', 'journey.html': '02', 'projects.html': '03', 'hostel-app.html': '03★', 'contact.html': '04' };
   const pageFile = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   const lvl = LEVELS[pageFile];
   if (pageNext && lvl) {
@@ -1053,10 +1054,20 @@
     }
   }
 
+  /* ---------- floating home warp — visible on every level ---------- */
+  if (pageFile !== 'index.html') {
+    const homeBtn = document.createElement('a');
+    homeBtn.className = 'home-warp';
+    homeBtn.href = 'index.html';
+    homeBtn.setAttribute('aria-label', 'Warp back to the home screen');
+    homeBtn.innerHTML = '<b>⌂</b>HOME';
+    document.body.appendChild(homeBtn);
+  }
+
   /* ---------- random encounters: RPG-style popups while scrolling ---------- */
   const ENCOUNTERS = [
     { id: 'cf', q: 'A wild stat appeared! Arvin’s solved-problem count updates itself on every visit. Wanna catch it live?', a: 'Catch it →', href: 'journey.html', skipOn: 'journey.html' },
-    { id: 'proj', q: 'Somewhere in this universe there’s an app that refuses to mark you present unless your face AND your GPS agree. Dare to inspect it?', a: 'Inspect the build →', href: 'projects.html', skipOn: 'projects.html' },
+    { id: 'proj', q: 'Somewhere in this universe there’s an app that refuses to mark you present unless your face AND your GPS agree. Dare to run it?', a: 'Run its demo →', href: 'hostel-app.html', skipOn: ['projects.html', 'hostel-app.html'] },
     { id: 'who', q: 'You’ve been walking through someone’s universe this whole time. Care to meet the architect?', a: 'Meet the architect →', href: 'about.html', skipOn: 'about.html' },
     { id: 'hi', q: 'Side quest available: say hello to a real human. Reward: an actual reply from Arvin.', a: 'Accept side quest →', href: 'contact.html', skipOn: 'contact.html' },
     { id: 'log', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
@@ -1064,7 +1075,7 @@
     { id: 'term', q: 'Blink and you’ll miss it: the home screen has a terminal typing real facts about Arvin. Seen it run?', a: 'Watch it type →', href: 'index.html', skipOn: 'index.html' },
   ];
   const encShown = (() => { try { return JSON.parse(sessionStorage.getItem('aa_enc') || '[]'); } catch (e) { return []; } })();
-  const encEligible = ENCOUNTERS.filter((x) => encShown.indexOf(x.id) === -1 && x.skipOn !== pageFile);
+  const encEligible = ENCOUNTERS.filter((x) => encShown.indexOf(x.id) === -1 && [].concat(x.skipOn || []).indexOf(pageFile) === -1);
   if (encEligible.length) {
     const showEncounter = (enc) => {
       try { sessionStorage.setItem('aa_enc', JSON.stringify(encShown.concat(enc.id))); } catch (e) {}
@@ -1135,6 +1146,70 @@
       showEncounter(encEligible[Math.floor(Math.random() * encEligible.length)]);
     };
     window.addEventListener('scroll', onScrollEnc, { passive: true });
+  }
+
+  /* ---------- hostel app: interactive check-in demo ---------- */
+  const demoBtn = document.getElementById('demoBtn');
+  const demoStage = document.getElementById('demoStage');
+  if (demoBtn && demoStage) {
+    const GATES = [
+      ['Device binding', 'registered device verified'],
+      ['GPS geofence', 'inside the hostel zone'],
+      ['Wi-Fi subnet', 'hostel network confirmed'],
+      ['Mock-location scan', 'no GPS spoofing detected'],
+    ];
+    let demoRunning = false;
+    const runGate = (i) => {
+      if (i < GATES.length) {
+        const row = document.createElement('div');
+        row.className = 'app-row';
+        const label = document.createElement('span');
+        label.textContent = GATES[i][0];
+        const state = document.createElement('em');
+        state.className = 'ar-wait';
+        state.textContent = 'checking…';
+        row.appendChild(label);
+        row.appendChild(state);
+        demoStage.appendChild(row);
+        demoStage.scrollTop = demoStage.scrollHeight;
+        setTimeout(() => {
+          state.className = 'ar-ok';
+          state.textContent = `✓ ${GATES[i][1]}`;
+          sfx.play('click');
+          setTimeout(() => runGate(i + 1), 240);
+        }, 560);
+      } else {
+        const face = document.createElement('div');
+        face.className = 'face-scan';
+        face.innerHTML = '<div class="fs-wrap"><div class="fs-ring"></div><div class="fs-avatar">🙂</div></div><p>Scanning face · liveness check…</p>';
+        demoStage.appendChild(face);
+        demoStage.scrollTop = demoStage.scrollHeight;
+        sfx.play('pop');
+        setTimeout(() => {
+          face.querySelector('p').textContent = 'Liveness verified ✓ — it’s really you';
+          const doneEl = document.createElement('div');
+          doneEl.className = 'app-done';
+          doneEl.innerHTML = '<b>✓</b><p>Attendance marked</p><small>synced to the admin dashboard</small>';
+          demoStage.appendChild(doneEl);
+          demoStage.scrollTop = demoStage.scrollHeight;
+          sfx.play('unlock');
+          if (!reduceMotion) {
+            const r = demoStage.getBoundingClientRect();
+            sparkBurst(r.left + r.width / 2, r.top + r.height / 2, 12);
+          }
+          unlock('demo');
+          demoBtn.textContent = '↻ Run it again';
+          demoRunning = false;
+        }, 1700);
+      }
+    };
+    demoBtn.addEventListener('click', () => {
+      if (demoRunning) return;
+      demoRunning = true;
+      demoBtn.textContent = 'Verifying…';
+      demoStage.innerHTML = '';
+      runGate(0);
+    });
   }
 
   /* ---------- nav highlight for section in view ---------- */
