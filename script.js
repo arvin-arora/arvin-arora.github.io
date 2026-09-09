@@ -1105,25 +1105,32 @@
   }
 
   /* ---------- random encounters: RPG-style popups while scrolling ---------- */
+  // every encounter is about the page the visitor is currently on — no cross-page pitches
   const ENCOUNTERS = [
-    { id: 'cf', q: 'A wild stat appeared! Arvin’s solved-problem count updates itself on every visit. Wanna catch it live?', a: 'Catch it →', href: 'journey.html', skipOn: 'journey.html' },
-    { id: 'proj', q: 'Somewhere in this universe there’s an app that refuses to mark you present unless your face AND your GPS agree. Dare to run it?', a: 'Run its demo →', href: 'hostel-app.html', skipOn: ['projects.html', 'hostel-app.html'] },
-    { id: 'who', q: 'You’ve been walking through someone’s universe this whole time. Care to meet the architect?', a: 'Meet the architect →', href: 'about.html', skipOn: 'about.html' },
-    { id: 'hi', q: 'Side quest available: say hello to a real human. Reward: an actual reply from Arvin.', a: 'Accept side quest →', href: 'contact.html', skipOn: 'contact.html' },
-    { id: 'log', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
-    { id: 'music', q: 'This universe has a soundtrack — synthesized live in your browser, zero audio files. Want it on?', a: 'Play the soundtrack', action: 'music' },
-    { id: 'term', q: 'Blink and you’ll miss it: the home screen has a terminal typing real facts about Arvin. Seen it run?', a: 'Watch it type →', href: 'index.html', skipOn: 'index.html' },
+    { id: 'home-terminal', page: 'index.html', q: 'That terminal in the hero is typing Arvin’s real details — did you catch it before it loops?', a: 'Show me →', target: '.terminal' },
+    { id: 'home-portals', page: 'index.html', q: 'Four portals are waiting on this page — each level hides something the others don’t.', a: 'Take me to them →', target: '.explore-grid' },
+    { id: 'about-facts', page: 'about.html', q: 'A quick-facts panel is hiding right under the [ LEVEL 01 ] label. Want a peek?', a: 'Reveal it →', target: '.section-label-row', reveal: true },
+    { id: 'journey-roadmap', page: 'journey.html', q: 'Further down this page sits the full roadmap of the run — cleared levels and locked ones. Seen it?', a: 'Jump to the roadmap →', target: '.roadmap' },
+    { id: 'journey-snapshot', page: 'journey.html', q: 'A CP snapshot hides under the [ LEVEL 02 ] label — live solve count included.', a: 'Reveal it →', target: '.section-label-row', reveal: true },
+    { id: 'projects-hood', page: 'projects.html', q: 'Every project card here hides an “under the hood” panel. Want one opened for you?', a: 'Open one →', target: '.project-card', reveal: true },
+    { id: 'app-sim', page: 'hostel-app.html', q: 'That 🛠️ bar at the bottom of the phone is a real dev tool from the app — you can flip time itself.', a: 'Show me →', target: '.rn-devbar' },
+    { id: 'contact-copy', page: 'contact.html', q: 'Tap the email row on the connect card and it copies instantly — one tap, no typing.', a: 'Show me →', target: '.connect-card' },
+    { id: 'log', page: '*', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
+    { id: 'music', page: '*', q: 'This universe has a soundtrack — synthesized live in your browser, zero audio files. Want it on?', a: 'Play the soundtrack', action: 'music' },
   ];
   const encShown = (() => { try { return JSON.parse(sessionStorage.getItem('aa_enc') || '[]'); } catch (e) { return []; } })();
   const encEligible = ENCOUNTERS.filter((x) => {
     if (encShown.indexOf(x.id) !== -1) return false;
-    if ([].concat(x.skipOn || []).indexOf(pageFile) !== -1) return false;
-    if (x.href && visitedPages.indexOf(x.href) !== -1) return false; // already been there — don't pitch it
+    if (x.page !== '*' && x.page !== pageFile) return false; // only hints about THIS page
+    if (x.target && !document.querySelector(x.target)) return false;
     if (x.id === 'music' && questState.music) return false;
     if (x.id === 'log' && QUESTS.every((q) => questState[q.id])) return false;
     return true;
   });
-  if (encEligible.length) {
+  // prefer a hint specific to this page; the generic ones are a fallback
+  const encPageSpecific = encEligible.filter((x) => x.page !== '*');
+  const encPool = encPageSpecific.length ? encPageSpecific : encEligible;
+  if (encPool.length) {
     const showEncounter = (enc) => {
       try { sessionStorage.setItem('aa_enc', JSON.stringify(encShown.concat(enc.id))); } catch (e) {}
       const ov = document.createElement('div');
@@ -1147,22 +1154,28 @@
         setTimeout(() => ov.remove(), 380);
       };
       const onKey = (e) => { if (e.key === 'Escape') dismiss(); };
-      let primary;
-      if (enc.href) {
-        primary = document.createElement('a');
-        primary.href = enc.href; // the portal transition handler takes over on click
-      } else {
-        primary = document.createElement('button');
-        primary.type = 'button';
-        primary.addEventListener('click', () => {
-          if (enc.action === 'log') hud.classList.add('open');
-          if (enc.action === 'music') {
-            const m = document.getElementById('musicToggle');
-            if (m && !m.classList.contains('is-playing')) m.click();
+      const primary = document.createElement('button');
+      primary.type = 'button';
+      primary.addEventListener('click', () => {
+        if (enc.action === 'log') hud.classList.add('open');
+        if (enc.action === 'music') {
+          const m = document.getElementById('musicToggle');
+          if (m && !m.classList.contains('is-playing')) m.click();
+        }
+        if (enc.target) {
+          const t = document.querySelector(enc.target);
+          if (t) {
+            t.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            t.classList.add('enc-glow');
+            if (enc.reveal) t.classList.add('show-details');
+            setTimeout(() => {
+              t.classList.remove('enc-glow');
+              if (enc.reveal) t.classList.remove('show-details');
+            }, 3800);
           }
-          dismiss();
-        });
-      }
+        }
+        dismiss();
+      });
       primary.className = 'button button-primary';
       primary.textContent = enc.a;
       const skip = document.createElement('button');
@@ -1180,17 +1193,17 @@
       primary.focus();
     };
     // trigger: after real scrolling plus a little time on the level — feels random, never instant
-    const encThreshold = 400 + Math.random() * 800;
+    const encThreshold = 700 + Math.random() * 900;
     const encStart = Date.now();
     let encScrolled = 0;
     let encLastY = window.scrollY;
     const onScrollEnc = () => {
       encScrolled += Math.abs(window.scrollY - encLastY);
       encLastY = window.scrollY;
-      if (encScrolled < encThreshold || Date.now() - encStart < 5000) return;
+      if (encScrolled < encThreshold || Date.now() - encStart < 9000) return;
       if (document.body.classList.contains('entry-hold')) return;
       window.removeEventListener('scroll', onScrollEnc);
-      showEncounter(encEligible[Math.floor(Math.random() * encEligible.length)]);
+      showEncounter(encPool[Math.floor(Math.random() * encPool.length)]);
     };
     window.addEventListener('scroll', onScrollEnc, { passive: true });
   }

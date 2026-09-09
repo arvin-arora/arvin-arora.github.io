@@ -565,6 +565,8 @@ body.entry-hold .hero-in{animation-play-state:paused}
 .enc-actions .button{justify-content:center;border:none;cursor:pointer;font-family:inherit}
 .enc-skip{background:none;border:none;color:var(--muted);font:600 11px 'DM Mono',monospace;cursor:pointer;transition:color .25s ease}
 .enc-skip:hover{color:var(--accent)}
+.enc-glow{outline:2px solid var(--accent);outline-offset:6px;border-radius:8px;animation:encGlow 1.2s ease-in-out 3}
+@keyframes encGlow{0%,100%{outline-color:#58a6ff22}50%{outline-color:var(--accent)}}
 
 /* ---------- roadmap: the run so far ---------- */
 .roadmap{margin-top:100px;max-width:640px}
