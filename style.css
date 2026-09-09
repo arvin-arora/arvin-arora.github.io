@@ -602,14 +602,14 @@ body.entry-hold .hero-in{animation-play-state:paused}
 .oring.two{inset:2px;border-color:#9ecbff22;animation:spinReverse 38s linear infinite}
 .oring .sat{position:absolute;top:-14px;left:calc(50% - 12px);font-size:22px;animation:spinReverse 24s linear infinite;display:inline-block}
 .oring.two .sat{animation:spin 38s linear infinite}
-.planet{position:relative;width:210px;height:210px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 30%,#7fc4f0 0%,#2f7fd0 32%,#123b66 64%,#081f38 100%);box-shadow:0 0 70px #9ecbff2e,0 0 24px #9ecbff22;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.planet{position:relative;width:210px;height:210px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 28%,#6db3e8 0%,#2e7cc4 32%,#0d3b70 64%,#06203f 100%);box-shadow:0 0 26px 7px #7fb8ff33,0 0 70px #9ecbff24;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
 .orbit-wrap:hover .planet{transform:scale(1.06)}
-.planet::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60px 34px at 60px 82px,#2f9e63d9 0 60%,transparent 65%),radial-gradient(ellipse 88px 40px at 172px 132px,#37a86bc9 0 60%,transparent 66%),radial-gradient(ellipse 46px 24px at 122px 42px,#2f9e63c9 0 60%,transparent 66%),radial-gradient(ellipse 70px 28px at 18px 162px,#37a86bb5 0 60%,transparent 66%);background-size:260px 210px;background-repeat:repeat-x;animation:planetSpin 18s linear infinite}
+.planet::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60px 34px at 60px 82px,#3f8f4ad9 0 58%,#a0885873 62%,transparent 66%),radial-gradient(ellipse 88px 40px at 172px 132px,#4f9a55c9 0 56%,#8a6f3d80 61%,transparent 66%),radial-gradient(ellipse 46px 24px at 122px 42px,#3f8f4ac9 0 60%,transparent 66%),radial-gradient(ellipse 70px 28px at 18px 162px,#4f9a55b5 0 58%,#a0885866 63%,transparent 66%);background-size:260px 210px;background-repeat:repeat-x;animation:planetSpin 18s linear infinite}
 .planet::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70px 22px at 90px 55px,#ffffff59 0 60%,transparent 70%),radial-gradient(ellipse 96px 26px at 190px 145px,#ffffff40 0 60%,transparent 70%),radial-gradient(ellipse 54px 18px at 30px 120px,#ffffff4d 0 60%,transparent 70%);background-size:260px 210px;background-repeat:repeat-x;filter:blur(1px);animation:planetSpin 30s linear infinite}
 .orbit-wrap:hover .planet::before{animation-duration:5s}
 .orbit-wrap:hover .planet::after{animation-duration:8s}
 @keyframes planetSpin{to{background-position:260px 0}}
-.planet .shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 26%,#ffffff30 0 10%,transparent 42%),radial-gradient(circle at 74% 80%,#000815b3 24%,transparent 72%);pointer-events:none;z-index:2}
+.planet .shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse 62px 16px at 50% 2%,#ffffffb8,transparent 72%),radial-gradient(ellipse 56px 14px at 50% 99%,#ffffff8c,transparent 72%),radial-gradient(circle at 32% 26%,#ffffff30 0 10%,transparent 42%),radial-gradient(circle at 74% 80%,#000815c4 24%,transparent 74%);pointer-events:none;z-index:2}
 .orbit-cap{margin:0;font:500 10px 'DM Mono',monospace;letter-spacing:.14em;color:var(--muted);animation:whisperGlow 4.5s ease-in-out infinite}
 .roadmap h3{font-size:clamp(26px,3vw,38px);letter-spacing:-.04em;margin:12px 0 0}
 .road{list-style:none;margin:44px 0 0;padding:0;position:relative}
@@ -639,8 +639,12 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;bac
 /* cinematic sky traffic */
 .shooting-star{position:fixed;z-index:89;width:130px;height:2px;pointer-events:none;background:linear-gradient(270deg,#fff,#9ecbff88,transparent);border-radius:2px;transform:rotate(-32deg);animation:shoot 1.3s ease-out forwards;filter:drop-shadow(0 0 6px #fff)}
 @keyframes shoot{from{opacity:0;translate:0 0}12%{opacity:1}to{opacity:0;translate:-44vw 30vw}}
-.sky-rocket{position:fixed;left:-70px;z-index:89;font-size:20px;pointer-events:none;transform:rotate(38deg);animation:cruise 9s linear forwards;filter:drop-shadow(0 0 10px #ff9f4588)}
-.sky-rocket::after{content:"";position:absolute;top:60%;right:90%;width:64px;height:2px;background:linear-gradient(270deg,#ffd9a0cc,transparent);filter:blur(1px);transform:rotate(-38deg);transform-origin:right center}
+.sky-rocket{position:fixed;left:-90px;z-index:89;width:44px;height:14px;pointer-events:none;transform:rotate(-8deg);animation:cruise 9s linear forwards;filter:drop-shadow(0 0 8px #ff9f4555)}
+.sr-body{position:absolute;left:10px;top:3px;width:30px;height:8px;border-radius:2px 90% 90% 2px/2px 50% 50% 2px;background:linear-gradient(180deg,#eef2f7,#9aa7b8 55%,#59636f)}
+.sr-fin{position:absolute;left:8px;top:-1px;width:9px;height:16px;background:linear-gradient(#ccd7e4,#6b7686);clip-path:polygon(100% 22%,100% 78%,0 100%,0 0)}
+.sr-flame{position:absolute;left:-15px;top:4.5px;width:26px;height:5px;border-radius:50%;background:linear-gradient(270deg,#fff,#ffd9a0 30%,#ff9f45 60%,transparent);filter:blur(1px);transform-origin:right center;animation:srFlick .1s steps(2) infinite alternate}
+@keyframes srFlick{from{opacity:.7;transform:scaleX(.8)}to{opacity:1;transform:scaleX(1.15)}}
+.sky-rocket::after{content:"";position:absolute;top:6px;right:100%;width:70px;height:2px;background:linear-gradient(270deg,#ffd9a066,transparent);filter:blur(1.5px)}
 @keyframes cruise{from{translate:0 0}to{translate:118vw -16vh}}
 
 /* ---------- level intro card ---------- */
@@ -680,6 +684,10 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;bac
 .showcase-copy>p{color:var(--muted);font-size:14px;line-height:1.75;max-width:560px}
 .showcase-copy .project-tags{margin:16px 0 6px}
 .showcase-copy .road{max-width:560px}
+.flow-hint{font:700 11px 'DM Mono',monospace;letter-spacing:.06em;color:var(--accent-2);animation:whisperGlow 4.5s ease-in-out infinite}
+#appFlow li{transition:opacity .5s ease}
+#appFlow li:not(.done){opacity:.55}
+#appFlow li.done{opacity:1}
 .phone{position:relative;width:300px;margin:auto;border-radius:36px;background:#020305;border:2px solid #222c3a;box-shadow:0 30px 70px #000c,0 0 40px #9ecbff14;padding:14px 12px}
 .phone::before{content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:104px;height:20px;border-radius:12px;background:#020305;z-index:2;border:1px solid #131a24}
 .phone-screen{position:relative;height:520px;border-radius:24px;overflow:hidden;background:linear-gradient(180deg,#070b12,#030508);display:flex;flex-direction:column;padding:42px 16px 16px}

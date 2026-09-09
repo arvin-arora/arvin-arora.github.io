@@ -563,6 +563,37 @@
       stepIdx++;
     };
 
+    /* solar-wind ambience — the deep drone real space sonifications actually sound like */
+    let windSrc = null;
+    const startWind = () => {
+      if (windSrc) return;
+      const len = actx.sampleRate * 3;
+      const buf = actx.createBuffer(1, len, actx.sampleRate);
+      const d = buf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < len; i++) {
+        const w = Math.random() * 2 - 1;
+        last = (last + 0.02 * w) / 1.02;
+        d[i] = last * 3;
+      }
+      windSrc = actx.createBufferSource();
+      windSrc.buffer = buf;
+      windSrc.loop = true;
+      const f = actx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = 220;
+      const lfo = actx.createOscillator(); // slow sweep, like plasma-wave recordings
+      lfo.frequency.value = 0.06;
+      const lfoGain = actx.createGain();
+      lfoGain.gain.value = 140;
+      lfo.connect(lfoGain).connect(f.frequency);
+      lfo.start();
+      const g = actx.createGain();
+      g.gain.value = 0.06;
+      windSrc.connect(f).connect(g).connect(actx.destination);
+      windSrc.start();
+    };
+
     const startMusic = () => {
       if (!actx) {
         actx = new AudioCtx();
@@ -581,6 +612,7 @@
         delay.connect(master);
       }
       actx.resume();
+      startWind();
       playPad();
       padTimer = setInterval(playPad, MOOD.padEvery);
       arpTimer = setInterval(playArpNote, MOOD.arpEvery);
@@ -1248,7 +1280,7 @@
     const spawnCruiser = () => {
       const r = document.createElement('i');
       r.className = 'sky-rocket';
-      r.textContent = '🚀';
+      r.innerHTML = '<span class="sr-fin"></span><span class="sr-body"></span><span class="sr-flame"></span>';
       r.style.top = `${15 + Math.random() * 55}%`;
       document.body.appendChild(r);
       setTimeout(() => r.remove(), 9500);
@@ -1537,6 +1569,7 @@
           rows[i].classList.add('passed');
           rows[i].querySelector('.rn-snum').textContent = '✓';
           rows[i].querySelector('em').textContent = 'PASSED';
+          if (i >= 1) lightFlow(i + 1); // face/geofence/wifi/server gates on the page diagram
           sfx.play('click');
           setTimeout(() => step(i + 1), 170);
         }, 700);
@@ -1559,12 +1592,23 @@
       }
       if (rnFacemoji) rnFacemoji.hidden = false;
     };
+    // the flow diagram on the page lights up in sync with the demo
+    const flowRoad = document.querySelectorAll('#appFlow > li');
+    const lightFlow = (i) => {
+      const li = flowRoad[i];
+      if (li && !li.classList.contains('done')) {
+        li.classList.add('done');
+        sfx.play('click');
+      }
+    };
+    const resetFlow = () => flowRoad.forEach((li) => li.classList.remove('done'));
     rnStartFlow = () => {
       if (rnFlow) return;
       rnFlow = true;
       rnCamera.hidden = false;
       rnCamStatus.textContent = 'Position your face in the frame';
       sfx.play('pop');
+      lightFlow(0); // liveness challenge issued
       if (rnFeed && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
           .then((stream) => {
@@ -1576,19 +1620,12 @@
           })
           .catch(() => {}); // denied or no camera — the stand-in avatar stays
       }
+      // tight 3-second capture: position → challenge → smile → got it
       const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
-      const twoBlink = challenge === CHALLENGES[1];
-      const base = twoBlink ? 3700 : 3000;
-      setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 1600);
-      if (twoBlink) setTimeout(() => { rnCamStatus.textContent = 'Blink once more'; }, 2700);
-      // the self-check moment: smile, then hold the lens for a slow five-count
-      setTimeout(() => { rnCamStatus.textContent = `Now smile for the camera, ${pilot} 😄`; sfx.play('pop'); }, base);
-      setTimeout(() => { rnCamStatus.textContent = 'Looking good — hold steady and look into the lens…'; }, base + 2400);
-      for (let i = 5; i >= 1; i--) {
-        setTimeout(() => { rnCamStatus.textContent = `Hold… ${i}`; sfx.play('hover'); }, base + 4400 + (5 - i) * 1000);
-      }
-      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); }, base + 9600);
-      setTimeout(() => { rnStopCam(); rnCamera.hidden = true; rnRunVerify(); }, base + 10300);
+      setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 800);
+      setTimeout(() => { rnCamStatus.textContent = `Smile, ${pilot} 😄`; sfx.play('pop'); }, 1700);
+      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); lightFlow(1); }, 2500);
+      setTimeout(() => { rnStopCam(); rnCamera.hidden = true; rnRunVerify(); }, 3000);
     };
 
     rnVDone.addEventListener('click', () => {
@@ -1596,6 +1633,7 @@
       rnMarkedAt = RN[rnState].marked || '10:37 PM';
       rnFlow = false;
       rnRender();
+      lightFlow(6); // nightly automation — the last stage on the page diagram
       unlock('demo');
       if (!reduceMotion) {
         const r = rnAction.getBoundingClientRect();
@@ -1623,6 +1661,7 @@
       rnVerify.hidden = true;
       rnCamera.hidden = true;
       rnStopCam();
+      resetFlow();
       rnRender();
     });
     rnRender();

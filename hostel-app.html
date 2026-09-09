@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=28">
+  <link rel="stylesheet" href="style.css?v=29">
 </head>
 <body class="app-zone">
   <canvas id="bgCanvas" aria-hidden="true"></canvas>
@@ -59,14 +59,15 @@
           <p>A hostel attendance system built end-to-end for the Uniworld hostels at Scaler School of Technology — a React Native app plus its own Node.js backend. The attendance window is real and server-enforced: it opens at 10:30 PM, closes at 11:00 PM, and a strict grace period ends at 11:10 PM IST. Changing your phone’s clock does nothing — the server keeps its own time.</p>
           <div class="project-tags"><span>React Native</span><span>TypeScript</span><span>Node.js + Express</span><span>PostgreSQL</span><span>Prisma</span><span>Face++</span><span>ML Kit</span><span>JWT</span><span>Google Sheets</span><span>Docker</span></div>
           <h3>How a check-in flows through the system</h3>
-          <ol class="road">
-            <li class="done reveal"><span class="node"></span><div><b>Liveness challenge issued</b><p>POST /attendance/liveness-challenge — the server hands the phone a one-time task: blink once, blink twice, or turn your head left or right.</p><em>REQUEST</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Live camera + ML Kit</b><p>An in-app camera opens (no swappable camera apps), and ML Kit tracks eyes and head pose on-device while frames are captured inside the oval guide.</p><em>ON DEVICE</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Face verified on the server</b><p>POST /attendance/verify-face — duplicate frames are rejected by hash, the challenge is re-derived from the actual pixels via Face++, and the selfie is compared against the enrolled signup photo. A signed face-attestation token comes back.</p><em>GATE 1</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Geofence + anti-spoof</b><p>The GPS fix must fall inside the hostel’s mapped property boundary (with a 100 m allowance). Fake-GPS “mock location” apps are detected natively and rejected.</p><em>GATE 2</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Hostel Wi-Fi challenge</b><p>The Wi-Fi SSID must be an authorized hostel network, the device IP must sit in the router’s subnet, and the app runs a real reachability probe to the hostel gateway — a copied network name isn’t enough.</p><em>GATE 3</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Server-authoritative mark</b><p>POST /attendance/mark — the server re-checks the time window on its own clock, validates the attestation token, geofence and network again, blocks duplicates, and only then records PRESENT.</p><em>WRITE</em></div></li>
-            <li class="done reveal"><span class="node"></span><div><b>Nightly automation at 11:10 PM</b><p>The absentee list is computed, a Google Sheet is created for the night, the monthly register is updated, and a PDF report is generated — all waiting on the warden dashboard.</p><em>ADMIN</em></div></li>
+          <p class="flow-hint">▶ Run a check-in on the phone — each stage below lights up as it happens.</p>
+          <ol class="road" id="appFlow">
+            <li class="reveal"><span class="node"></span><div><b>Liveness challenge issued</b><p>POST /attendance/liveness-challenge — the server hands the phone a one-time task: blink once, blink twice, or turn your head left or right.</p><em>REQUEST</em></div></li>
+            <li class="reveal"><span class="node"></span><div><b>Live camera + ML Kit</b><p>An in-app camera opens (no swappable camera apps), and ML Kit tracks eyes and head pose on-device while frames are captured inside the oval guide.</p><em>ON DEVICE</em></div></li>
+            <li class="reveal"><span class="node"></span><div><b>Face verified on the server</b><p>POST /attendance/verify-face — duplicate frames are rejected by hash, the challenge is re-derived from the actual pixels via Face++, and the selfie is compared against the enrolled signup photo. A signed face-attestation token comes back.</p><em>GATE 1</em></div></li>
+            <li class="reveal"><span class="node"></span><div><b>Geofence + anti-spoof</b><p>The GPS fix must fall inside the hostel’s mapped property boundary (with a 100 m allowance). Fake-GPS “mock location” apps are detected natively and rejected.</p><em>GATE 2</em></div></li>
+            <li class="reveal"><span class="node"></span><div><b>Hostel Wi-Fi challenge</b><p>The Wi-Fi SSID must be an authorized hostel network, the device IP must sit in the router’s subnet, and the app runs a real reachability probe to the hostel gateway — a copied network name isn’t enough.</p><em>GATE 3</em></div></li>
+            <li class="reveal"><span class="node"></span><div><b>Server-authoritative mark</b><p>POST /attendance/mark — the server re-checks the time window on its own clock, validates the attestation token, geofence and network again, blocks duplicates, and only then records PRESENT.</p><em>WRITE</em></div></li>
+            <li class="reveal"><span class="node"></span><div><b>Nightly automation at 11:10 PM</b><p>The absentee list is computed, a Google Sheet is created for the night, the monthly register is updated, and a PDF report is generated — all waiting on the warden dashboard.</p><em>ADMIN</em></div></li>
           </ol>
           <h3>The warden side</h3>
           <p>A separate web dashboard for hostel staff (no public signup — accounts are provisioned per warden): per-night present/absent counts, a Download PDF button for the absent list, View Sheet for the night’s Google Sheet, and a Monthly Register — one row per student, one column per day.</p>
@@ -78,6 +79,6 @@
   </main>
   <footer><a class="brand" href="index.html">AA<span>.</span></a><p>© 2026 Arvin Arora. Built while learning. <span class="whisper-inline">· running the check-in counts as a discovery…</span></p><a href="#">Back to top ↑</a></footer>
   <div class="portal-overlay" id="portalOverlay" aria-hidden="true"><div class="iris"></div><div class="ring"></div></div>
-  <script src="script.js?v=25"></script>
+  <script src="script.js?v=26"></script>
 </body>
 </html>
