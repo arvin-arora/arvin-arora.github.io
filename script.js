@@ -27,9 +27,30 @@
   const domeNode = dome ? dome.querySelector('.d-node') : null;
   const ocSec = document.querySelector('.offclock');
   const fanCards = Array.from(document.querySelectorAll('.fan-card'));
+  const scrollProg = document.getElementById('scrollProgress');
+
+  /* ---------- cursor ring: desktop pointers only, eased in the motion loop ---------- */
+  let curRing = null;
+  let curX = 0, curY = 0, ringX = 0, ringY = 0, curSeen = false;
+  if (window.matchMedia('(pointer: fine)').matches && !reduceMotion) {
+    curRing = document.createElement('span');
+    curRing.className = 'cur-ring';
+    curRing.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(curRing);
+    window.addEventListener('mousemove', (e) => {
+      curX = e.clientX; curY = e.clientY;
+      if (!curSeen) { curSeen = true; ringX = curX; ringY = curY; curRing.classList.add('show'); }
+      wake();
+    }, { passive: true });
+    document.addEventListener('mouseover', (e) => {
+      curRing.classList.toggle('grow', !!(e.target.closest && e.target.closest('a,button,.fan-card,.g-card,.phone,.mf-photo')));
+    });
+    document.documentElement.addEventListener('mouseleave', () => curRing.classList.remove('show'));
+    document.documentElement.addEventListener('mouseenter', () => { if (curSeen) curRing.classList.add('show'); });
+  }
   const lerp = (a, b, t) => a + (b - a) * t;
-  const st = { heroP: 0, oc: 0, fill: 0, line: 0, topo: 1, bg: [244, 244, 239] };
-  const tg = { heroP: 0, oc: 0, fill: 0, line: 0, topo: 1, bg: [244, 244, 239] };
+  const st = { heroP: 0, oc: 0, fill: 0, line: 0, topo: 1, prog: 0, bg: [244, 244, 239] };
+  const tg = { heroP: 0, oc: 0, fill: 0, line: 0, topo: 1, prog: 0, bg: [244, 244, 239] };
 
   // color worlds: the page background cross-fades between each section's declared color
   const hexRgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -71,14 +92,24 @@
         }
       }
     }
-    if (header) {
+    // only pages with color worlds drive the header ink (the app page keeps its own)
+    if (header && zones.length) {
       const lum = 0.299 * tg.bg[0] + 0.587 * tg.bg[1] + 0.114 * tg.bg[2];
       header.classList.toggle('on-light', lum > 140);
     }
+    tg.prog = Math.min(1, Math.max(0, window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)));
     if (reduceMotion) {
-      document.body.style.backgroundColor = `rgb(${tg.bg.join(',')})`;
+      if (zones.length) document.body.style.backgroundColor = `rgb(${tg.bg.join(',')})`;
       if (topoLayer) topoLayer.style.opacity = tg.topo;
+      if (scrollProg) scrollProg.style.width = `${(tg.prog * 100).toFixed(2)}%`;
     }
+    wake();
+  };
+
+  /* the rAF loop sleeps once every value has settled and wakes on scroll/resize/mouse */
+  let rafOn = false;
+  const wake = () => {
+    if (!rafOn && !reduceMotion) { rafOn = true; requestAnimationFrame(applyMotion); }
   };
 
   const applyMotion = () => {
@@ -111,8 +142,8 @@
       dome.style.transform = `translateY(${(-34 * (1 - drawP) + exitE * 160).toFixed(1)}px) rotate(${(exitP * -8).toFixed(2)}deg)`;
     }
     if (fanCards.length) {
-      // deck starts part-fanned (CSS default) and deals fully open on scroll
-      const p = 0.35 + 0.65 * Math.min(1, st.oc * 1.4);
+      // deck starts half-fanned (CSS default) and deals fully open early in the pin
+      const p = 0.5 + 0.5 * Math.min(1, st.oc * 1.9);
       const mid = (fanCards.length - 1) / 2;
       fanCards.forEach((el, i) => {
         const k = i - mid;
@@ -122,34 +153,53 @@
     }
     if (scrollName) scrollName.style.setProperty('--fill', `${st.fill.toFixed(2)}%`);
     if (rmProgress) rmProgress.style.height = `${st.line.toFixed(2)}%`;
+    if (scrollProg) {
+      st.prog = lerp(st.prog, tg.prog, 0.2);
+      scrollProg.style.width = `${(st.prog * 100).toFixed(2)}%`;
+    }
+    if (curRing && curSeen) {
+      ringX = lerp(ringX, curX, 0.22);
+      ringY = lerp(ringY, curY, 0.22);
+      curRing.style.transform = `translate3d(${ringX.toFixed(1)}px, ${ringY.toFixed(1)}px, 0)`;
+    }
     if (zones.length) {
       st.bg = st.bg.map((v, i) => lerp(v, tg.bg[i], 0.08));
       document.body.style.backgroundColor = `rgb(${st.bg.map((v) => Math.round(v)).join(',')})`;
     }
+    const settled =
+      Math.abs(st.heroP - tg.heroP) < 0.001 &&
+      Math.abs(st.oc - tg.oc) < 0.001 &&
+      Math.abs(st.fill - tg.fill) < 0.05 &&
+      Math.abs(st.line - tg.line) < 0.05 &&
+      Math.abs(st.topo - tg.topo) < 0.002 &&
+      Math.abs(st.prog - tg.prog) < 0.001 &&
+      Math.abs(st.bg[0] - tg.bg[0]) < 0.4 &&
+      Math.abs(st.bg[1] - tg.bg[1]) < 0.4 &&
+      Math.abs(st.bg[2] - tg.bg[2]) < 0.4 &&
+      (!curRing || !curSeen || (Math.abs(ringX - curX) < 0.5 && Math.abs(ringY - curY) < 0.5));
+    if (settled) { rafOn = false; return; }
     requestAnimationFrame(applyMotion);
   };
 
   window.addEventListener('scroll', computeTargets, { passive: true });
   window.addEventListener('resize', computeTargets, { passive: true });
   computeTargets();
-  if (!reduceMotion) {
-    requestAnimationFrame(applyMotion);
-  } else if (scrollName) {
+  if (reduceMotion && scrollName) {
     scrollName.style.setProperty('--fill', '100%');
   }
 
   /* ---------- active nav link per section in view ---------- */
   if (navSections.length && 'IntersectionObserver' in window) {
-    const setActive = (id) => navLinks.forEach((a) => a.classList.toggle('is-active', a.dataset.nav === id));
-    new IntersectionObserver(
+    const setActive = (id) => navLinks.forEach((a) => {
+      const on = a.dataset.nav === id;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+    });
+    const navIO = new IntersectionObserver(
       (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }),
       { rootMargin: '-40% 0px -55% 0px' }
-    ).observe && navSections.forEach((s) => {
-      new IntersectionObserver(
-        (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }),
-        { rootMargin: '-40% 0px -55% 0px' }
-      ).observe(s);
-    });
+    );
+    navSections.forEach((s) => navIO.observe(s));
   }
 
   /* ---------- scroll reveals ---------- */
@@ -174,6 +224,48 @@
     reveals.forEach((el) => el.classList.add('is-visible'));
   }
 
+  /* ---------- mobile menu ---------- */
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (menuBtn && mobileMenu) {
+    const setMenu = (open) => {
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.classList.toggle('menu-open', open);
+      if (open) {
+        mobileMenu.hidden = false;
+        requestAnimationFrame(() => mobileMenu.classList.add('open'));
+      } else {
+        mobileMenu.classList.remove('open');
+        mobileMenu.hidden = true;
+      }
+    };
+    menuBtn.addEventListener('click', () => setMenu(mobileMenu.hidden));
+    mobileMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mobileMenu.hidden) setMenu(false); });
+  }
+
+  /* ---------- numbers count up when they enter view ---------- */
+  const countNums = document.querySelectorAll('.count-num');
+  if (countNums.length && 'IntersectionObserver' in window && !reduceMotion) {
+    const nio = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        nio.unobserve(el);
+        const target = parseInt(el.dataset.target, 10) || 0;
+        const t0 = performance.now();
+        const tick = (now) => {
+          const p = Math.min((now - t0) / 700, 1);
+          el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.4 });
+    countNums.forEach((el) => nio.observe(el));
+  }
+
   /* ---------- marquee pauses offscreen ---------- */
   const marqueeEl = document.querySelector('.marquee');
   if (marqueeEl && 'IntersectionObserver' in window) {
@@ -189,7 +281,7 @@
   const CF_PRIVATE_OFFSET = 23;
   const CF_SOLVED_FLOOR = 89;
   const cfEls = () => document.querySelectorAll('.cf-count');
-  fetch('https://codeforces.com/api/user.status?handle=Arvin2417')
+  if (cfEls().length) fetch('https://codeforces.com/api/user.status?handle=Arvin2417')
     .then((r) => r.json())
     .then((data) => {
       if (data.status !== 'OK') return;
@@ -264,9 +356,9 @@
       rnBadge.className = `rn-badge b-${rnMarkedAt ? 'present' : c.badge[2]}`;
       rnBadge.textContent = rnMarkedAt ? '✅ PRESENT' : `${c.badge[0]} ${c.badge[1]}`;
       rnCard.className = `rn-card b-${rnMarkedAt ? 'present' : c.card[0]}`;
-      rnCard.innerHTML = `<h6>${rnMarkedAt ? 'ATTENDANCE MARKED' : c.card[1]}</h6><p>${rnMarkedAt ? `Verified at ${rnMarkedAt}` : c.card[2]}</p><div class="rn-count"></div><small>${SCHED}</small>`;
+      rnCard.innerHTML = `<p class="rn-ch">${rnMarkedAt ? 'ATTENDANCE MARKED' : c.card[1]}</p><p>${rnMarkedAt ? `Verified at ${rnMarkedAt}` : c.card[2]}</p><div class="rn-count"></div><small>${SCHED}</small>`;
       if (rnMarkedAt) {
-        rnAction.innerHTML = `<div class="rn-success"><b>🎉</b><h6>Attendance Recorded</h6><p>Marked at ${rnMarkedAt} • Server Verified</p><div class="rn-vchips"><i>✓ Face Biometric Valid</i><i>✓ Geofence Verified</i><i>✓ Wi-Fi Validated</i></div></div>`;
+        rnAction.innerHTML = `<div class="rn-success"><b>🎉</b><p class="rn-sh">Attendance Recorded</p><p>Marked at ${rnMarkedAt} • Server Verified</p><div class="rn-vchips"><i>✓ Face Biometric Valid</i><i>✓ Geofence Verified</i><i>✓ Wi-Fi Validated</i></div></div>`;
       } else {
         rnAction.innerHTML = `<button type="button" class="rn-mark ${c.btn[4]}" ${c.btn[3] ? '' : 'disabled'}><b>${c.btn[0]} ${c.btn[1]}</b><small>${c.btn[2]}</small></button>`;
         if (c.btn[3]) rnAction.querySelector('.rn-mark').addEventListener('click', () => rnStartFlow && rnStartFlow());
@@ -304,6 +396,8 @@
 
     const rnRunVerify = () => {
       rnVerify.hidden = false;
+      const vcard = rnVerify.querySelector('.rn-vcard');
+      if (vcard) vcard.focus();
       rnVTitle.textContent = '⚡ Live Attendance Verification';
       rnVSub.textContent = 'Performing server-authoritative multi-factor checks.';
       rnVFoot.hidden = false;
@@ -368,18 +462,22 @@
       rnFlow = false;
       rnRender();
       lightFlow(6);
+      const rb = $id('rnReset');
+      if (rb) rb.focus();
     });
 
     SIM_BTNS.forEach(([time, label, key, full]) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = key === 'open' ? 'rn-sim on' : 'rn-sim';
+      b.setAttribute('aria-pressed', String(key === 'open'));
       b.innerHTML = `<b>${time}</b><small>${label}</small>`;
       b.addEventListener('click', () => {
         rnState = key;
         rnSimLabel.textContent = full;
-        rnSims.querySelectorAll('.rn-sim').forEach((x) => x.classList.remove('on'));
+        rnSims.querySelectorAll('.rn-sim').forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
         b.classList.add('on');
+        b.setAttribute('aria-pressed', 'true');
         rnRender();
       });
       rnSims.appendChild(b);

@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Arvin Arora — aspiring software developer and first-year student at Scaler School of Technology, sharpening fundamentals through competitive programming on Codeforces.">
+  <meta name="description" content="Arvin Arora — aspiring software developer at Scaler School of Technology. Competitive programming on Codeforces, a shipped React Native attendance app, and a hand-coded portfolio documenting the journey.">
   <meta name="theme-color" content="#F4F4EF">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Arvin Arora | Aspiring Software Developer">
-  <meta property="og:description" content="First-year student at Scaler School of Technology, building fundamentals one Codeforces problem at a time.">
+  <meta property="og:title" content="Arvin Arora — Aspiring Software Developer">
+  <meta property="og:description" content="Documenting the journey: fundamentals, competitive programming, real shipped products.">
   <meta property="og:url" content="https://arvin-arora.github.io/">
-  <meta property="og:image" content="https://arvin-arora.github.io/assets/arvin-1.jpg">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Arvin Arora | Aspiring Software Developer">
-  <meta name="twitter:description" content="First-year student at Scaler School of Technology, building fundamentals one Codeforces problem at a time.">
-  <meta name="twitter:image" content="https://arvin-arora.github.io/assets/arvin-1.jpg">
+  <meta property="og:image" content="https://arvin-arora.github.io/assets/site-hero.jpg">
+  <meta property="og:image:width" content="880">
+  <meta property="og:image:height" content="550">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Arvin Arora — Aspiring Software Developer">
+  <meta name="twitter:description" content="Documenting the journey: fundamentals, competitive programming, real shipped products.">
+  <meta name="twitter:image" content="https://arvin-arora.github.io/assets/site-hero.jpg">
   <link rel="canonical" href="https://arvin-arora.github.io/">
-  <title>Arvin Arora | Aspiring Software Developer</title>
+  <title>Arvin Arora — Aspiring Software Developer</title>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,17 +37,30 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A0A0A'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' font-weight='700' fill='%23C6FF00' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
   <link rel="preload" as="image" href="assets/hero-cut.webp">
-  <link rel="stylesheet" href="style.css?v=69">
+  <link rel="stylesheet" href="style.css?v=70">
 </head>
 <body>
+  <a class="skip-link" href="#home">Skip to content</a>
   <div class="topo" id="topoLayer" aria-hidden="true"></div>
+  <span class="scroll-progress" id="scrollProgress" aria-hidden="true"></span>
   <header class="site-header" id="siteHeader">
     <a class="brand" href="#home" aria-label="Arvin Arora home">A<i>rvin&nbsp;</i>A<i>rora</i><span>.</span></a>
-    <nav aria-label="Main navigation"><a href="#journey" data-nav="journey">Journey</a><a href="#projects" data-nav="projects">Projects</a><a href="hostel-app.html">The App</a><a href="#contact" data-nav="contact">Contact</a></nav>
+    <nav aria-label="Main navigation"><a href="#journey" data-nav="journey">Journey</a><a href="#projects" data-nav="projects">Builds</a><a href="hostel-app.html">The App</a><a href="#contact" data-nav="contact">Contact</a></nav>
     <a class="enquiries" href="mailto:aroraarvin8@gmail.com">say hello</a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span></button>
   </header>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <nav aria-label="Mobile navigation">
+      <a href="#journey">Journey</a>
+      <a href="#projects">Builds</a>
+      <a href="hostel-app.html">The App</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="mm-cta" href="mailto:aroraarvin8@gmail.com">Say hello <i class="ar">↗</i></a>
+  </div>
   <main>
     <section class="hero light-ink" id="home" data-bg="#F4F4EF">
       <div class="hero-sticky">
@@ -54,7 +69,7 @@
           <h1 aria-label="Arvin Arora"><span class="hline"><span>Arvin&nbsp;Arora</span></span></h1>
         </div>
         <div class="hero-photo" aria-hidden="true">
-          <img src="assets/hero-cut.webp" alt="" onerror="this.src='assets/arvin-1.jpg'">
+          <img src="assets/hero-cut.webp" width="1000" height="953" alt="" onerror="this.src='assets/arvin-1.jpg'">
           <span class="sig-real"><span class="sig-ink"></span></span>
         </div>
         <svg class="dome" id="heroDome" viewBox="0 0 400 190" aria-hidden="true">
@@ -86,7 +101,7 @@
     <section class="section msgfrom light-ink" data-bg="#F4F4EF">
       <p class="section-label reveal">Message from Arvin</p>
       <div class="mf-grid">
-        <figure class="mf-photo reveal"><img src="assets/arvin-14.jpg" alt="Arvin Arora on the road" loading="lazy"><figcaption>On the road · 2026</figcaption></figure>
+        <figure class="mf-photo reveal"><img src="assets/arvin-14.webp" width="1179" height="663" alt="Arvin Arora on the road" loading="lazy" decoding="async"><figcaption>On the road, 2026</figcaption></figure>
         <div class="mf-copy reveal">
           <p class="mf-quote">“Start small, stay <em>consistent</em> — the problems, the reps and the roadmap all <em>compound</em>.”</p>
           <span class="mf-sig sig-ink" aria-hidden="true"></span>
@@ -98,16 +113,17 @@
       <div class="oc-sticky">
         <h2 class="oc-head">Off the clock</h2>
         <p class="oc-sub">the four gears</p>
-        <div class="oc-fan" id="ocFan" aria-label="Photos of Arvin off the clock">
-          <figure class="fan-card"><img src="assets/arvin-4.jpg" alt="Arvin Arora" loading="lazy"><figcaption>2026</figcaption></figure>
-          <figure class="fan-card"><img src="assets/arvin-7.jpg" alt="Arvin Arora" loading="lazy"><figcaption>game zone</figcaption></figure>
-          <figure class="fan-card"><img src="assets/arvin-13.jpg" alt="Arvin Arora in the mountains" loading="lazy"><figcaption>the mountains</figcaption></figure>
-          <figure class="fan-card mid"><img src="assets/arvin-12.jpg" alt="Arvin Arora" loading="lazy"><figcaption>cafe days</figcaption></figure>
-          <figure class="fan-card"><img src="assets/arvin-10.jpg" alt="Arvin Arora on his Royal Enfield" loading="lazy"><figcaption>the enfield</figcaption></figure>
-          <figure class="fan-card"><img src="assets/arvin-6.jpg" alt="Arvin Arora" loading="lazy"><figcaption>2026</figcaption></figure>
-          <figure class="fan-card"><img src="assets/arvin-5.jpg" alt="Arvin Arora" loading="lazy"><figcaption>off day</figcaption></figure>
+        <div class="oc-gears"><span>Driving</span><i>·</i><span>Gym</span><i>·</i><span>Code</span><i>·</i><span>Punjabi Beats</span></div>
+        <div class="oc-fan" id="ocFan" role="group" aria-label="Photos of Arvin off the clock">
+          <figure class="fan-card"><img src="assets/arvin-4.webp" width="640" height="799" alt="Arvin Arora" loading="lazy" decoding="async"><figcaption>Suited up, 2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-7.webp" width="640" height="800" alt="Arvin Arora" loading="lazy" decoding="async"><figcaption>Game zone, 2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-13.webp" width="640" height="960" alt="Arvin Arora in the mountains" loading="lazy" decoding="async"><figcaption>The mountains, 2026</figcaption></figure>
+          <figure class="fan-card mid"><img src="assets/arvin-12.webp" width="640" height="960" alt="Arvin Arora" loading="lazy" decoding="async"><figcaption>Cafe days, 2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-10.webp" width="640" height="959" alt="Arvin Arora on his Royal Enfield" loading="lazy" decoding="async"><figcaption>The Enfield, 2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-6.webp" width="640" height="800" alt="Arvin Arora" loading="lazy" decoding="async"><figcaption>Portrait, 2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-5.webp" width="627" height="784" alt="Arvin Arora" loading="lazy" decoding="async"><figcaption>Off day, 2026</figcaption></figure>
         </div>
-        <div class="oc-gears"><span>Driving</span><i>·</i><span>Gym</span><i>·</i><span>Code</span><i>·</i><span>Punjabi Beats</span><em class="oc-cue">keep scrolling ↓</em></div>
+        <em class="oc-cue" aria-hidden="true">keep scrolling ↓</em>
       </div>
     </section>
 
@@ -117,21 +133,21 @@
       <p class="section-intro reveal">No shortcuts, no filler — the honest record of the run. Milestones marked done are done; the rest are what comes next.</p>
       <div class="roadmap-rows">
         <div class="rm-row done reveal"><div class="rm-year">2026</div><div class="rm-body"><h3>Spawned at Scaler SST</h3><p>Started the computer-science journey — Year 1, fundamentals first.</p></div><span class="rm-tag">Done</span></div>
-        <div class="rm-row done reveal"><div class="rm-year">2026</div><div class="rm-body"><h3><span class="cf-count">89+</span> Codeforces Problems</h3><p>Daily problem-solving as Arvin2417 — this count updates live from the Codeforces API on every visit.</p></div><span class="rm-tag">Live</span></div>
-        <div class="rm-row done reveal"><div class="rm-year">2026</div><div class="rm-body"><h3>Hostel Attendance App</h3><p>First real product shipped end-to-end — face verification, GPS geofencing, Wi-Fi checks, own backend.</p></div><span class="rm-tag">Shipped</span></div>
-        <div class="rm-row done reveal"><div class="rm-year">2026</div><div class="rm-body"><h3>This Website</h3><p>Hand-written HTML, CSS and JavaScript — no frameworks, no libraries, no build step.</p></div><span class="rm-tag">Shipped</span></div>
+        <div class="rm-row done reveal"><div class="rm-year">02<small>2026</small></div><div class="rm-body"><h3><span class="cf-count">89+</span> Codeforces Problems</h3><p>Daily problem-solving as Arvin2417 — this count updates live from the Codeforces API on every visit.</p></div><span class="rm-tag">Live</span></div>
+        <div class="rm-row done reveal"><div class="rm-year">03<small>2026</small></div><div class="rm-body"><h3>Hostel Attendance App</h3><p>First real product shipped end-to-end — face verification, GPS geofencing, Wi-Fi checks, own backend.</p></div><span class="rm-tag">Shipped</span></div>
+        <div class="rm-row done reveal"><div class="rm-year">04<small>2026</small></div><div class="rm-body"><h3>This Website</h3><p>Hand-written HTML, CSS and JavaScript — no frameworks, no libraries, no build step.</p></div><span class="rm-tag">Shipped</span></div>
         <div class="rm-row next reveal"><div class="rm-year">Next</div><div class="rm-body"><h3>First Rated Contests</h3><p>Stepping into rated Codeforces rounds once the foundations hold.</p></div><span class="rm-tag">Up next</span></div>
         <div class="rm-row next reveal"><div class="rm-year">Next</div><div class="rm-body"><h3>Frameworks &amp; Bigger Builds</h3><p>React, and projects with real users.</p></div><span class="rm-tag">Queued</span></div>
         <div class="rm-row next reveal"><div class="rm-year">Soon</div><div class="rm-body"><h3>Internship-Ready</h3><p>The boss level — reached one problem at a time.</p></div><span class="rm-tag">The goal</span></div>
       </div>
       <div class="split">
-        <div class="split-card reveal"><div class="split-visual"><img src="assets/arvin-4.jpg" alt="" loading="lazy"></div><span class="ghost">01</span><h3>On the<br>Grind</h3><p>Competitive programming and the core concepts everything else gets built on.</p><ul>
-          <li>Codeforces handle<b>Arvin2417</b></li>
-          <li>Problems solved · live<b><span class="cf-count">89+</span></b></li>
-          <li>Max solving streak<b>15 days</b></li>
-          <li>Current focus<b>Fundamentals &amp; DSA</b></li>
-        </ul><a class="text-link" href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">view codeforces ↗</a></div>
-        <div class="split-card reveal"><div class="split-visual"><img src="assets/arvin-10.jpg" alt="" loading="lazy"></div><span class="ghost">02</span><h3>Off the<br>Grind</h3><p>Learning by building — real projects only, each one shipped and live.</p><ul>
+        <div class="split-card reveal"><div class="split-visual"><img src="assets/arvin-4.webp" alt="" loading="lazy" decoding="async"></div><span class="ghost">01</span><h3>On the<br>Grind</h3><p>Competitive programming and the core concepts everything else gets built on.</p><div class="stat-grid">
+          <div class="stat"><b><i class="live-dot" aria-hidden="true"></i><span class="cf-count">89+</span></b><small>problems solved · live</small></div>
+          <div class="stat"><b><span class="count-num" data-target="15">15</span> days</b><small>best solving streak</small></div>
+          <div class="stat"><b>DSA</b><small>current focus</small></div>
+          <div class="stat"><b>Arvin2417</b><small>codeforces handle</small></div>
+        </div><a class="text-link" href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">view codeforces <i class="ar">↗</i></a></div>
+        <div class="split-card reveal"><div class="split-visual"><img src="assets/arvin-10.webp" alt="" loading="lazy" decoding="async"></div><span class="ghost">02</span><h3>Off the<br>Grind</h3><p>Learning by building — real projects only, each one shipped and live.</p><ul>
           <li>Hostel Attendance App<b>React Native · own backend</b></li>
           <li>This website<b>Hand-coded · no frameworks</b></li>
           <li>Next build<b>In the works</b></li>
@@ -139,15 +155,15 @@
       </div>
     </section>
 
-    <figure class="photo-strip" aria-label="Arvin Arora" data-bg="#0A0A0A"><img src="assets/arvin-2.jpg" alt="Arvin Arora" loading="lazy"></figure>
+    <figure class="photo-strip" aria-label="Arvin Arora" data-bg="#0A0A0A"><img src="assets/arvin-2.webp" width="1179" height="516" alt="Arvin Arora" loading="lazy" decoding="async"></figure>
 
     <section class="section light-ink" id="projects" data-bg="#F4F4EF">
       <p class="section-label reveal">Projects</p>
       <h2 class="reveal">Builds.</h2>
       <p class="section-intro reveal">Real builds only, no filler — this list grows as I do.</p>
       <div class="gallery">
-        <a class="g-card reveal" href="hostel-app.html"><span class="g-tag">Case study</span><div class="g-visual"><img src="assets/hostel-logo.jpeg" alt="Hostel Attendance App logo"></div><span class="g-year">2026 · React Native + Node</span><h3>Hostel Attendance App</h3><p>Attendance that can’t be faked — face, location, network and device all have to agree. Includes a live in-browser demo of the real check-in flow.</p><span class="text-link">experience the app →</span></a>
-        <a class="g-card reveal" href="https://github.com/arvin-arora/arvin-arora.github.io" target="_blank" rel="noopener"><span class="g-tag">Source</span><div class="g-visual"><img class="site-shot" src="assets/site-hero.jpg" alt="The hero screen of this website"></div><span class="g-year">2026 · HTML + CSS + JS</span><h3>This Website</h3><p>The site you’re on — hand-written front end with live Codeforces data, designed and rebuilt in public.</p><span class="text-link">view the code ↗</span></a>
+        <a class="g-card reveal" href="hostel-app.html"><span class="g-tag">Case study</span><div class="g-visual gv-app"><img class="gv-shot" src="assets/app-card.webp" width="520" height="1070" alt="Hostel Attendance App home screen" loading="lazy" decoding="async"><img class="gv-logo" src="assets/hostel-logo.jpeg" alt="" loading="lazy" decoding="async"></div><span class="g-year">2026 · React Native + Node</span><h3>Hostel Attendance App</h3><p>Attendance that can’t be faked — face, location, network and device all have to agree. Includes a live in-browser demo of the real check-in flow.</p><span class="text-link">experience the app <i class="ar r">→</i></span></a>
+        <a class="g-card reveal" href="https://github.com/arvin-arora/arvin-arora.github.io" target="_blank" rel="noopener"><span class="g-tag">Source</span><div class="g-visual"><img class="site-shot" src="assets/site-hero.jpg" width="880" height="550" alt="The hero screen of this website" loading="lazy" decoding="async"></div><span class="g-year">2026 · HTML + CSS + JS</span><h3>This Website</h3><p>The site you’re on — hand-written front end with live Codeforces data, designed and rebuilt in public.</p><span class="text-link">view the code <i class="ar">↗</i></span></a>
         <div class="g-card coming reveal"><span class="g-tag">Loading</span><div class="g-visual"><span class="glyph">+</span></div><span class="g-year">Next</span><h3>Next Build</h3><p>In the works — fueled by fundamentals and a growing problem count.</p></div>
       </div>
       <div class="toolkit">
@@ -157,20 +173,21 @@
       </div>
     </section>
 
-    <figure class="photo-strip" aria-label="Arvin Arora" data-bg="#0A0A0A"><img src="assets/arvin-3.jpg" alt="Arvin Arora" loading="lazy"></figure>
+    <figure class="photo-strip" aria-label="Arvin Arora" data-bg="#0A0A0A"><img src="assets/arvin-3.webp" width="982" height="430" alt="Arvin Arora" loading="lazy" decoding="async"></figure>
 
     <section class="namewall" aria-label="Arvin Arora" data-bg="#0A0A0A"><h2 class="scroll-name" id="scrollName">ARVIN&nbsp;ARORA</h2></section>
 
     <section class="outro" id="contact" data-bg="#23271B">
       <span class="outro-sig reveal" aria-hidden="true"><span class="sig-ink"></span></span>
       <h2 class="outro-title reveal">Always <em>chasing</em><br>the next <em>problem.</em></h2>
-      <div class="outro-photo" aria-hidden="true"><img src="assets/arvin-8.jpg" alt="" loading="lazy"></div>
+      <div class="outro-photo" aria-hidden="true"><img src="assets/arvin-8.webp" width="840" height="1050" alt="" loading="lazy" decoding="async"></div>
+      <p class="outro-refrain reveal">scaler school of technology · since 2026</p>
       <div class="outro-cols">
-        <div class="outro-col reveal"><h4>Pages</h4><a href="#home">Home</a><a href="#journey">Journey</a><a href="#projects">Projects</a><a href="hostel-app.html">The App</a></div>
-        <div class="outro-col reveal"><h4>Follow on</h4><a href="https://github.com/arvin-arora" target="_blank" rel="noopener">GitHub</a><a href="https://www.linkedin.com/in/arvin-arora-0bb939426/" target="_blank" rel="noopener">LinkedIn</a><a href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">Codeforces</a><a href="mailto:aroraarvin8@gmail.com">Email</a></div>
+        <div class="outro-col reveal"><h3>Pages</h3><a href="#home">Home</a><a href="#journey">Journey</a><a href="#projects">Builds</a><a href="hostel-app.html">The App</a></div>
+        <div class="outro-col reveal"><h3>Follow on</h3><a href="https://github.com/arvin-arora" target="_blank" rel="noopener">GitHub</a><a href="https://www.linkedin.com/in/arvin-arora-0bb939426/" target="_blank" rel="noopener">LinkedIn</a><a href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">Codeforces</a><a href="mailto:aroraarvin8@gmail.com">Email</a></div>
       </div>
       <div class="outro-partners reveal"><span>C++</span><span>JavaScript</span><span>React Native</span><span>TypeScript</span><span>Node.js</span><span>PostgreSQL</span><span>Docker</span><span>Git</span></div>
-      <a class="outro-cta" href="mailto:aroraarvin8@gmail.com">Say hello ↗</a>
+      <a class="outro-cta" href="mailto:aroraarvin8@gmail.com">Say hello <i class="ar">↗</i></a>
     </section>
   </main>
 
@@ -179,6 +196,6 @@
     <span>Hand-coded · no frameworks</span>
     <a href="#home">Back to top ↑</a>
   </footer>
-  <script src="script.js?v=69"></script>
+  <script src="script.js?v=70"></script>
 </body>
 </html>

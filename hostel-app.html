@@ -3,28 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Case study of Arvin Arora's Hostel Attendance App — a working recreation of the real app's check-in flow: liveness challenge, Face++ verification, geofence, Wi-Fi gateway checks and a server-authoritative attendance record.">
+  <meta name="description" content="Hostel Attendance App case study — Arvin Arora's React Native + Node.js attendance system with face verification, geofencing and Wi-Fi checks. Try the live in-browser demo.">
   <meta name="theme-color" content="#090D16">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Hostel Attendance App | Arvin Arora">
   <meta property="og:description" content="Attendance that can’t be faked — run a faithful simulation of the real app’s check-in flow.">
   <meta property="og:url" content="https://arvin-arora.github.io/hostel-app.html">
-  <meta property="og:image" content="https://arvin-arora.github.io/assets/hostel-logo.jpeg">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://arvin-arora.github.io/assets/social-app.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Hostel Attendance App | Arvin Arora">
   <meta name="twitter:description" content="Attendance that can’t be faked — run a faithful simulation of the real app’s check-in flow.">
+  <meta name="twitter:image" content="https://arvin-arora.github.io/assets/social-app.jpg">
   <link rel="canonical" href="https://arvin-arora.github.io/hostel-app.html">
   <title>Hostel Attendance App | Arvin Arora</title>
   <link rel="icon" href="assets/hostel-logo.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=69">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="style.css?v=70">
 </head>
 <body class="app-zone">
+  <a class="skip-link" href="#hostel">Skip to content</a>
   <header class="site-header" id="siteHeader">
     <a class="brand" href="index.html" aria-label="Arvin Arora home">A<i>rvin&nbsp;</i>A<i>rora</i><span>.</span></a>
-    <nav aria-label="Main navigation"><a href="index.html#journey">Journey</a><a href="index.html#projects">Projects</a><a href="hostel-app.html" class="is-active">The App</a><a href="index.html#contact">Contact</a></nav>
+    <nav aria-label="Main navigation"><a href="index.html#journey">Journey</a><a href="index.html#projects">Builds</a><a href="hostel-app.html" class="is-active" aria-current="page">The App</a><a href="index.html#contact">Contact</a></nav>
     <a class="enquiries" href="mailto:aroraarvin8@gmail.com">say hello</a>
   </header>
   <main>
@@ -36,14 +41,14 @@
         <div class="reveal">
           <div class="phone">
             <div class="phone-screen rn-screen">
-              <div class="rn-head"><div><b>Uniworld 2</b><small id="rnDate"></small></div><div class="rn-head-r"><span class="rn-badge b-open" id="rnBadge">🟢 ATTENDANCE OPEN</span><span class="rn-signout">Sign Out</span></div></div>
+              <div class="rn-head"><div><b>Uniworld 2</b><small id="rnDate"></small></div><div class="rn-head-r"><span class="rn-badge b-open" id="rnBadge" role="status" aria-live="polite">🟢 ATTENDANCE OPEN</span><span class="rn-signout" aria-hidden="true">Sign Out</span></div></div>
               <div class="rn-profile"><span class="rn-avatar">AA</span><div><small>Good evening,</small><b>Arvin Arora</b><div class="rn-chips"><i class="hl">Uniworld 2</i><i>Demo Mode</i><i>SST</i></div></div></div>
               <div class="rn-card b-open" id="rnCard"></div>
               <div id="rnAction"></div>
-              <div class="rn-rules"><h5>SECURITY &amp; ROLL-CALL RULES</h5><p><b>Facial Verification:</b> Your attendance selfie is compared against your enrolled signup photo to confirm it’s you.</p><p><b>Hostel Geofence:</b> You must be inside the hostel property boundary.</p><p><b>Deadline:</b> Normal closes at 11:00 PM. Grace period ends strictly at 11:10 PM.</p></div>
+              <div class="rn-rules"><h4>SECURITY &amp; ROLL-CALL RULES</h4><p><b>Facial Verification:</b> Your attendance selfie is compared against your enrolled signup photo to confirm it’s you.</p><p><b>Hostel Geofence:</b> You must be inside the hostel property boundary.</p><p><b>Deadline:</b> Normal closes at 11:00 PM. Grace period ends strictly at 11:10 PM.</p></div>
               <div class="rn-devbar"><small>🛠️ Dev Time Simulation Mode: <b id="rnSimLabel">10:35 PM (Normal Open)</b></small><div class="rn-sims" id="rnSims"></div><button class="rn-reset" id="rnReset" type="button">Reset My Attendance Record</button></div>
-              <div class="rn-camera" id="rnCamera" hidden><video id="rnCamFeed" autoplay playsinline muted hidden></video><div class="rn-oval" aria-hidden="true"></div><div class="rn-facemoji" id="rnFacemoji" aria-hidden="true">AA</div><p id="rnCamStatus">Position your face in the frame</p></div>
-              <div class="rn-verify" id="rnVerify" hidden><div class="rn-vcard"><h6 id="rnVTitle">⚡ Live Attendance Verification</h6><p id="rnVSub">Performing server-authoritative multi-factor checks.</p><div id="rnVSteps"></div><p class="rn-vfoot" id="rnVFoot">Validating with authorized servers...</p><button id="rnVDone" class="rn-done" type="button" hidden>Done</button></div></div>
+              <div class="rn-camera" id="rnCamera" hidden><video id="rnCamFeed" autoplay playsinline muted hidden></video><div class="rn-oval" aria-hidden="true"></div><div class="rn-facemoji" id="rnFacemoji" aria-hidden="true">AA</div><p id="rnCamStatus" role="status" aria-live="polite">Position your face in the frame</p></div>
+              <div class="rn-verify" id="rnVerify" role="dialog" aria-modal="true" aria-labelledby="rnVTitle" hidden><div class="rn-vcard" tabindex="-1"><p class="rn-vh" id="rnVTitle">⚡ Live Attendance Verification</p><p id="rnVSub">Performing server-authoritative multi-factor checks.</p><div id="rnVSteps" aria-live="polite"></div><p class="rn-vfoot" id="rnVFoot">Validating with authorized servers...</p><button id="rnVDone" class="rn-done" type="button" hidden>Done</button></div></div>
             </div>
           </div>
           <p class="phone-caption">A faithful, working recreation of the real app — its actual colors, screens and on-screen text, straight from the codebase. Allow camera access during the face step and you’ll see your own live selfie feed, exactly like the real app — it never leaves your browser, nothing is recorded or uploaded. The time-simulation bar is a real feature of its dev build too.</p>
@@ -73,6 +78,6 @@
   <footer>
     <div class="foot-base" style="margin-top:0"><span>© 2026 Arvin Arora. All rights reserved.</span><span>Hand-coded · no frameworks</span><a href="index.html">Back home ←</a></div>
   </footer>
-  <script src="script.js?v=69"></script>
+  <script src="script.js?v=70"></script>
 </body>
 </html>
