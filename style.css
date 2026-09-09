@@ -74,8 +74,10 @@ nav a.is-active{color:var(--accent)}
 .hero-row{animation-delay:.95s}
 @keyframes fadeIn{to{opacity:1}}
 .sig{width:min(280px,48vw);height:auto;margin-top:26px;overflow:visible}
-.sig path{fill:none;stroke:var(--accent);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:620;stroke-dashoffset:620;animation:sigDraw 1.5s cubic-bezier(.5,0,.3,1) 1s forwards}
+.sig path{fill:none;stroke:var(--accent);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:620;stroke-dashoffset:620;animation:sigDraw 1.6s cubic-bezier(.5,0,.3,1) 1s forwards}
 @keyframes sigDraw{to{stroke-dashoffset:0}}
+.sig-dot{fill:var(--accent);opacity:0;animation:sigDot .25s ease 2.5s forwards}
+@keyframes sigDot{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ---------- marquee ticker ---------- */
 .marquee{overflow:hidden;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
