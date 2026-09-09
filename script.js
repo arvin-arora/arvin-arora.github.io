@@ -608,7 +608,9 @@
       } catch (e) {}
     };
     // audio can only start after a user gesture — arm it on the first one
-    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.addEventListener(ev, ensure, { passive: true }));
+    let hadGesture = false;
+    const onGesture = () => { hadGesture = true; ensure(); };
+    ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.addEventListener(ev, onGesture, { passive: true }));
     const tone = (freq, dur, o = {}) => {
       const t = ctx.currentTime + (o.delay || 0);
       const osc = ctx.createOscillator();
@@ -638,7 +640,7 @@
       f.frequency.exponentialRampToValueAtTime(o.to || 1600, t + dur);
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(o.gain || 0.15, t + 0.06);
+      g.gain.exponentialRampToValueAtTime(o.gain || 0.15, t + Math.min(0.06, dur * 0.4));
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       src.connect(f).connect(g).connect(ctx.destination);
       src.start(t);
@@ -674,7 +676,10 @@
     };
     const play = (name) => {
       ensure();
-      if (!ctx || ctx.state !== 'running') return; // pre-gesture: stay silent
+      if (!ctx) return;
+      // after a real gesture, schedule even while the context is still resuming —
+      // the notes fire the instant it goes live (first-click reliability everywhere)
+      if (ctx.state !== 'running' && !hadGesture) return;
       try {
         switch (name) {
           case 'click':
@@ -689,14 +694,22 @@
             tone(587.33, 0.1, { gain: 0.04, delay: 0.06 });
             break;
           case 'portal':
-            whoosh(0.75, { gain: 0.16, from: 260, to: 2600 });
-            tone(220, 0.75, { gain: 0.08, slideTo: 880 });
+            whoosh(0.75, { gain: 0.24, from: 260, to: 2600 });
+            tone(220, 0.75, { gain: 0.1, slideTo: 880 });
             break;
           case 'rocket':
-            whoosh(0.35, { gain: 0.3, from: 220, to: 2800 }); // ignition burst
-            rumble(2.9, { gain: 0.5, from: 55, to: 140 }); // engine rumble bed
-            whoosh(2.6, { gain: 0.16, from: 160, to: 1900, delay: 0.25 }); // rising exhaust roar
-            tone(38, 2.6, { gain: 0.2, slideTo: 90 }); // sub-bass swell
+            whoosh(0.4, { gain: 0.35, from: 300, to: 3500 }); // ignition burst
+            rumble(3, { gain: 0.55, from: 90, to: 380 }); // engine bed — raised into speaker-audible range
+            whoosh(2.7, { gain: 0.3, from: 220, to: 2400, delay: 0.2 }); // rising exhaust roar
+            tone(42, 2.6, { gain: 0.25, slideTo: 95 }); // sub-bass swell for real speakers
+            for (let i = 0; i < 22; i++) { // combustion crackle — the signature of a real launch
+              whoosh(0.05 + Math.random() * 0.05, {
+                gain: 0.1 + Math.random() * 0.12,
+                from: 400 + Math.random() * 900,
+                to: 900 + Math.random() * 1600,
+                delay: 0.15 + Math.random() * 2.3,
+              });
+            }
             break;
           case 'unlock':
             [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, 0.28, { gain: 0.07, delay: i * 0.09 }));
