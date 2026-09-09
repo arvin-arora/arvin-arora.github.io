@@ -121,13 +121,14 @@ h1 em,h2 em{color:var(--accent-2)}
 
 .hero-actions{display:flex;align-items:center;gap:24px;margin-top:32px}
 .button{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:18px;padding:14px 18px;border-radius:4px;font-size:13px;font-weight:800}
-/* fill sweep: outline at rest, solid blue slides in on hover */
-.button-primary{border:1.5px solid var(--accent);color:var(--accent);background:linear-gradient(90deg,var(--accent) 50%,transparent 50%);background-size:201% 100%;background-position:100% 0;transition:background-position .35s ease,color .25s ease}
-.button-primary:hover{background-position:0 0;color:#ffffff}
+/* calm lift: solid blue, gentle rise with a soft shadow on hover */
+.button-primary{background:var(--accent);color:#ffffff;box-shadow:0 1px 2px #00000014;transition:transform .2s ease,box-shadow .2s ease}
+.button-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px #2563eb3d}
+.button-primary:active{transform:translateY(0);box-shadow:0 3px 10px #2563eb33}
 .button-primary::before{content:none}
 .button span,.text-link span{display:inline-block;transition:transform .25s ease}
-.button:hover span,.text-link:hover span{transform:translate(3px,3px)}
-.hero-actions .button-primary:hover span{transform:translateY(3px)}
+.button:hover span{transform:translateX(3px)}
+.text-link:hover span{transform:translate(3px,3px)}
 .text-link{font-size:13px;font-weight:800;border-bottom:1px solid var(--accent);padding-bottom:3px;transition:color .25s ease,letter-spacing .25s ease}
 .text-link:hover{color:var(--accent);letter-spacing:.02em}
 .ripple{position:absolute;border-radius:50%;background:#ffffff59;transform:scale(0);animation:rippleAnim .6s ease-out forwards;pointer-events:none}
