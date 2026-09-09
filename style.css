@@ -468,9 +468,10 @@ body.entry-hold{overflow:hidden}
 body.entry-hold .hero-in{animation-play-state:paused}
 .entry-screen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 100% at 50% 110%,#1c2530 0%,#10161d 45%,#05080c 100%);overflow:hidden;transition:opacity .65s ease,visibility .65s ease}
 .entry-screen.is-done{opacity:0;visibility:hidden}
-.entry-screen::after{content:"";position:absolute;inset:0;z-index:4;background:radial-gradient(circle at 50% 40%,#e6edf3,#58a6ff 40%,transparent 75%);opacity:0;pointer-events:none}
-.entry-screen.launching::after{animation:entryFlash 2.1s ease forwards}
-@keyframes entryFlash{0%,70%{opacity:0}85%{opacity:.95}100%{opacity:0}}
+/* warp flash: a single blinding white-out as the rocket hits speed */
+.entry-screen::after{content:"";position:absolute;inset:0;z-index:4;background:radial-gradient(circle at 50% 45%,#ffffff 0 55%,#cfe4ff 78%,#9ad8ff 100%);opacity:0;pointer-events:none}
+.entry-screen.launching::after{animation:entryFlash 2.1s linear forwards}
+@keyframes entryFlash{0%,72%{opacity:0}76%{opacity:1}83%{opacity:1}92%{opacity:.35}100%{opacity:0}}
 .entry-stars{position:absolute;inset:0;z-index:1}
 .entry-stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#e6edf3;opacity:.7;animation:starTwinkle var(--spd,1s) ease-in-out infinite alternate;animation-delay:calc(var(--dl,0)*-2s)}
 @keyframes starTwinkle{from{opacity:.12}to{opacity:.9}}

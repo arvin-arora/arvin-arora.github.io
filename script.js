@@ -700,6 +700,7 @@
             rumble(3, { gain: 0.55, from: 90, to: 380 }); // engine bed — raised into speaker-audible range
             whoosh(2.7, { gain: 0.3, from: 220, to: 2400, delay: 0.2 }); // rising exhaust roar
             tone(42, 2.6, { gain: 0.25, slideTo: 95 }); // sub-bass swell for real speakers
+            whoosh(0.55, { gain: 0.22, from: 2500, to: 6500, delay: 1.5 }); // bright sizzle synced to the warp flash
             for (let i = 0; i < 22; i++) { // combustion crackle — the signature of a real launch
               whoosh(0.05 + Math.random() * 0.05, {
                 gain: 0.1 + Math.random() * 0.12,
