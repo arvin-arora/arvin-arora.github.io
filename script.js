@@ -1058,6 +1058,41 @@
     }
   }
 
+  /* ---------- level intro card on arrival ---------- */
+  const INTROS = {
+    'index.html': ['LEVEL 00', 'Spawn Point', 'Nine discoveries hide in this universe. Explore everything.'],
+    'about.html': ['LEVEL 01', 'About the Architect', 'Who’s building all this — and why fundamentals come first.'],
+    'journey.html': ['LEVEL 02', 'The Coding Journey', 'Live Codeforces stats and the roadmap of the whole run.'],
+    'projects.html': ['LEVEL 03', 'The Vault of Builds', 'Real projects only — one of them has its own play area.'],
+    'hostel-app.html': ['LEVEL 03★', 'Simulation Zone', 'You’re inside the app now. Run a check-in.'],
+    'contact.html': ['LEVEL 04', 'Final Level', 'Say hello — the architect actually replies.'],
+  };
+  const intro = INTROS[pageFile];
+  if (intro && !reduceMotion) {
+    const showIntro = () => {
+      const el = document.createElement('div');
+      el.className = 'level-intro';
+      el.innerHTML = `<small>${intro[0]}</small><b>${intro[1]}</b><p>${intro[2]}</p>`;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      sfx.play('pop');
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 500);
+      }, 2400);
+    };
+    if (document.getElementById('entryScreen') && document.body.classList.contains('entry-hold')) {
+      const waitEntry = setInterval(() => {
+        if (!document.body.classList.contains('entry-hold')) {
+          clearInterval(waitEntry);
+          setTimeout(showIntro, 400);
+        }
+      }, 300);
+    } else {
+      setTimeout(showIntro, 900); // right after the portal step-out
+    }
+  }
+
   /* ---------- floating home warp — visible on every level ---------- */
   if (pageFile !== 'index.html') {
     const homeBtn = document.createElement('a');
