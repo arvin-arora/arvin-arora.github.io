@@ -510,7 +510,7 @@ body.entry-hold .hero-in{animation-play-state:paused}
 .entry-field .ok{color:#27c93f;font:700 11px 'DM Mono',monospace}
 .entry-name input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--text);font:600 12.5px 'DM Mono',monospace;text-align:right;padding:0}
 .entry-name input::placeholder{color:var(--muted);opacity:.7}
-.entry-btn{width:100%;justify-content:center;margin-top:14px;font-size:14px;padding:16px 22px;border:none;cursor:pointer;font-family:inherit}
+.entry-btn{width:100%;justify-content:center;margin-top:14px;font-size:14px;padding:16px 22px;cursor:pointer;font-family:inherit}
 .entry-skip{display:block;margin:16px auto 0;background:none;border:none;color:var(--muted);font:600 11px 'DM Mono',monospace;cursor:pointer;transition:color .25s ease,letter-spacing .25s ease}
 .entry-skip:hover{color:var(--accent);letter-spacing:.06em}
 /* cinematic pad rocket — hand-built hull, flame, smoke, camera shake */
@@ -586,7 +586,7 @@ body.entry-hold .hero-in{animation-play-state:paused}
 .enc-eyebrow{margin:0 0 12px;font:500 10px 'DM Mono',monospace;letter-spacing:.2em;color:var(--accent)}
 .enc-card h3{margin:0 0 22px;font-size:clamp(19px,3vw,25px);letter-spacing:-.03em;line-height:1.35}
 .enc-actions{display:flex;flex-direction:column;gap:12px;align-items:center}
-.enc-actions .button{justify-content:center;border:none;cursor:pointer;font-family:inherit}
+.enc-actions .button{justify-content:center;cursor:pointer;font-family:inherit}
 .enc-input{width:100%;max-width:280px;margin:0 auto 20px;display:block;padding:12px 14px;background:#fafafa;border:1px solid #2563eb44;border-radius:6px;color:var(--text);font:600 13px 'DM Mono',monospace;text-align:center;outline:none;transition:border-color .25s ease}
 .enc-input:focus{border-color:var(--accent)}
 .enc-input::placeholder{color:var(--muted);opacity:.7}
