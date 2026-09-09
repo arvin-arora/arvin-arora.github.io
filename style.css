@@ -417,7 +417,7 @@ footer>a:last-child:hover{transform:translateY(-3px);color:var(--accent)}
 
 /* ---------- explore: portal cards on home ---------- */
 .explore-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:55px;perspective:1200px}
-.portal-card{position:relative;overflow:hidden;display:flex;flex-direction:column;padding:26px;border-radius:5px;background:var(--surface);border:1px solid var(--line);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;transform-style:preserve-3d;will-change:transform}
+.portal-card{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px;border-radius:5px;background:var(--surface);border:1px solid var(--line);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;transform-style:preserve-3d;will-change:transform}
 .portal-card::before{content:"";position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,#2563eb30,transparent 70%);opacity:0;transition:opacity .4s ease;pointer-events:none}
 .portal-card:hover::before{opacity:1}
 .portal-card:hover{transform:translateY(-8px);border-color:#2563eb55;box-shadow:0 24px 50px #00000015,0 0 40px #2563eb1f}
