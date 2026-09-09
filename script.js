@@ -1,6 +1,36 @@
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
+  // Slower typing cadence on touch devices = fewer layouts per second = smoother.
+  const pace = finePointer ? 1 : 1.8;
+
+  // Pause the hero's JS loops (typewriter + terminal) while the hero is offscreen,
+  // so scrolling the rest of the page never competes with their layout work.
+  let heroActive = true;
+  const heroResume = [];
+  const heroSection = document.querySelector('.hero');
+  if (heroSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          heroActive = entry.isIntersecting;
+          if (heroActive) {
+            while (heroResume.length) heroResume.shift()();
+          }
+        });
+      },
+      { threshold: 0.03 }
+    ).observe(heroSection);
+  }
+
+  // Likewise pause the marquee ribbon's animation while it's offscreen.
+  const marqueeEl = document.querySelector('.marquee');
+  if (marqueeEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => entries.forEach((entry) => marqueeEl.classList.toggle('offscreen', !entry.isIntersecting)),
+      { threshold: 0 }
+    ).observe(marqueeEl);
+  }
 
   /* ---------- particle constellation background (desktop only — too costly on phones) ---------- */
   const canvas = document.getElementById('bgCanvas');
@@ -109,6 +139,10 @@
     let wi = 0, ci = words[0].length, deleting = true;
     // Start by deleting the pre-rendered first word after a pause.
     const step = () => {
+      if (!heroActive) {
+        heroResume.push(step);
+        return;
+      }
       const word = words[wi];
       if (deleting) {
         ci--;
@@ -117,7 +151,7 @@
           deleting = false;
           wi = (wi + 1) % words.length;
         }
-        setTimeout(step, 38);
+        setTimeout(step, 38 * pace);
       } else {
         ci++;
         typeText.textContent = words[wi].slice(0, ci);
@@ -125,7 +159,7 @@
           deleting = true;
           setTimeout(step, 2200);
         } else {
-          setTimeout(step, 75);
+          setTimeout(step, 75 * pace);
         }
       }
     };
@@ -208,6 +242,10 @@
         termBody.innerHTML = '';
         let li = 0;
         const nextLine = () => {
+          if (!heroActive) {
+            heroResume.push(nextLine);
+            return;
+          }
           if (li >= lines().length) {
             termBody.appendChild(caret);
             scrollTerm();
@@ -221,11 +259,14 @@
           let ci = 0;
           const isCode = line.cls && line.cls.includes('code');
           const typeChar = () => {
+            if (!heroActive) {
+              heroResume.push(typeChar);
+              return;
+            }
             ci++;
             span.textContent = line.text.slice(0, ci);
-            scrollTerm();
             if (ci < line.text.length) {
-              setTimeout(typeChar, line.cmd ? 55 : isCode ? 26 : 20);
+              setTimeout(typeChar, (line.cmd ? 55 : isCode ? 26 : 20) * pace);
             } else {
               finishLine(line, span);
               li++;
@@ -282,7 +323,19 @@
     }
   };
   onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  let scrollQueued = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (scrollQueued) return;
+      scrollQueued = true;
+      requestAnimationFrame(() => {
+        scrollQueued = false;
+        onScroll();
+      });
+    },
+    { passive: true }
+  );
 
   /* ---------- cursor spotlight in hero ---------- */
   const hero = document.querySelector('.hero');

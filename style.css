@@ -149,7 +149,7 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .terminal-bar i:nth-child(2){background:#ffbd2e}
 .terminal-bar i:nth-child(3){background:#27c93f}
 .terminal-bar span{margin-left:8px;font:500 9px 'DM Mono',monospace;color:var(--muted);letter-spacing:.05em}
-.terminal-body{flex:1;padding:13px 14px;font:500 11.5px/1.95 'DM Mono',monospace;color:#d6cdf2;overflow:hidden}
+.terminal-body{flex:1;padding:13px 14px;font:500 11.5px/1.95 'DM Mono',monospace;color:#d6cdf2;overflow:hidden;contain:layout paint}
 .t-line{white-space:pre-wrap;word-break:break-word;min-height:1.95em}
 .t-line .t-prompt{color:var(--accent-3)}
 .t-line.out{color:var(--muted)}
@@ -172,8 +172,8 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 
 /* marquee */
 .marquee{position:relative;z-index:2;overflow:hidden;width:104%;margin:34px 0 0 -2%;padding:15px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-soft);transform:rotate(-1.2deg)}
-.marquee-track{display:flex;align-items:center;width:max-content;animation:marqueeMove 26s linear infinite}
-.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-track{display:flex;align-items:center;width:max-content;will-change:transform;animation:marqueeMove 26s linear infinite}
+.marquee:hover .marquee-track,.marquee.offscreen .marquee-track{animation-play-state:paused}
 .marquee span,.marquee i{margin-right:34px}
 .marquee span{font:800 25px Manrope,sans-serif;letter-spacing:.02em;text-transform:uppercase;color:var(--text);white-space:nowrap;transition:color .3s ease}
 .marquee span:hover{color:var(--accent-2)}
@@ -315,13 +315,19 @@ footer>a:last-child:hover{transform:translateY(-3px);color:var(--accent)}
   .section[data-ghost]::before{font-size:96px;top:30px;-webkit-text-stroke:1px #a78bfa1f}
   .section-details{width:min(420px,calc(100vw - 52px))}
   .quote{padding-left:6%;padding-right:6%}
-  /* perf: phones can't composite these cheaply */
+  /* perf: phones can't composite these cheaply — lite mode */
   #bgCanvas{display:none}
-  .aurora i{animation:none}
+  .aurora{display:none}
+  .hero{background:radial-gradient(120% 90% at 82% 8%,#a78bfa14,transparent 62%),radial-gradient(110% 85% at 8% 92%,#f472b60d,transparent 62%),var(--bg-soft)}
   h1 em,h2 em{animation:none;background-position:30% 50%}
   .hero-in{animation-name:fadeUpLite}
   .reveal{filter:none;transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
   .reveal.is-visible{filter:none}
+  .orbit-one,.orbit-two,.floating-card,.eyebrow span,.pulse::after{animation:none}
+  .marquee{transform:none}
+  .marquee-track{animation-duration:38s}
+  h1{min-height:4.1em}
+  .journey,.projects,.quote,.contact{content-visibility:auto;contain-intrinsic-size:auto 900px}
   .header-right{gap:14px}
   .music-toggle{width:34px;height:34px}
   .hero{min-height:auto;padding:72px 8% 65px;grid-template-columns:1fr}
