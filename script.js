@@ -309,15 +309,20 @@
   }
 
   /* ---------- details reveal (hover/tap the ⓘ buttons) ---------- */
+  const canHover = window.matchMedia('(hover: hover)').matches;
   document.querySelectorAll('.details-btn').forEach((btn) => {
     const host = btn.closest('.project-card, .section-label-row');
     if (!host) return;
     let openedAt = 0;
-    btn.addEventListener('pointerenter', () => {
-      host.classList.add('show-details');
-      openedAt = performance.now();
-    });
-    host.addEventListener('pointerleave', () => host.classList.remove('show-details'));
+    // On touch devices hover events fire on tap and fight the click toggle,
+    // so hover-open/leave-close only bind where real hover exists.
+    if (canHover) {
+      btn.addEventListener('pointerenter', () => {
+        host.classList.add('show-details');
+        openedAt = performance.now();
+      });
+      host.addEventListener('pointerleave', () => host.classList.remove('show-details'));
+    }
     // Tap/keyboard toggle (touchscreens have no hover); don't follow any parent link.
     btn.addEventListener('click', (e) => {
       e.preventDefault();
