@@ -88,7 +88,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(111,183,255,.5)';
+        ctx.fillStyle = 'rgba(158,203,255,.5)';
         ctx.fill();
       }
       for (let i = 0; i < particles.length; i++) {
@@ -100,7 +100,7 @@
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(111,183,255,${0.14 * (1 - d / LINK_DIST)})`;
+            ctx.strokeStyle = `rgba(158,203,255,${0.14 * (1 - d / LINK_DIST)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -1197,6 +1197,30 @@
     } else {
       setTimeout(showIntro, 900); // right after the portal step-out
     }
+  }
+
+  /* ---------- cinematic sky: shooting stars + a passing rocket ---------- */
+  if (finePointer && !reduceMotion) {
+    const spawnShootingStar = () => {
+      const s = document.createElement('i');
+      s.className = 'shooting-star';
+      s.style.top = `${5 + Math.random() * 40}%`;
+      s.style.left = `${30 + Math.random() * 60}%`;
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1400);
+      setTimeout(spawnShootingStar, 7000 + Math.random() * 12000);
+    };
+    setTimeout(spawnShootingStar, 4000);
+    const spawnCruiser = () => {
+      const r = document.createElement('i');
+      r.className = 'sky-rocket';
+      r.textContent = '🚀';
+      r.style.top = `${15 + Math.random() * 55}%`;
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 9500);
+      setTimeout(spawnCruiser, 30000 + Math.random() * 25000);
+    };
+    setTimeout(spawnCruiser, 12000);
   }
 
   /* ---------- floating home warp — visible on every level ---------- */
