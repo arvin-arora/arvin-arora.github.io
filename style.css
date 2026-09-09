@@ -285,7 +285,8 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .project-card h3{margin:0 0 10px;font-size:21px;letter-spacing:-.03em;transition:color .25s ease}
 .project-card:hover h3{color:var(--accent)}
 .project-card p{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 22px}
-.project-card .card-cta{margin:-12px 0 18px;font:600 10.5px 'DM Mono',monospace;color:var(--accent);animation:whisperGlow 4.5s ease-in-out infinite}
+.project-card .card-cta{margin:-12px 0 18px;font:800 12.5px 'DM Mono',monospace;letter-spacing:.04em;background:linear-gradient(110deg,var(--accent) 20%,#ffffff 40%,var(--accent-2) 60%,var(--accent) 80%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ctaShine 2.6s linear infinite;filter:drop-shadow(0 0 8px #9ecbff33)}
+@keyframes ctaShine{to{background-position:-220% 0}}
 .project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
 .project-tags span{padding:5px 10px;border:1px solid #273344;border-radius:20px;font:500 9.5px 'DM Mono',monospace;color:#a8b6c8;transition:border-color .25s ease,color .25s ease}
 .project-card:hover .project-tags span{border-color:#9ecbff66;color:var(--accent)}
@@ -818,4 +819,5 @@ body.app-zone .ambient{display:none}
   .rn-oval,.rn-step.checking .rn-snum{animation:none!important}
   .planet::before,.planet::after,.oring,.oring .sat,.orbit-cap{animation:none!important}
   .shooting-star,.sky-rocket{display:none!important}
+  .project-card .card-cta,.hyper-btn{animation:none!important}
 }
