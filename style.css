@@ -62,17 +62,17 @@ nav a.is-active{color:var(--accent)}
 .hero-kicker{margin:0 0 16px;font:500 11px 'DM Mono',monospace;letter-spacing:.28em;text-transform:uppercase;color:#6f8f00}
 .hero h1{margin:0 -40px;font-size:clamp(52px,11.4vw,215px);line-height:.88;font-weight:700;text-transform:uppercase;letter-spacing:-.035em;white-space:nowrap;text-align:center;color:#101010}
 .hero-photo{position:absolute;bottom:0;left:50%;margin-left:calc(var(--pw)/-2);width:var(--pw);height:var(--ph);z-index:2;border-radius:calc(var(--pw)/2) calc(var(--pw)/2) 0 0;overflow:hidden;will-change:transform}
-.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;filter:grayscale(1) contrast(1.08);animation:heroZoom 2.6s cubic-bezier(.22,1,.36,1) both}
-.hero-photo::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,transparent 60%,#0a0a0aa6 100%)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 10%;filter:contrast(1.04) saturate(1.04);animation:heroZoom 2.6s cubic-bezier(.22,1,.36,1) both}
+.hero-photo::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,transparent 64%,#0a0a0a99 100%)}
 @keyframes heroZoom{from{transform:scale(1.09)}to{transform:scale(1)}}
 /* the real signature — extracted ink, wiped on like it's being signed */
 .sig-real{position:absolute;z-index:3;left:50%;bottom:22px;width:min(200px,42vw);aspect-ratio:846/572;margin-left:calc(min(200px,42vw)/-2);clip-path:inset(0 100% 0 0);animation:sigWipe 1.5s cubic-bezier(.5,0,.25,1) 1.15s forwards}
 .sig-ink{display:block;width:100%;height:100%;background:#fff;-webkit-mask:url('assets/sign.png') center/contain no-repeat;mask:url('assets/sign.png') center/contain no-repeat}
 @keyframes sigWipe{to{clip-path:inset(0 0 0 0)}}
-/* wireframe dome over the portrait — our take on the helmet */
-.dome{position:absolute;z-index:2;left:50%;bottom:calc(var(--ph) - 170px);width:calc(var(--pw)*1.16);margin-left:calc(var(--pw)*-0.58);height:auto;pointer-events:none;will-change:transform;opacity:0;animation:fadeIn .9s ease .7s forwards}
-.dome .d-solid{fill:none;stroke:#8b8b83;stroke-width:1.4}
-.dome .d-soft{fill:none;stroke:#9a9a9455;stroke-width:1}
+/* wireframe crown floating over the portrait — open arcs, nothing over the face */
+.dome{position:absolute;z-index:2;left:50%;bottom:calc(var(--ph) - 44px);width:calc(var(--pw)*0.94);margin-left:calc(var(--pw)*-0.47);height:auto;pointer-events:none;will-change:transform;opacity:0;animation:fadeIn .9s ease .7s forwards}
+.dome .d-solid{fill:none;stroke:#8b8b8388;stroke-width:1.3}
+.dome .d-soft{fill:none;stroke:#9a9a9448;stroke-width:1}
 .dome .d-node{fill:var(--accent);stroke:#0a0a0a33;stroke-width:1}
 /* next-race style card, our real data */
 .next-card{position:absolute;z-index:3;left:40px;bottom:36px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:18px 22px;border:1.6px solid #101010b3;border-radius:18px;background:#f4f4ef99;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#101010;text-align:center;transition:transform .3s ease,border-color .3s ease;opacity:0;animation:fadeIn .8s ease 1.25s forwards}
@@ -110,36 +110,29 @@ main{position:relative;z-index:1}
 .section h2{margin:0;font-size:clamp(44px,7vw,110px);line-height:.95;font-weight:700;text-transform:uppercase;letter-spacing:-.03em}
 .section-intro{margin:26px 0 0;max-width:560px;color:var(--muted);font-size:15px;line-height:1.75}
 
-/* ---------- message / quote ---------- */
-.message{text-align:center}
-.message p{max-width:900px;margin:0 auto;font:400 clamp(28px,4vw,54px)/1.2 var(--serif);letter-spacing:-.02em}
-.message p em{font-style:italic;color:var(--accent)}
-.message .signoff{display:block;margin-top:34px;font:500 12px 'DM Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+/* ---------- statement: giant mixed-type manifesto on dark olive ---------- */
+.statement{position:relative;padding:160px 40px;text-align:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900' viewBox='0 0 900 900'%3E%3Cg fill='none' stroke='%23394130' stroke-width='1.2'%3E%3Cpath d='M130 210 C90 140 150 60 260 70 C370 80 430 150 400 230 C370 310 240 340 170 300 C120 270 150 250 130 210 Z'/%3E%3Cpath d='M160 200 C130 150 180 100 260 108 C340 116 385 165 360 222 C335 279 240 300 190 270 C155 248 175 235 160 200 Z'/%3E%3Cpath d='M620 640 C580 560 660 480 760 500 C860 520 900 610 850 680 C800 750 660 720 620 640 Z'/%3E%3Cpath d='M-40 620 C60 560 180 640 300 600 C420 560 460 640 560 620'/%3E%3Cpath d='M420 60 C520 20 640 100 760 60 C830 37 880 80 940 60'/%3E%3C/g%3E%3C/svg%3E");background-size:900px 900px}
+.st-label{margin:0 0 44px;font:600 11px 'DM Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:#8b9070}
+.st-title{max-width:1180px;margin:0 auto;font-size:clamp(38px,6.2vw,96px);line-height:1.04;font-weight:700;text-transform:uppercase;letter-spacing:-.02em;color:#E9E8DA}
+.st-title em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
 
-/* ---------- off the clock: pinned collection, photos scrubbed by scroll ---------- */
-.offclock{position:relative;height:340vh}
-.oc-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:86px 20px 26px}
-.oc-label{margin:0 0 24px;font:500 11px 'DM Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:#0a0a0ab3}
-.oc-stage{position:relative;display:flex;flex-direction:column;align-items:center}
-.oc-ghost{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);font-size:clamp(210px,42vw,540px);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1.5px #0a0a0a24;pointer-events:none;z-index:0;user-select:none}
-.oc-card{position:relative;z-index:1;margin:0;width:min(320px,60vw);aspect-ratio:4/5;overflow:hidden;border-radius:10px;box-shadow:0 40px 90px #0a0a0a30;will-change:transform}
-.oc-card img{width:100%;height:100%;object-fit:cover}
-.oc-word{margin:26px 0 0;position:relative;z-index:1;font-size:clamp(38px,6.6vw,92px);line-height:.95;font-weight:700;text-transform:uppercase;letter-spacing:-.02em;color:#0a0a0a}
-.oc-meta{display:flex;align-items:center;gap:22px;margin-top:32px}
-.oc-count{font:700 12px 'DM Mono',monospace;letter-spacing:.2em;color:#0a0a0a}
-.oc-ticks{display:flex;gap:8px}
-.oc-ticks i{width:26px;height:3px;background:#0a0a0a26;transition:background .3s ease}
-.oc-ticks i.on{background:#0a0a0a}
-.oc-hint{font:500 10px 'DM Mono',monospace;letter-spacing:.26em;text-transform:uppercase;color:#0a0a0a80}
-.oc-card.swap img{animation:ocPop .55s cubic-bezier(.22,1,.36,1)}
-.oc-word.swap{animation:ocRise .55s cubic-bezier(.22,1,.36,1)}
-@keyframes ocPop{from{transform:scale(1.14);filter:grayscale(1)}to{transform:scale(1);filter:grayscale(0)}}
-@keyframes ocRise{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* ---------- off the clock: pinned fan deck, dealt open by scroll ---------- */
+.offclock{position:relative;height:280vh}
+.oc-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden;padding:110px 20px 0}
+.oc-head{margin:0;font-size:clamp(44px,7vw,110px);line-height:.95;font-weight:700;text-transform:uppercase;letter-spacing:-.03em;color:#101010}
+.oc-sub{margin:6px 0 0;font:italic 400 clamp(26px,3.6vw,54px)/1 var(--serif);letter-spacing:-.01em;color:#6f8f00}
+.oc-fan{position:relative;flex:1;width:100%;max-width:1200px;margin-top:30px}
+.fan-card{position:absolute;left:50%;bottom:-6%;margin:0;width:min(300px,56vw);aspect-ratio:2/3;margin-left:calc(min(300px,56vw)/-2);overflow:hidden;border-radius:22px;box-shadow:0 30px 70px #0a0a0a2e;border:4px solid #fff;transform-origin:50% 132%;will-change:transform;transform:translateY(6%) rotate(0deg)}
+.fan-card img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.fan-card.mid{box-shadow:0 40px 90px #0a0a0a3d}
+.oc-gears{position:absolute;bottom:36px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;z-index:9}
+.oc-gears span{font:700 clamp(13px,1.5vw,19px) 'Space Grotesk',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#101010}
+.oc-gears i{font-style:normal;color:#6f8f00}
 
 /* ---------- full-bleed photo strips ---------- */
 .photo-strip{margin:0;width:100%;overflow:hidden;line-height:0}
-.photo-strip img{width:100%;height:auto;filter:grayscale(1) contrast(1.06);transition:filter .8s ease}
-.photo-strip:hover img{filter:grayscale(0) contrast(1)}
+.photo-strip img{width:100%;height:auto;filter:contrast(1.05) saturate(1.02);transition:transform 1.4s cubic-bezier(.22,1,.36,1)}
+.photo-strip:hover img{transform:scale(1.03)}
 
 /* ---------- roadmap: career rows, giant numerals ---------- */
 .roadmap-rows{position:relative;margin-top:70px;border-top:1px solid var(--line)}
@@ -387,11 +380,17 @@ body.app-zone .site-header.is-scrolled{background:#090d16f5;border-bottom-color:
   .hero{height:auto}
   .hero-sticky{position:relative;height:auto;min-height:100vh}
   .offclock{height:auto}
-  .oc-sticky{position:static;height:auto}
+  .oc-sticky{position:static;height:auto;min-height:88vh}
+  .fan-card:nth-child(1){transform:translateY(10%) rotate(-25.5deg)!important}
+  .fan-card:nth-child(2){transform:translateY(9%) rotate(-17deg)!important}
+  .fan-card:nth-child(3){transform:translateY(7.5%) rotate(-8.5deg)!important}
+  .fan-card:nth-child(4){transform:translateY(6%) rotate(0deg)!important;z-index:10}
+  .fan-card:nth-child(5){transform:translateY(7.5%) rotate(8.5deg)!important}
+  .fan-card:nth-child(6){transform:translateY(9%) rotate(17deg)!important}
+  .fan-card:nth-child(7){transform:translateY(10%) rotate(25.5deg)!important}
   .reveal{opacity:1!important;transform:none!important;transition:none!important}
   .marquee-track,.scroll-cue,.rn-oval,.rn-step.checking .rn-snum{animation:none!important}
   .hero-photo img,.hline span,.hero-kicker,.dome,.next-card,.hero .scroll-cue{animation:none!important;transform:none!important;opacity:1!important}
   .sig-real{animation:none!important;clip-path:none!important}
-  .oc-card.swap img,.oc-word.swap{animation:none!important}
   .brand i{transition:none!important}
 }
