@@ -965,7 +965,7 @@
 
   /* ---------- magnetic buttons ---------- */
   if (finePointer && !reduceMotion) {
-    document.querySelectorAll('.button, .music-toggle').forEach((el) => {
+    document.querySelectorAll('.music-toggle').forEach((el) => {
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
         el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.22}px, ${(e.clientY - r.top - r.height / 2) * 0.22}px)`;
