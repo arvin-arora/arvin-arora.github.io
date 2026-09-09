@@ -68,7 +68,7 @@ nav a.is-active{color:#8fb8dc}
 @keyframes eqBounce{from{transform:scaleY(.35)}to{transform:scaleY(1.25)}}
 
 /* hero */
-.hero{position:relative;min-height:570px;padding:80px 8% 78px;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;background:var(--bg-soft);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.hero{position:relative;min-height:570px;margin-top:28px;padding:80px 8% 78px;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;background:var(--bg-soft);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
 .hero-copy,.hero-art{position:relative;z-index:2}
 .aurora{position:absolute;inset:0;z-index:0;pointer-events:none}
 .aurora i{position:absolute;width:420px;height:420px;border-radius:50%;filter:blur(95px);opacity:.2}
