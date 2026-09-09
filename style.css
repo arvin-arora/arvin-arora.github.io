@@ -73,7 +73,17 @@ nav a.is-active{color:var(--accent)}
 .dome path{fill:none;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
 .dome .d-solid{stroke:#8b8b83;stroke-width:1.6}
 .dome .d-soft{stroke:#9a9a94;stroke-width:1.1}
-.dome .d-node{fill:var(--accent);stroke:#0a0a0a33;stroke-width:1;opacity:0}
+.dome .d-node{fill:var(--accent);stroke:#0a0a0a33;stroke-width:1;opacity:0;transform-box:fill-box;transform-origin:center;animation:nodePulse 2.2s ease-in-out infinite}
+/* ambient hero life — runs with zero interaction */
+.dome-idle{transform-origin:50% 100%;animation:domeFloat 6.5s ease-in-out infinite}
+@keyframes domeFloat{0%,100%{transform:translateY(0) rotate(-1.3deg)}50%{transform:translateY(-7px) rotate(1.3deg)}}
+@keyframes nodePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.7)}}
+.hero-photo img{animation:heroZoom 2.4s cubic-bezier(.22,1,.36,1) both,heroBreathe 7s ease-in-out 2.4s infinite}
+@keyframes heroBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.008)}}
+.topo{animation:topoDrift 90s linear infinite}
+@keyframes topoDrift{from{background-position:0 0}to{background-position:900px 450px}}
+.next-card svg path{stroke-dasharray:100;animation:squiggleRun 4.2s ease-in-out infinite}
+@keyframes squiggleRun{0%{stroke-dashoffset:100}55%,70%{stroke-dashoffset:0}100%{stroke-dashoffset:-100}}
 /* next-race style card, our real data */
 .next-card{position:absolute;z-index:3;left:40px;bottom:36px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:18px 22px;border:1.6px solid #101010b3;border-radius:18px;background:#f4f4ef99;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#101010;text-align:center;transition:transform .3s ease,border-color .3s ease;opacity:0;animation:fadeIn .8s ease 1.25s forwards}
 .next-card:hover{transform:translateY(-4px);border-color:#101010}
@@ -436,7 +446,8 @@ body.app-zone .site-header.is-scrolled{background:#090d16f5;border-bottom-color:
   .fan-card:nth-child(6){transform:translateY(9%) rotate(17deg)!important}
   .fan-card:nth-child(7){transform:translateY(10%) rotate(25.5deg)!important}
   .reveal{opacity:1!important;transform:none!important;transition:none!important}
-  .marquee-track,.scroll-cue,.rn-oval,.rn-step.checking .rn-snum{animation:none!important}
+  .marquee-track,.scroll-cue,.rn-oval,.rn-step.checking .rn-snum,.dome-idle,.d-node,.topo,.next-card svg path{animation:none!important}
+  .next-card svg path{stroke-dashoffset:0!important}
   .hero-photo img,.hline span,.hero-kicker,.dome,.next-card,.hero .scroll-cue{animation:none!important;transform:none!important;opacity:1!important}
   .dome path{stroke-dashoffset:0!important}
   .dome .d-node{opacity:1!important}

@@ -37,7 +37,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/hero-cut.webp">
-  <link rel="stylesheet" href="style.css?v=68">
+  <link rel="stylesheet" href="style.css?v=69">
 </head>
 <body>
   <div class="topo" id="topoLayer" aria-hidden="true"></div>
@@ -58,14 +58,16 @@
           <span class="sig-real"><span class="sig-ink"></span></span>
         </div>
         <svg class="dome" id="heroDome" viewBox="0 0 400 190" aria-hidden="true">
-          <path class="d-solid" d="M30 182 A170 166 0 0 1 370 182" pathLength="100"/>
-          <path class="d-soft" d="M74 182 A126 126 0 0 1 326 182" pathLength="100"/>
-          <path class="d-soft" d="M126 182 A74 78 0 0 1 274 182" pathLength="100"/>
-          <circle class="d-node" cx="200" cy="16" r="3.5"/>
+          <g class="dome-idle">
+            <path class="d-solid" d="M30 182 A170 166 0 0 1 370 182" pathLength="100"/>
+            <path class="d-soft" d="M74 182 A126 126 0 0 1 326 182" pathLength="100"/>
+            <path class="d-soft" d="M126 182 A74 78 0 0 1 274 182" pathLength="100"/>
+            <circle class="d-node" cx="200" cy="16" r="3.5"/>
+          </g>
         </svg>
         <a class="next-card" href="#journey" aria-label="On the grind — live Codeforces count and Scaler SST">
           <small>On the grind</small>
-          <svg viewBox="0 0 120 36" aria-hidden="true"><path d="M6 28 C 28 6, 44 32, 64 16 S 100 8, 114 22"/></svg>
+          <svg viewBox="0 0 120 36" aria-hidden="true"><path d="M6 28 C 28 6, 44 32, 64 16 S 100 8, 114 22" pathLength="100"/></svg>
           <b><span class="cf-count">89+</span> solved</b>
           <span class="nc-div"></span>
           <em>Scaler SST<br>since 2026</em>
@@ -177,6 +179,6 @@
     <span>Hand-coded · no frameworks</span>
     <a href="#home">Back to top ↑</a>
   </footer>
-  <script src="script.js?v=68"></script>
+  <script src="script.js?v=69"></script>
 </body>
 </html>
