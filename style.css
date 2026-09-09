@@ -363,6 +363,8 @@ footer>a:last-child:hover{transform:translateY(-3px);color:var(--accent)}
   .section{padding:80px 8%}
   .about-grid,.journey-grid{grid-template-columns:1fr;gap:40px}
   .about-cards{grid-template-columns:1fr;gap:14px;margin-top:46px}
+  .roadmap-flex{grid-template-columns:1fr}
+  .orbit-scene{display:none}
   .projects-grid{grid-template-columns:1fr;gap:22px;margin-top:40px}
   .contact-grid{grid-template-columns:1fr;gap:44px}
   .section-heading{display:block}
@@ -582,7 +584,25 @@ body.entry-hold .hero-in{animation-play-state:paused}
 @keyframes encGlow{0%,100%{outline-color:#58a6ff22}50%{outline-color:var(--accent)}}
 
 /* ---------- roadmap: the run so far ---------- */
-.roadmap{margin-top:100px;max-width:640px}
+.roadmap{margin-top:100px}
+.roadmap-flex{display:grid;grid-template-columns:minmax(0,620px) 1fr;gap:8%;align-items:start}
+
+/* rotating planet keeping the roadmap company */
+.orbit-scene{position:sticky;top:120px;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:30px}
+.orbit-wrap{position:relative;width:440px;height:440px;max-width:100%;display:flex;align-items:center;justify-content:center}
+.oring{position:absolute;inset:48px;border:1px dashed #58a6ff33;border-radius:50%;animation:spin 24s linear infinite}
+.oring.two{inset:2px;border-color:#58a6ff22;animation:spinReverse 38s linear infinite}
+.oring .sat{position:absolute;top:-14px;left:calc(50% - 12px);font-size:22px;animation:spinReverse 24s linear infinite;display:inline-block}
+.oring.two .sat{animation:spin 38s linear infinite}
+.planet{position:relative;width:210px;height:210px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 30%,#7fc4f0 0%,#2f7fd0 32%,#123b66 64%,#081f38 100%);box-shadow:0 0 70px #58a6ff2e,0 0 24px #58a6ff22;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.orbit-wrap:hover .planet{transform:scale(1.06)}
+.planet::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60px 34px at 60px 82px,#2f9e63d9 0 60%,transparent 65%),radial-gradient(ellipse 88px 40px at 172px 132px,#37a86bc9 0 60%,transparent 66%),radial-gradient(ellipse 46px 24px at 122px 42px,#2f9e63c9 0 60%,transparent 66%),radial-gradient(ellipse 70px 28px at 18px 162px,#37a86bb5 0 60%,transparent 66%);background-size:260px 210px;background-repeat:repeat-x;animation:planetSpin 18s linear infinite}
+.planet::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70px 22px at 90px 55px,#ffffff59 0 60%,transparent 70%),radial-gradient(ellipse 96px 26px at 190px 145px,#ffffff40 0 60%,transparent 70%),radial-gradient(ellipse 54px 18px at 30px 120px,#ffffff4d 0 60%,transparent 70%);background-size:260px 210px;background-repeat:repeat-x;filter:blur(1px);animation:planetSpin 30s linear infinite}
+.orbit-wrap:hover .planet::before{animation-duration:5s}
+.orbit-wrap:hover .planet::after{animation-duration:8s}
+@keyframes planetSpin{to{background-position:260px 0}}
+.planet .shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 26%,#ffffff30 0 10%,transparent 42%),radial-gradient(circle at 74% 80%,#000815b3 24%,transparent 72%);pointer-events:none;z-index:2}
+.orbit-cap{margin:0;font:500 10px 'DM Mono',monospace;letter-spacing:.14em;color:var(--muted);animation:whisperGlow 4.5s ease-in-out infinite}
 .roadmap h3{font-size:clamp(26px,3vw,38px);letter-spacing:-.04em;margin:12px 0 0}
 .road{list-style:none;margin:44px 0 0;padding:0;position:relative}
 .road::before{content:"";position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--accent),var(--accent-2) 55%,var(--line))}
@@ -766,4 +786,5 @@ body.app-zone .ambient{display:none}
   .road li.current .node::after,.r-flame i,.r-smoke{animation:none!important}
   .encounter,.enc-card{transition:none!important}
   .rn-oval,.rn-step.checking .rn-snum{animation:none!important}
+  .planet::before,.planet::after,.oring,.oring .sat,.orbit-cap{animation:none!important}
 }
