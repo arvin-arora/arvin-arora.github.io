@@ -56,24 +56,24 @@ nav a.is-active{color:var(--accent)}
 .text-link:hover{color:var(--accent);letter-spacing:.16em}
 
 /* ---------- hero: white topo entry — portrait, wireframe dome, real signature ---------- */
-.hero{position:relative;height:200vh;--pw:min(460px,80vw);--ph:min(62vh,600px)}
+.hero{position:relative;height:200vh;--pw:min(440px,78vw,45vh);--ph:calc(var(--pw)*1.48)}
 .hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:112px 40px 0}
 .hero-inner{position:relative;z-index:1;text-align:center;transform-origin:center top;will-change:transform,opacity}
 .hero-kicker{margin:0 0 16px;font:500 11px 'DM Mono',monospace;letter-spacing:.28em;text-transform:uppercase;color:#6f8f00}
 .hero h1{margin:0 -40px;font-size:clamp(52px,11.4vw,215px);line-height:.88;font-weight:700;text-transform:uppercase;letter-spacing:-.035em;white-space:nowrap;text-align:center;color:#101010}
-.hero-photo{position:absolute;bottom:0;left:50%;margin-left:calc(var(--pw)/-2);width:var(--pw);height:var(--ph);z-index:2;border-radius:calc(var(--pw)/2) calc(var(--pw)/2) 0 0;overflow:hidden;will-change:transform}
-.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 10%;filter:contrast(1.04) saturate(1.04);animation:heroZoom 2.6s cubic-bezier(.22,1,.36,1) both}
-.hero-photo::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,transparent 64%,#0a0a0a99 100%)}
-@keyframes heroZoom{from{transform:scale(1.09)}to{transform:scale(1)}}
+.hero-photo{position:absolute;bottom:0;left:50%;margin-left:calc(var(--pw)/-2);width:var(--pw);z-index:2;will-change:transform}
+.hero-photo img{width:100%;height:auto;display:block;filter:contrast(1.05) saturate(1.06) drop-shadow(0 26px 44px #0a0a0a26);animation:heroZoom 2.4s cubic-bezier(.22,1,.36,1) both;transform-origin:bottom center}
+@keyframes heroZoom{from{transform:scale(1.06) translateY(14px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 /* the real signature — extracted ink, wiped on like it's being signed */
 .sig-real{position:absolute;z-index:3;left:50%;bottom:22px;width:min(200px,42vw);aspect-ratio:846/572;margin-left:calc(min(200px,42vw)/-2);clip-path:inset(0 100% 0 0);animation:sigWipe 1.5s cubic-bezier(.5,0,.25,1) 1.15s forwards}
 .sig-ink{display:block;width:100%;height:100%;background:#fff;-webkit-mask:url('assets/sign.png') center/contain no-repeat;mask:url('assets/sign.png') center/contain no-repeat}
 @keyframes sigWipe{to{clip-path:inset(0 0 0 0)}}
-/* wireframe crown floating over the portrait — open arcs, nothing over the face */
-.dome{position:absolute;z-index:2;left:50%;bottom:calc(var(--ph) - 44px);width:calc(var(--pw)*0.94);margin-left:calc(var(--pw)*-0.47);height:auto;pointer-events:none;will-change:transform;opacity:0;animation:fadeIn .9s ease .7s forwards}
-.dome .d-solid{fill:none;stroke:#8b8b8388;stroke-width:1.3}
-.dome .d-soft{fill:none;stroke:#9a9a9448;stroke-width:1}
-.dome .d-node{fill:var(--accent);stroke:#0a0a0a33;stroke-width:1}
+/* wireframe crown — draws itself in and settles onto the head as you scroll */
+.dome{position:absolute;z-index:3;left:50%;bottom:calc(var(--ph) - 40px);width:calc(var(--pw)*0.94);margin-left:calc(var(--pw)*-0.47);height:auto;pointer-events:none;will-change:transform}
+.dome path{fill:none;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
+.dome .d-solid{stroke:#8b8b83;stroke-width:1.6}
+.dome .d-soft{stroke:#9a9a94;stroke-width:1.1}
+.dome .d-node{fill:var(--accent);stroke:#0a0a0a33;stroke-width:1;opacity:0}
 /* next-race style card, our real data */
 .next-card{position:absolute;z-index:3;left:40px;bottom:36px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:18px 22px;border:1.6px solid #101010b3;border-radius:18px;background:#f4f4ef99;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#101010;text-align:center;transition:transform .3s ease,border-color .3s ease;opacity:0;animation:fadeIn .8s ease 1.25s forwards}
 .next-card:hover{transform:translateY(-4px);border-color:#101010}
@@ -116,15 +116,40 @@ main{position:relative;z-index:1}
 .st-title{max-width:1180px;margin:0 auto;font-size:clamp(38px,6.2vw,96px);line-height:1.04;font-weight:700;text-transform:uppercase;letter-spacing:-.02em;color:#E9E8DA}
 .st-title em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
 
+/* ---------- message from arvin: photo + quote + signature ---------- */
+.mf-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center;margin-top:60px}
+.mf-photo{position:relative;margin:0;overflow:hidden;border-radius:16px}
+.mf-photo img{width:100%;height:auto;display:block;transition:transform 1.2s cubic-bezier(.22,1,.36,1)}
+.mf-photo:hover img{transform:scale(1.045)}
+.mf-photo figcaption{position:absolute;left:16px;bottom:16px;font:600 9.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#0a0a0ab3;padding:6px 12px;border-radius:9px}
+.mf-quote{margin:0;font:400 clamp(24px,2.7vw,42px)/1.24 var(--serif);letter-spacing:-.01em;color:#101010}
+.mf-quote em{font-style:italic;color:#6f8f00}
+.mf-sig{display:block;width:172px;margin-top:30px;aspect-ratio:846/572;background:#101010;transform:rotate(-6deg)}
+
 /* ---------- off the clock: pinned fan deck, dealt open by scroll ---------- */
 .offclock{position:relative;height:280vh}
 .oc-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden;padding:110px 20px 0}
 .oc-head{margin:0;font-size:clamp(44px,7vw,110px);line-height:.95;font-weight:700;text-transform:uppercase;letter-spacing:-.03em;color:#101010}
 .oc-sub{margin:6px 0 0;font:italic 400 clamp(26px,3.6vw,54px)/1 var(--serif);letter-spacing:-.01em;color:#6f8f00}
 .oc-fan{position:relative;flex:1;width:100%;max-width:1200px;margin-top:30px}
-.fan-card{position:absolute;left:50%;bottom:-6%;margin:0;width:min(300px,56vw);aspect-ratio:2/3;margin-left:calc(min(300px,56vw)/-2);overflow:hidden;border-radius:22px;box-shadow:0 30px 70px #0a0a0a2e;border:4px solid #fff;transform-origin:50% 132%;will-change:transform;transform:translateY(6%) rotate(0deg)}
-.fan-card img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.fan-card{position:absolute;left:50%;bottom:-6%;margin:0;width:min(300px,56vw);aspect-ratio:2/3;margin-left:calc(min(300px,56vw)/-2);overflow:hidden;border-radius:22px;box-shadow:0 30px 70px #0a0a0a2e;border:4px solid #fff;transform-origin:50% 132%;will-change:transform}
+.fan-card img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;transition:transform .5s ease}
+.fan-card:hover img{transform:scale(1.07)}
+.fan-card figcaption{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font:600 9.5px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#0a0a0ab3;padding:6px 12px;border-radius:9px;white-space:nowrap}
 .fan-card.mid{box-shadow:0 40px 90px #0a0a0a3d}
+/* default fan (no JS needed) — scroll finishes the deal */
+.fan-card:nth-child(1){transform:translateY(8.4%) rotate(-9deg);z-index:4}
+.fan-card:nth-child(2){transform:translateY(7.4%) rotate(-6deg);z-index:6}
+.fan-card:nth-child(3){transform:translateY(6.7%) rotate(-3deg);z-index:8}
+.fan-card:nth-child(4){transform:translateY(6%);z-index:10}
+.fan-card:nth-child(5){transform:translateY(6.7%) rotate(3deg);z-index:8}
+.fan-card:nth-child(6){transform:translateY(7.4%) rotate(6deg);z-index:6}
+.fan-card:nth-child(7){transform:translateY(8.4%) rotate(9deg);z-index:4}
+.oc-cue{margin-left:16px;font:500 10px 'DM Mono',monospace;font-style:normal;letter-spacing:.24em;text-transform:uppercase;color:#0a0a0a80;animation:cueFloat 2.6s ease-in-out infinite}
+/* split-card visuals */
+.split-visual{margin:-46px -40px 28px;height:220px;overflow:hidden}
+.split-visual img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.split-card:hover .split-visual img{transform:scale(1.05)}
 .oc-gears{position:absolute;bottom:36px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;z-index:9}
 .oc-gears span{font:700 clamp(13px,1.5vw,19px) 'Space Grotesk',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#101010}
 .oc-gears i{font-style:normal;color:#6f8f00}
@@ -235,7 +260,26 @@ body{transition:none}
 .light-ink.message p em{color:#6f8f00}
 .light-ink .hero-kicker{color:#6f8f00}
 .light-ink .toolkit-note{color:#4c4c48}
-.light-ink .g-card,.light-ink .split-card{border-color:#00000022}
+/* project cards go paper-white on light worlds */
+.light-ink .g-card{background:#FFFFFF;border:1px solid #E3E1D8;box-shadow:0 14px 40px #0a0a0a0d;color:#101010}
+.light-ink .g-card:hover{border-color:#101010;box-shadow:0 22px 54px #0a0a0a14}
+.light-ink .g-card h3{color:#101010}
+.light-ink .g-card p{color:#5b5b56}
+.light-ink .g-card:hover h3{color:#6f8f00}
+.light-ink .g-visual{background:#F4F4EF;border-color:#E3E1D8}
+.light-ink .g-card:hover .g-visual{background:#EDEDE3}
+.light-ink .g-year{color:#7a7a74}
+.light-ink .g-tag{color:#7a7a74;border-color:#E3E1D8}
+.light-ink .g-card:hover .g-tag{color:#6f8f00;border-color:#6f8f0088}
+.light-ink .g-card .text-link{color:#101010;border-color:#6f8f00}
+.light-ink .g-card .text-link:hover{color:#6f8f00}
+.light-ink .g-card.coming{background:transparent;border-style:dashed}
+.light-ink .toolkit-row span{color:#b3b1a5}
+.light-ink .toolkit-row span:hover{color:#101010}
+.oc-gears span{transition:color .3s ease;cursor:default}
+.oc-gears span:hover{color:#6f8f00}
+.outro-col a::after{content:" →";opacity:0;transition:opacity .25s ease}
+.outro-col a:hover::after{opacity:1}
 
 /* ---------- reveals ---------- */
 .reveal{opacity:0;transform:translateY(36px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -352,6 +396,7 @@ body.app-zone .site-header.is-scrolled{background:#090d16f5;border-bottom-color:
 /* ---------- responsive ---------- */
 @media(max-width:900px){
   .split,.gallery{grid-template-columns:1fr}
+  .mf-grid{grid-template-columns:1fr;gap:36px}
   .rm-row{grid-template-columns:110px 1fr;gap:20px}
   .rm-tag{display:none}
   .foot-grid{grid-template-columns:1fr;gap:36px}
@@ -393,6 +438,8 @@ body.app-zone .site-header.is-scrolled{background:#090d16f5;border-bottom-color:
   .reveal{opacity:1!important;transform:none!important;transition:none!important}
   .marquee-track,.scroll-cue,.rn-oval,.rn-step.checking .rn-snum{animation:none!important}
   .hero-photo img,.hline span,.hero-kicker,.dome,.next-card,.hero .scroll-cue{animation:none!important;transform:none!important;opacity:1!important}
+  .dome path{stroke-dashoffset:0!important}
+  .dome .d-node{opacity:1!important}
   .sig-real{animation:none!important;clip-path:none!important}
   .brand i{transition:none!important}
 }

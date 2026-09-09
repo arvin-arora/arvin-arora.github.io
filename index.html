@@ -36,7 +36,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=67">
+  <link rel="preload" as="image" href="assets/hero-cut.webp">
+  <link rel="stylesheet" href="style.css?v=68">
 </head>
 <body>
   <div class="topo" id="topoLayer" aria-hidden="true"></div>
@@ -53,13 +54,13 @@
           <h1 aria-label="Arvin Arora"><span class="hline"><span>Arvin&nbsp;Arora</span></span></h1>
         </div>
         <div class="hero-photo" aria-hidden="true">
-          <img src="assets/arvin-1.jpg" alt="" onerror="this.parentElement.style.display='none'">
+          <img src="assets/hero-cut.webp" alt="" onerror="this.src='assets/arvin-1.jpg'">
           <span class="sig-real"><span class="sig-ink"></span></span>
         </div>
         <svg class="dome" id="heroDome" viewBox="0 0 400 190" aria-hidden="true">
-          <path class="d-solid" d="M30 182 A170 166 0 0 1 370 182"/>
-          <path class="d-soft" d="M74 182 A126 126 0 0 1 326 182" stroke-dasharray="3 8"/>
-          <path class="d-soft" d="M126 182 A74 78 0 0 1 274 182" stroke-dasharray="3 8"/>
+          <path class="d-solid" d="M30 182 A170 166 0 0 1 370 182" pathLength="100"/>
+          <path class="d-soft" d="M74 182 A126 126 0 0 1 326 182" pathLength="100"/>
+          <path class="d-soft" d="M126 182 A74 78 0 0 1 274 182" pathLength="100"/>
           <circle class="d-node" cx="200" cy="16" r="3.5"/>
         </svg>
         <a class="next-card" href="#journey" aria-label="On the grind — live Codeforces count and Scaler SST">
@@ -80,20 +81,31 @@
       <h2 class="st-title reveal">Redefining <em>basics</em>, fighting for <em>rating</em>, bringing it all in all ways. Defining a <em>legacy</em> in code on and off the <em>screen</em>.</h2>
     </section>
 
+    <section class="section msgfrom light-ink" data-bg="#F4F4EF">
+      <p class="section-label reveal">Message from Arvin</p>
+      <div class="mf-grid">
+        <figure class="mf-photo reveal"><img src="assets/arvin-14.jpg" alt="Arvin Arora on the road" loading="lazy"><figcaption>On the road · 2026</figcaption></figure>
+        <div class="mf-copy reveal">
+          <p class="mf-quote">“Start small, stay <em>consistent</em> — the problems, the reps and the roadmap all <em>compound</em>.”</p>
+          <span class="mf-sig sig-ink" aria-hidden="true"></span>
+        </div>
+      </div>
+    </section>
+
     <section class="offclock light-ink" id="offclock" aria-label="Off the clock" data-bg="#F4F4EF">
       <div class="oc-sticky">
         <h2 class="oc-head">Off the clock</h2>
         <p class="oc-sub">the four gears</p>
         <div class="oc-fan" id="ocFan" aria-label="Photos of Arvin off the clock">
-          <figure class="fan-card"><img src="assets/arvin-4.jpg" alt="Arvin Arora" loading="lazy"></figure>
-          <figure class="fan-card"><img src="assets/arvin-7.jpg" alt="Arvin Arora" loading="lazy"></figure>
-          <figure class="fan-card"><img src="assets/arvin-13.jpg" alt="Arvin Arora in the mountains" loading="lazy"></figure>
-          <figure class="fan-card mid"><img src="assets/arvin-12.jpg" alt="Arvin Arora" loading="lazy"></figure>
-          <figure class="fan-card"><img src="assets/arvin-10.jpg" alt="Arvin Arora on his Royal Enfield" loading="lazy"></figure>
-          <figure class="fan-card"><img src="assets/arvin-6.jpg" alt="Arvin Arora" loading="lazy"></figure>
-          <figure class="fan-card"><img src="assets/arvin-5.jpg" alt="Arvin Arora" loading="lazy"></figure>
+          <figure class="fan-card"><img src="assets/arvin-4.jpg" alt="Arvin Arora" loading="lazy"><figcaption>2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-7.jpg" alt="Arvin Arora" loading="lazy"><figcaption>game zone</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-13.jpg" alt="Arvin Arora in the mountains" loading="lazy"><figcaption>the mountains</figcaption></figure>
+          <figure class="fan-card mid"><img src="assets/arvin-12.jpg" alt="Arvin Arora" loading="lazy"><figcaption>cafe days</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-10.jpg" alt="Arvin Arora on his Royal Enfield" loading="lazy"><figcaption>the enfield</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-6.jpg" alt="Arvin Arora" loading="lazy"><figcaption>2026</figcaption></figure>
+          <figure class="fan-card"><img src="assets/arvin-5.jpg" alt="Arvin Arora" loading="lazy"><figcaption>off day</figcaption></figure>
         </div>
-        <div class="oc-gears"><span>Driving</span><i>·</i><span>Gym</span><i>·</i><span>Code</span><i>·</i><span>Punjabi Beats</span></div>
+        <div class="oc-gears"><span>Driving</span><i>·</i><span>Gym</span><i>·</i><span>Code</span><i>·</i><span>Punjabi Beats</span><em class="oc-cue">keep scrolling ↓</em></div>
       </div>
     </section>
 
@@ -111,13 +123,13 @@
         <div class="rm-row next reveal"><div class="rm-year">Soon</div><div class="rm-body"><h3>Internship-Ready</h3><p>The boss level — reached one problem at a time.</p></div><span class="rm-tag">The goal</span></div>
       </div>
       <div class="split">
-        <div class="split-card reveal"><span class="ghost">01</span><h3>On the<br>Grind</h3><p>Competitive programming and the core concepts everything else gets built on.</p><ul>
+        <div class="split-card reveal"><div class="split-visual"><img src="assets/arvin-4.jpg" alt="" loading="lazy"></div><span class="ghost">01</span><h3>On the<br>Grind</h3><p>Competitive programming and the core concepts everything else gets built on.</p><ul>
           <li>Codeforces handle<b>Arvin2417</b></li>
           <li>Problems solved · live<b><span class="cf-count">89+</span></b></li>
           <li>Max solving streak<b>15 days</b></li>
           <li>Current focus<b>Fundamentals &amp; DSA</b></li>
         </ul><a class="text-link" href="https://codeforces.com/profile/Arvin2417" target="_blank" rel="noopener">view codeforces ↗</a></div>
-        <div class="split-card reveal"><span class="ghost">02</span><h3>Off the<br>Grind</h3><p>Learning by building — real projects only, each one shipped and live.</p><ul>
+        <div class="split-card reveal"><div class="split-visual"><img src="assets/arvin-10.jpg" alt="" loading="lazy"></div><span class="ghost">02</span><h3>Off the<br>Grind</h3><p>Learning by building — real projects only, each one shipped and live.</p><ul>
           <li>Hostel Attendance App<b>React Native · own backend</b></li>
           <li>This website<b>Hand-coded · no frameworks</b></li>
           <li>Next build<b>In the works</b></li>
@@ -165,6 +177,6 @@
     <span>Hand-coded · no frameworks</span>
     <a href="#home">Back to top ↑</a>
   </footer>
-  <script src="script.js?v=67"></script>
+  <script src="script.js?v=68"></script>
 </body>
 </html>

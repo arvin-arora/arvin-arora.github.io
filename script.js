@@ -23,6 +23,8 @@
   const heroInner = document.querySelector('.hero-inner');
   const topoLayer = document.getElementById('topoLayer');
   const dome = document.getElementById('heroDome');
+  const domePaths = dome ? Array.from(dome.querySelectorAll('path')) : [];
+  const domeNode = dome ? dome.querySelector('.d-node') : null;
   const ocSec = document.querySelector('.offclock');
   const fanCards = Array.from(document.querySelectorAll('.fan-card'));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -80,27 +82,42 @@
   };
 
   const applyMotion = () => {
-    st.heroP = lerp(st.heroP, tg.heroP, 0.09);
+    st.heroP = lerp(st.heroP, tg.heroP, 0.12);
     st.oc = lerp(st.oc, tg.oc, 0.09);
     st.fill = lerp(st.fill, tg.fill, 0.12);
     st.line = lerp(st.line, tg.line, 0.12);
     st.topo = lerp(st.topo, tg.topo, 0.1);
     if (topoLayer) topoLayer.style.opacity = st.topo.toFixed(3);
+    // hero scrub, two phases like the reference: the crown draws itself in and
+    // settles onto the head, then every layer parallax-exits at its own depth
+    const hp = st.heroP;
+    const clamp01 = (v) => Math.min(1, Math.max(0, v));
+    const drawP = clamp01(hp * 2.4);
+    const limeP = clamp01((hp - 0.42) * 4);
+    const exitP = clamp01((hp - 0.52) * 2.3);
+    const exitE = exitP * exitP;
     if (heroInner) {
-      heroInner.style.transform = `translateY(${(-st.heroP * 60).toFixed(1)}px) scale(${(1 - st.heroP * 0.16).toFixed(3)})`;
-      heroInner.style.opacity = Math.max(0, 1 - st.heroP * 1.1).toFixed(3);
+      heroInner.style.transform = `translateY(${(-exitP * 80).toFixed(1)}px) scale(${(1 - exitP * 0.14).toFixed(3)})`;
+      heroInner.style.opacity = Math.max(0, 1 - exitP * 1.25).toFixed(3);
     }
-    if (heroPhoto) heroPhoto.style.transform = `translate3d(0, ${(st.heroP * 110).toFixed(1)}px, 0) scale(${(1 + st.heroP * 0.06).toFixed(3)})`;
-    if (dome) dome.style.transform = `rotate(${(st.heroP * -9).toFixed(2)}deg) translateY(${(st.heroP * 74).toFixed(1)}px)`;
+    if (heroPhoto) heroPhoto.style.transform = `translate3d(0, ${(exitE * 130).toFixed(1)}px, 0)`;
+    if (dome) {
+      domePaths.forEach((p, i) => {
+        p.style.strokeDashoffset = (100 * (1 - clamp01(drawP * 1.15 - i * 0.12))).toFixed(2);
+        const g = Math.round(139 + (184 - 139) * limeP);
+        p.style.stroke = `rgb(${Math.round(139 - limeP * (139 - 143))},${g},${Math.round(131 - limeP * 131)})`;
+      });
+      if (domeNode) domeNode.style.opacity = clamp01((drawP - 0.85) * 6).toFixed(2);
+      dome.style.transform = `translateY(${(-34 * (1 - drawP) + exitE * 160).toFixed(1)}px) rotate(${(exitP * -8).toFixed(2)}deg)`;
+    }
     if (fanCards.length) {
-      // the deck deals open as the pinned section is scrolled
-      const p = Math.min(1, st.oc * 1.5);
+      // deck starts part-fanned (CSS default) and deals fully open on scroll
+      const p = 0.35 + 0.65 * Math.min(1, st.oc * 1.4);
       const mid = (fanCards.length - 1) / 2;
       fanCards.forEach((el, i) => {
         const k = i - mid;
         const lift = Math.abs(k) * 1.4 * p;
         el.style.transform = `translateY(${(6 + lift).toFixed(2)}%) rotate(${(k * 8.5 * p).toFixed(2)}deg)`;
-        el.style.zIndex = String(10 - Math.abs(k) * 2);
       });
     }
     if (scrollName) scrollName.style.setProperty('--fill', `${st.fill.toFixed(2)}%`);
