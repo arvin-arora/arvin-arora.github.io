@@ -718,7 +718,8 @@ body.app-zone{--bg:#090D16;--bg-soft:#0F172A;--surface:#1E293B;--surface-2:#131C
 body.app-zone::before{background-image:linear-gradient(#2563EB0d 1px,transparent 1px),linear-gradient(90deg,#2563EB0d 1px,transparent 1px);background-size:28px 28px}
 body.app-zone .ambient{display:none}
 .zone-tape{position:relative;z-index:5;padding:10px 14px;text-align:center;font:700 10px 'DM Mono',monospace;letter-spacing:.2em;color:#FBBF24;background:repeating-linear-gradient(-45deg,#451A0380 0 14px,#0F172A80 14px 28px);border-top:1px solid #D97706;border-bottom:1px solid #D97706}
-.app-logo{width:56px;height:56px;border-radius:12px;vertical-align:middle;margin-right:16px;border:1px solid #334155;background:#fff}
+.app-title{display:flex;align-items:center;gap:18px}
+.app-logo{flex:none;width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #334155;background:#fff;box-shadow:0 0 18px #2563EB33}
 
 /* ---------- the simulated phone runs the app's real palette & strings ---------- */
 .rn-screen{height:600px;padding:40px 12px 12px;background:#090D16;display:flex;flex-direction:column;gap:10px;overflow:hidden;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
