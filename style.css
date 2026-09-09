@@ -154,12 +154,12 @@ h1 em,h2 em{color:var(--accent-2)}
 .t-line{white-space:pre-wrap;word-break:break-word;min-height:1.95em}
 .t-line .t-prompt{color:var(--accent-3)}
 .t-line.out{color:var(--muted)}
-.t-line.hi{color:var(--accent-2)}
+.t-line.hi{color:#34d399}
 .t-line.code{color:#d8dae2}
 .t-kw{color:var(--accent)}
 .t-str{color:var(--accent-3)}
 .t-cm{color:#8a8a93;font-style:italic}
-.t-caret{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(2) infinite}
+.t-caret{display:inline-block;width:7px;height:13px;background:#60a5fa;vertical-align:-2px;animation:blink 1s steps(2) infinite}
 .floating-card{position:absolute;z-index:2;background:var(--surface-2);border:1px solid var(--line);box-shadow:0 10px 25px #00000080;border-radius:5px;padding:12px;animation:float 5s ease-in-out infinite;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;cursor:default}
 .floating-card:hover{animation:none;transform:translateY(-8px) scale(1.08);box-shadow:0 18px 38px #000000b3;border-color:#2563eb66}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
