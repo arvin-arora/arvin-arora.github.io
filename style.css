@@ -74,6 +74,8 @@ nav a.is-active{color:var(--accent)}
 @keyframes drift2{to{transform:translate(-120px,-80px) scale(1.15)}}
 @keyframes drift3{to{transform:translate(-90px,70px) scale(.85)}}
 .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(560px circle at var(--mx,72%) var(--my,38%),#a78bfa1a,transparent 65%)}
+.hero-photo{position:absolute;top:0;right:0;bottom:0;width:54%;z-index:0;opacity:.26;pointer-events:none;-webkit-mask-image:linear-gradient(270deg,#000 15%,transparent 85%);mask-image:linear-gradient(270deg,#000 15%,transparent 85%)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;filter:grayscale(1) brightness(.5) contrast(1.15) sepia(1) hue-rotate(212deg) saturate(2.4)}
 
 .eyebrow,.section-label{font:500 11px/1.4 'DM Mono',monospace;letter-spacing:.08em;color:#8f84ad;transition:color .3s ease,letter-spacing .3s ease}
 .section-label:hover{color:var(--accent);letter-spacing:.16em}
@@ -192,20 +194,12 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .about-photos::before{content:"";position:absolute;inset:-8% -6%;background:radial-gradient(48% 48% at 60% 45%,#a78bfa1f,transparent 70%);filter:blur(28px);z-index:0;pointer-events:none}
 .photo{position:absolute;margin:0;border-radius:10px;overflow:hidden;border:1px solid #a78bfa2b;background:var(--surface);box-shadow:0 24px 60px #000c;transition:transform .6s cubic-bezier(.22,1,.36,1),box-shadow .5s ease,filter .5s ease}
 .photo img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.35) saturate(.72) contrast(1.06) brightness(.85);transition:filter .6s ease}
-.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(165deg,#a78bfa2e 0%,#08060f14 38%,#08060fa6 100%);pointer-events:none;transition:opacity .6s ease}
-.p1{width:62%;height:84%;right:4%;top:8%;z-index:3;transform:rotate(1.5deg)}
-.p1 img{object-position:50% 18%}
-.p2{width:46%;height:58%;left:0;top:0;z-index:2;transform:rotate(-5deg)}
-.p2 img{object-position:50% 28%;filter:grayscale(.55) saturate(.6) contrast(1.05) brightness(.7)}
-.p3{width:48%;height:54%;left:3%;bottom:0;z-index:1;transform:rotate(4deg)}
-.p3 img{object-position:42% 32%;filter:grayscale(.6) saturate(.55) contrast(1.05) brightness(.62)}
-.about-photos:hover .p1{transform:rotate(0) scale(1.04);box-shadow:0 30px 72px #000d,0 0 44px #a78bfa30}
+.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(165deg,#a78bfa42 0%,#08060f1f 38%,#08060fb0 100%);pointer-events:none;transition:opacity .6s ease}
+.p1{width:82%;height:100%;right:2%;top:0;z-index:3;transform:rotate(1.2deg)}
+.p1 img{object-position:50% 16%}
+.about-photos:hover .p1{transform:rotate(0) scale(1.03);box-shadow:0 30px 72px #000d,0 0 44px #a78bfa30}
 .about-photos:hover .p1 img{filter:grayscale(.05) saturate(.95) contrast(1.03) brightness(1)}
-.about-photos:hover .p1::after{opacity:.45}
-.about-photos:hover .p2{transform:rotate(-8deg) translate(-12px,-8px)}
-.about-photos:hover .p2 img{filter:grayscale(.35) saturate(.75) contrast(1.05) brightness(.85)}
-.about-photos:hover .p3{transform:rotate(8deg) translate(-8px,10px)}
-.about-photos:hover .p3 img{filter:grayscale(.4) saturate(.7) contrast(1.05) brightness(.78)}
+.about-photos:hover .p1::after{opacity:.4}
 .photo figcaption{position:absolute;left:10px;bottom:10px;z-index:2;padding:5px 10px;border-radius:4px;background:#08060fcc;border:1px solid #a78bfa33;backdrop-filter:blur(6px);font:500 9.5px 'DM Mono',monospace;letter-spacing:.06em;color:var(--accent)}
 .about-copy{max-width:490px;color:var(--muted);font-size:15px;line-height:1.8}
 .about-copy p{margin-bottom:20px;transition:color .35s ease,transform .35s ease}
@@ -318,6 +312,7 @@ footer>a:last-child:hover{transform:translateY(-3px);color:var(--accent)}
   .header-right{gap:14px}
   .music-toggle{width:34px;height:34px}
   .hero{min-height:auto;padding:72px 8% 65px;grid-template-columns:1fr}
+  .hero-photo{width:100%;opacity:.12;-webkit-mask-image:linear-gradient(180deg,#000 30%,transparent 90%);mask-image:linear-gradient(180deg,#000 30%,transparent 90%)}
   .hero-art{width:300px;height:300px;margin-top:58px}
   .terminal{inset:34px 0}
   .terminal-body{font-size:10.5px}
