@@ -88,7 +88,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(158,203,255,.5)';
+        ctx.fillStyle = 'rgba(91,140,255,.5)';
         ctx.fill();
       }
       for (let i = 0; i < particles.length; i++) {
@@ -100,7 +100,7 @@
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(158,203,255,${0.14 * (1 - d / LINK_DIST)})`;
+            ctx.strokeStyle = `rgba(91,140,255,${0.14 * (1 - d / LINK_DIST)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -895,7 +895,7 @@
       if (skipBtn) skipBtn.addEventListener('click', () => {
         const who = savePilot();
         done();
-        setTimeout(() => toast(`🚀 Welcome aboard, ${who}.`), 700);
+        setTimeout(() => toast(`Welcome aboard, ${who}.`), 700);
       });
       const launchBtn = document.getElementById('entryBtn');
       if (nameInput && launchBtn) nameInput.addEventListener('keydown', (e) => {
@@ -903,7 +903,7 @@
       });
       if (launchBtn) launchBtn.addEventListener('click', () => {
         const who = savePilot();
-        setTimeout(() => toast(`🚀 Welcome aboard, ${who}. 9 discoveries await.`), 2600);
+        setTimeout(() => toast(`Welcome aboard, ${who} — 9 discoveries are hidden here.`), 2600);
         sfx.play('rocket');
         entry.classList.add('launching');
         // launchpad smoke billowing out during ignition
@@ -1066,10 +1066,10 @@
     QUESTS.forEach((q) => {
       const li = document.createElement('li');
       if (questState[q.id]) {
-        li.innerHTML = `<span>${q.icon}</span><b>${q.name}</b>`;
+        li.innerHTML = `<b>${q.name}</b>`;
       } else {
         li.className = 'locked';
-        li.innerHTML = `<span>❓</span><b>???</b><em>· ${q.hint}</em>`;
+        li.innerHTML = `<b>???</b><em>· ${q.hint}</em>`;
       }
       ul.appendChild(li);
     });
@@ -1107,12 +1107,12 @@
     try { sessionStorage.setItem('aa_quests', JSON.stringify(questState)); } catch (e) {}
     renderQuests();
     const done = QUESTS.filter((x) => questState[x.id]).length;
-    toast(`🏆 ${q.icon} ${q.name} discovered · ${done}/${QUESTS.length}`);
+    toast(`DISCOVERY — ${q.name} · ${done}/${QUESTS.length}`);
     sfx.play('unlock');
     if (!reduceMotion) sparkBurst(window.innerWidth / 2, 130, 14);
     if (done === QUESTS.length) {
       setTimeout(() => {
-        toast(`🌟 100% EXPLORED — ${pilot}, you’ve seen the whole universe. Respect!`);
+        toast(`100% EXPLORED — ${pilot}, you found everything.`);
         sfx.play('complete');
         if (!reduceMotion) {
           sparkBurst(window.innerWidth * 0.3, window.innerHeight * 0.4, 16);
@@ -1186,7 +1186,7 @@
           pnLink.removeAttribute('aria-disabled');
         }
         try { sessionStorage.setItem('lvl' + lvl, '1'); } catch (e) {}
-        toast(`✅ LEVEL ${lvl} CLEARED — nice run, ${pilot}. A portal has been revealed`);
+        toast(`LEVEL ${lvl} CLEARED — exit portal revealed`);
         sfx.play('unlock');
         if (!reduceMotion) {
           const r = pageNext.getBoundingClientRect();
@@ -1243,7 +1243,7 @@
     const hbtn = document.createElement('button');
     hbtn.type = 'button';
     hbtn.className = 'hyper-btn';
-    hbtn.textContent = '⚡ HYPERJUMP';
+    hbtn.textContent = 'HYPERJUMP →';
     hbtn.setAttribute('aria-label', 'Hyperjump to the next level');
     const host = document.querySelector('.page-next');
     if (host) host.appendChild(hbtn);
@@ -1308,7 +1308,7 @@
     { id: 'journey-roadmap', page: 'journey.html', q: 'Further down this page sits the full roadmap of the run — cleared levels and locked ones. Seen it?', a: 'Jump to the roadmap →', target: '.roadmap' },
     { id: 'journey-snapshot', page: 'journey.html', q: '{p}, a CP snapshot hides under the [ LEVEL 02 ] label — live solve count included.', a: 'Reveal it →', target: '.section-label-row', reveal: true },
     { id: 'projects-hood', page: 'projects.html', q: 'Most visitors never find these: every project card hides an “under the hood” panel. Want one opened — or will you hunt them yourself?', a: 'Open one →', target: '.project-card', reveal: true },
-    { id: 'app-sim', page: 'hostel-app.html', q: '{p}, that 🛠️ bar at the bottom of the phone is a real dev tool from the app — you can flip time itself.', a: 'Show me →', target: '.rn-devbar' },
+    { id: 'app-sim', page: 'hostel-app.html', q: '{p}, the dev bar at the bottom of the phone is a real tool from the app — you can flip time itself.', a: 'Show me →', target: '.rn-devbar' },
     { id: 'contact-copy', page: 'contact.html', q: '{p}, tap the email row on the connect card and it copies instantly — one tap, no typing.', a: 'Show me →', target: '.connect-card' },
     { id: 'log', page: '*', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
     { id: 'music', page: '*', q: 'This universe has a soundtrack — synthesized live in your browser, zero audio files. Want it on?', a: 'Play the soundtrack', action: 'music' },
@@ -1339,7 +1339,7 @@
       try { liveName = ((localStorage.getItem('aa_pilot') || '').trim() || 'Explorer').slice(0, 24); } catch (e) {}
       const eyebrow = document.createElement('p');
       eyebrow.className = 'enc-eyebrow';
-      eyebrow.textContent = `⚡ ${liveName.toUpperCase()} · RANDOM ENCOUNTER`;
+      eyebrow.textContent = `${liveName.toUpperCase()} — RANDOM ENCOUNTER`;
       card.appendChild(eyebrow);
       const h = document.createElement('h3');
       h.textContent = enc.q.replace('{p}', liveName);
@@ -1371,7 +1371,7 @@
           const v = nameField.value.trim().slice(0, 24);
           if (v) {
             try { localStorage.setItem('aa_pilot', v); } catch (e) {}
-            toast(`🫡 Logged, ${v}. This universe knows you now.`);
+            toast(`Logged, ${v}. This site knows you now.`);
             sfx.play('unlock');
           }
         }
@@ -1399,7 +1399,7 @@
       const skip = document.createElement('button');
       skip.type = 'button';
       skip.className = 'enc-skip';
-      skip.textContent = 'skip — i can handle missing out 😏';
+      skip.textContent = 'skip';
       skip.addEventListener('click', dismiss);
       actions.appendChild(primary);
       actions.appendChild(skip);
@@ -1449,7 +1449,7 @@
         const doneCount = QUESTS.filter((q) => questState[q.id]).length;
         const total = QUESTS.length;
         if (doneCount >= total) {
-          showEncounter({ id: 'final', q: `${pilot}, ${total}/${total} — a fully cleared universe. Legends only. One thing left: actually say hello.`, a: 'Take a bow 🏆', action: 'log' });
+          showEncounter({ id: 'final', q: `${pilot}, ${total}/${total} — a fully cleared universe. One thing left: actually say hello.`, a: 'Open the log', action: 'log' });
         } else {
           showEncounter({ id: 'final', q: `Hold on, ${pilot} — this is the FINAL LEVEL and your log says ${doneCount}/${total}. ${total - doneCount} discoveries are still hiding out there. Leaving already?`, a: 'Open my log', action: 'log' });
         }
@@ -1465,6 +1465,9 @@
     const rnCamera = $id('rnCamera'), rnCamStatus = $id('rnCamStatus'), rnVerify = $id('rnVerify');
     const rnVTitle = $id('rnVTitle'), rnVSub = $id('rnVSub'), rnVSteps = $id('rnVSteps'), rnVFoot = $id('rnVFoot'), rnVDone = $id('rnVDone');
     $id('rnDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    // camera-denied fallback: a real avatar with the visitor's initials, not an emoji
+    const fmEl = $id('rnFacemoji');
+    if (fmEl) fmEl.textContent = (pilotStored ? pilot : 'AA').split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
     // the visitor plays the student in the demo — log them in by their pilot name
     if (pilotStored) {
       const nameEl = document.querySelector('.rn-profile b');
@@ -1623,7 +1626,7 @@
       // tight 3-second capture: position → challenge → smile → got it
       const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
       setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 800);
-      setTimeout(() => { rnCamStatus.textContent = `Smile, ${pilot} 😄`; sfx.play('pop'); }, 1700);
+      setTimeout(() => { rnCamStatus.textContent = `Smile, ${pilot}`; sfx.play('pop'); }, 1700);
       setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); lightFlow(1); }, 2500);
       setTimeout(() => { rnStopCam(); rnCamera.hidden = true; rnRunVerify(); }, 3000);
     };
