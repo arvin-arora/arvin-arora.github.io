@@ -210,7 +210,7 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 /* journey */
 .journey{background:var(--bg-soft);color:var(--text);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .journey .section-label{color:#8494a8}
-.section-heading{display:flex;justify-content:space-between;gap:50px;align-items:flex-end}
+.section-heading{position:relative;z-index:5;display:flex;justify-content:space-between;gap:50px;align-items:flex-end}
 .section-heading>p{max-width:295px;margin:0;color:var(--muted);font-size:14px;line-height:1.7}
 .journey-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:55px;perspective:1200px}
 .journey-feature{min-height:360px;padding:26px;display:flex;flex-direction:column;border-radius:3px;background:var(--surface);border:1px solid #ffffff0d;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;transform-style:preserve-3d;will-change:transform}
@@ -275,7 +275,7 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .section-label-row .section-label{margin:0}
 .section-details{position:absolute;top:calc(100% + 12px);left:0;z-index:12;width:min(420px,86vw);padding:20px 22px;background:#0c1118f8;border:1px solid #9ecbff33;border-radius:4px;box-shadow:0 24px 50px #000c;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transform:translateY(12px) scale(.97);pointer-events:none;transition:opacity .35s ease,transform .45s cubic-bezier(.22,1,.36,1)}
 .section-label-row.show-details .section-details,.focus-item.show-details .section-details{opacity:1;transform:none;pointer-events:auto}
-.focus-item.show-details,.section-label-row.show-details{z-index:30}
+.focus-item.show-details,.section-label-row.show-details{z-index:60}
 .project-card:hover{transform:translateY(-8px);border-color:#9ecbff4d;box-shadow:0 24px 50px #000c}
 .project-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
 .project-icon{font-size:26px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);display:inline-block}
@@ -648,6 +648,17 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;bac
 .level-intro small{display:block;font:700 11px 'DM Mono',monospace;letter-spacing:.3em;color:var(--accent);margin-bottom:8px}
 .level-intro b{display:block;font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-.03em;color:var(--text)}
 .level-intro p{margin:8px 0 0;font-size:13px;color:var(--muted)}
+
+/* ---------- hyperjump button + full-screen warp flash ---------- */
+.hyper-btn{display:inline-flex;align-items:center;gap:8px;margin-left:26px;padding:12px 18px;border-radius:4px;border:1px solid #ff9f4566;background:#ff9f4514;color:var(--accent-2);font:700 11px 'DM Mono',monospace;letter-spacing:.12em;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease,background .3s ease;animation:whisperGlow 4.5s ease-in-out infinite}
+.hyper-btn:hover{transform:translateY(-3px);background:#ff9f4526;box-shadow:0 0 24px #ff9f4540;animation:none;opacity:1}
+.hyper-btn.hyper-fixed{position:fixed;right:18px;bottom:18px;z-index:180;margin:0;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.page-next{align-items:center}
+.page-next.pn-edge{flex-direction:column;align-items:flex-end;gap:12px}
+.page-next.pn-edge .hyper-btn{margin-left:0}
+.page-next.pn-center .hyper-btn,.page-next.pn-mini .hyper-btn{margin-left:20px}
+.hyper-flash{position:fixed;inset:0;z-index:400;pointer-events:none;background:radial-gradient(circle at 50% 45%,#fff 0 55%,#cfe4ff 78%,#9ecbff 100%);opacity:0;animation:hyperFlash .8s linear forwards}
+@keyframes hyperFlash{0%{opacity:0}18%{opacity:1}60%{opacity:1}100%{opacity:0}}
 
 /* ---------- floating home warp ---------- */
 .home-warp{position:fixed;right:18px;bottom:18px;z-index:180;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:30px;background:#0c1118e6;border:1px solid #9ecbff40;box-shadow:0 12px 30px #000a;color:var(--text);font:700 11px 'DM Mono',monospace;letter-spacing:.1em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
