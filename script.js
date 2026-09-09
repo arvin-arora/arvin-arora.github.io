@@ -24,8 +24,12 @@
   const heroInner = document.querySelector('.hero-inner');
   const markSec = document.querySelector('.mark');
   const lerp = (a, b, t) => a + (b - a) * t;
-  const st = { heroP: 0, spin: 24, fill: 0, line: 0 };
-  const tg = { heroP: 0, spin: 24, fill: 0, line: 0 };
+  const st = { heroP: 0, spin: 24, fill: 0, line: 0, bg: [10, 10, 10] };
+  const tg = { heroP: 0, spin: 24, fill: 0, line: 0, bg: [10, 10, 10] };
+
+  // color worlds: the page background cross-fades between each section's declared color
+  const hexRgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+  const zones = Array.from(document.querySelectorAll('[data-bg]')).map((el) => ({ el, rgb: hexRgb(el.dataset.bg) }));
 
   const computeTargets = () => {
     if (header) {
@@ -52,6 +56,13 @@
       const r = rmRows.getBoundingClientRect();
       tg.line = Math.min(100, Math.max(0, ((window.innerHeight * 0.75 - r.top) / r.height) * 100));
     }
+    if (zones.length) {
+      const mid = window.innerHeight * 0.55;
+      for (const z of zones) {
+        const r = z.el.getBoundingClientRect();
+        if (r.top <= mid && r.bottom >= mid) { tg.bg = z.rgb; break; }
+      }
+    }
   };
 
   const applyMotion = () => {
@@ -67,6 +78,10 @@
     if (cube) cube.style.setProperty('--spin', `${st.spin.toFixed(2)}deg`);
     if (scrollName) scrollName.style.setProperty('--fill', `${st.fill.toFixed(2)}%`);
     if (rmProgress) rmProgress.style.height = `${st.line.toFixed(2)}%`;
+    if (zones.length) {
+      st.bg = st.bg.map((v, i) => lerp(v, tg.bg[i], 0.08));
+      document.body.style.backgroundColor = `rgb(${st.bg.map((v) => Math.round(v)).join(',')})`;
+    }
     requestAnimationFrame(applyMotion);
   };
 
