@@ -320,8 +320,17 @@
   const header = document.getElementById('siteHeader');
   const progressBar = document.getElementById('progressBar');
   const ghostSections = finePointer && !reduceMotion ? Array.from(document.querySelectorAll('.section[data-ghost]')) : [];
+  const scrollName = document.getElementById('scrollName');
   const onScroll = () => {
     if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
+    if (scrollName) {
+      // ink the name in as it travels from 90% to 30% of the viewport height
+      const r = scrollName.getBoundingClientRect();
+      const startY = window.innerHeight * 0.9;
+      const endY = window.innerHeight * 0.3;
+      const p = Math.min(1, Math.max(0, (startY - r.top) / (startY - endY)));
+      scrollName.style.setProperty('--fill', `${(p * 100).toFixed(1)}%`);
+    }
     ghostSections.forEach((s) => {
       s.style.setProperty('--gy', `${s.getBoundingClientRect().top * 0.12}px`);
     });

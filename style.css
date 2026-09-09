@@ -293,6 +293,10 @@ h1 em,h2 em{color:var(--accent-2)}
 .project-card.coming{border-style:dashed;border-color:#e4e4e7;background:transparent}
 .project-card.coming:hover{transform:none;box-shadow:none;border-color:var(--accent)}
 
+/* scroll-fill name wall: the name inks itself in as you scroll past */
+.namewall{padding-top:30px;padding-bottom:30px;text-align:center;overflow:hidden}
+.scroll-name{margin:0;display:inline-block;font-size:clamp(52px,13vw,210px);font-weight:700;letter-spacing:-.045em;line-height:.95;white-space:nowrap;background:linear-gradient(90deg,var(--text) var(--fill,0%),#d9d9de var(--fill,0%));-webkit-background-clip:text;background-clip:text;color:transparent}
+
 /* quote */
 .quote{padding-top:92px;padding-bottom:92px;text-align:center}
 .quote p{max-width:830px;margin:auto;font:400 clamp(30px,4vw,52px)/1.18 var(--serif);letter-spacing:-.04em;transition:text-shadow .45s ease,transform .45s ease}
