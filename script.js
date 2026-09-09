@@ -367,7 +367,7 @@
   /* ---------- details reveal (hover/tap the ⓘ buttons) ---------- */
   const canHover = window.matchMedia('(hover: hover)').matches;
   document.querySelectorAll('.details-btn').forEach((btn) => {
-    const host = btn.closest('.project-card, .section-label-row');
+    const host = btn.closest('.project-card, .section-label-row, .focus-item');
     if (!host) return;
     let openedAt = 0;
     // On touch devices hover events fire on tap and fight the click toggle,

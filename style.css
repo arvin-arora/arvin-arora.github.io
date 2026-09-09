@@ -215,7 +215,9 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--accent-2);animation:pulseDot 1.8s ease-out infinite}
 @keyframes pulseDot{0%{transform:scale(1);opacity:1}70%,100%{transform:scale(2.1);opacity:0}}
 .focus-list{display:flex;flex-direction:column;justify-content:space-between}
-.focus-item{display:flex;gap:22px;padding:20px 0 23px;border-bottom:1px solid #2c2248;transition:padding-left .3s ease,border-color .35s ease}
+.focus-item{position:relative;display:flex;gap:22px;padding:20px 0 23px;border-bottom:1px solid #2c2248;transition:padding-left .3s ease,border-color .35s ease}
+.focus-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;margin-bottom:8px}
+.focus-head h3{margin:0}
 .focus-item:hover{padding-left:12px;border-color:var(--accent)}
 .focus-item>span{padding-top:3px;color:var(--accent);font:500 11px 'DM Mono',monospace;transition:transform .3s ease,text-shadow .3s ease,color .3s ease}
 .focus-item:hover>span{transform:translateX(4px) scale(1.25);color:var(--accent-2);text-shadow:0 0 14px #f472b677}
@@ -249,7 +251,7 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .section-label-row{display:flex;align-items:center;gap:14px;position:relative}
 .section-label-row .section-label{margin:0}
 .section-details{position:absolute;top:calc(100% + 12px);left:0;z-index:12;width:min(420px,86vw);padding:20px 22px;background:#151024f8;border:1px solid #a78bfa33;border-radius:8px;box-shadow:0 24px 50px #000c;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transform:translateY(12px) scale(.97);pointer-events:none;transition:opacity .35s ease,transform .45s cubic-bezier(.22,1,.36,1)}
-.section-label-row.show-details .section-details{opacity:1;transform:none;pointer-events:auto}
+.section-label-row.show-details .section-details,.focus-item.show-details .section-details{opacity:1;transform:none;pointer-events:auto}
 .project-card:hover{transform:translateY(-8px);border-color:#a78bfa4d;box-shadow:0 24px 50px #000c}
 .project-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
 .project-icon{font-size:26px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);display:inline-block}
