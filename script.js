@@ -1487,10 +1487,17 @@
       }
       const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
       const twoBlink = challenge === CHALLENGES[1];
+      const base = twoBlink ? 3700 : 3000;
       setTimeout(() => { rnCamStatus.textContent = challenge; sfx.play('click'); }, 1600);
       if (twoBlink) setTimeout(() => { rnCamStatus.textContent = 'Blink once more'; }, 2700);
-      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); }, twoBlink ? 3700 : 3000);
-      setTimeout(() => { rnStopCam(); rnCamera.hidden = true; rnRunVerify(); }, twoBlink ? 4300 : 3600);
+      // the self-check moment: smile, then hold the lens for a slow five-count
+      setTimeout(() => { rnCamStatus.textContent = `Now smile for the camera, ${pilot} 😄`; sfx.play('pop'); }, base);
+      setTimeout(() => { rnCamStatus.textContent = 'Looking good — hold steady and look into the lens…'; }, base + 2400);
+      for (let i = 5; i >= 1; i--) {
+        setTimeout(() => { rnCamStatus.textContent = `Hold… ${i}`; sfx.play('hover'); }, base + 4400 + (5 - i) * 1000);
+      }
+      setTimeout(() => { rnCamStatus.textContent = '✓ Got it'; sfx.play('click'); }, base + 9600);
+      setTimeout(() => { rnStopCam(); rnCamera.hidden = true; rnRunVerify(); }, base + 10300);
     };
 
     rnVDone.addEventListener('click', () => {
