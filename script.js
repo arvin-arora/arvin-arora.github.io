@@ -5,6 +5,7 @@
   let pilotStored = '';
   try { pilotStored = (localStorage.getItem('aa_pilot') || '').trim(); } catch (e) {}
   const pilot = pilotStored ? pilotStored.slice(0, 24) : 'Explorer';
+  const pageFile = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   // Slower typing cadence on touch devices = fewer layouts per second = smoother.
   const pace = finePointer ? 1 : 1.8;
 
@@ -437,20 +438,47 @@
   if (musicBtn && AudioCtx) {
     let actx = null, master, delay, feedback;
     let padTimer = null, arpTimer = null, chordIdx = 0;
-    const CHORDS = [
-      [110.0, 130.81, 164.81, 196.0],  // Am7
-      [87.31, 110.0, 130.81, 174.61],  // Fmaj7
-      [130.81, 164.81, 196.0, 246.94], // Cmaj7
-      [98.0, 123.47, 146.83, 196.0],   // G
-    ];
-    const SCALE = [220.0, 261.63, 293.66, 329.63, 392.0, 440.0, 523.25]; // A minor pentatonic-ish
+    // every level has its own soundtrack — different chords, scale, wave, tempo and tone
+    const MOODS = {
+      'index.html': { // spawn point — the calm original theme
+        wave: 'sine', cutoff: 1400, padEvery: 12000, arpEvery: 900, arpChance: 0.55, arpDur: 3, bpm: 72,
+        chords: [[110.0, 130.81, 164.81, 196.0], [87.31, 110.0, 130.81, 174.61], [130.81, 164.81, 196.0, 246.94], [98.0, 123.47, 146.83, 196.0]],
+        scale: [220.0, 261.63, 293.66, 329.63, 392.0, 440.0, 523.25],
+      },
+      'about.html': { // warm major — meeting the architect
+        wave: 'triangle', cutoff: 1200, padEvery: 13000, arpEvery: 1200, arpChance: 0.5, arpDur: 3.4, bpm: 66,
+        chords: [[130.81, 164.81, 196.0, 246.94], [110.0, 130.81, 164.81, 196.0], [87.31, 130.81, 174.61, 220.0], [98.0, 146.83, 196.0, 220.0]],
+        scale: [261.63, 293.66, 329.63, 392.0, 440.0, 523.25],
+      },
+      'journey.html': { // determined minor — the grind
+        wave: 'sine', cutoff: 1600, padEvery: 11000, arpEvery: 800, arpChance: 0.6, arpDur: 2.6, bpm: 84,
+        chords: [[73.42, 110.0, 146.83, 174.61], [116.54, 146.83, 174.61, 220.0], [87.31, 130.81, 174.61, 220.0], [130.81, 164.81, 196.0, 261.63]],
+        scale: [293.66, 349.23, 392.0, 440.0, 523.25, 587.33],
+      },
+      'projects.html': { // uplifting — the vault of builds
+        wave: 'triangle', cutoff: 1800, padEvery: 10000, arpEvery: 700, arpChance: 0.65, arpDur: 2.2, bpm: 92,
+        chords: [[82.41, 123.47, 164.81, 196.0], [130.81, 164.81, 196.0, 246.94], [98.0, 146.83, 196.0, 246.94], [73.42, 110.0, 146.83, 185.0]],
+        scale: [329.63, 392.0, 440.0, 493.88, 587.33, 659.25],
+      },
+      'hostel-app.html': { // minimal tech pulses — the simulation zone
+        wave: 'triangle', cutoff: 1000, padEvery: 14000, arpEvery: 550, arpChance: 0.45, arpDur: 1.4, bpm: 100,
+        chords: [[110.0, 164.81, 220.0, 261.63], [82.41, 123.47, 164.81, 246.94], [87.31, 130.81, 174.61, 261.63], [98.0, 146.83, 196.0, 293.66]],
+        scale: [440.0, 523.25, 587.33, 659.25, 783.99, 880.0],
+      },
+      'contact.html': { // dreamy resolve — the final level
+        wave: 'sine', cutoff: 1100, padEvery: 14000, arpEvery: 1400, arpChance: 0.5, arpDur: 4, bpm: 58,
+        chords: [[87.31, 110.0, 130.81, 164.81], [98.0, 123.47, 146.83, 196.0], [82.41, 123.47, 146.83, 164.81], [110.0, 164.81, 196.0, 246.94]],
+        scale: [261.63, 329.63, 392.0, 440.0, 523.25, 659.25],
+      },
+    };
+    const MOOD = MOODS[pageFile] || MOODS['index.html'];
 
     const playPad = () => {
       const t = actx.currentTime;
-      CHORDS[chordIdx].forEach((f) => {
+      MOOD.chords[chordIdx].forEach((f) => {
         const osc = actx.createOscillator();
         const g = actx.createGain();
-        osc.type = 'sine';
+        osc.type = MOOD.wave;
         osc.frequency.value = f;
         g.gain.setValueAtTime(0.0001, t);
         g.gain.exponentialRampToValueAtTime(0.07, t + 4.5);   // slow, gentle swell
@@ -460,24 +488,79 @@
         osc.start(t);
         osc.stop(t + 13);
       });
-      chordIdx = (chordIdx + 1) % CHORDS.length;
+      chordIdx = (chordIdx + 1) % MOOD.chords.length;
     };
 
     const playArpNote = () => {
-      if (Math.random() > 0.55) return; // sparser, calmer
+      if (Math.random() > MOOD.arpChance) return; // sparser, calmer
       const t = actx.currentTime;
       const osc = actx.createOscillator();
       const g = actx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = SCALE[Math.floor(Math.random() * SCALE.length)] * (Math.random() < 0.1 ? 2 : 1);
+      osc.type = MOOD.wave;
+      osc.frequency.value = MOOD.scale[Math.floor(Math.random() * MOOD.scale.length)] * (Math.random() < 0.1 ? 2 : 1);
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(0.13, t + 0.15);   // soft swell instead of pluck
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 3);    // long tail
+      g.gain.exponentialRampToValueAtTime(0.0001, t + MOOD.arpDur); // tail length is part of the mood
       osc.connect(g);
       g.connect(master);
       g.connect(delay);
       osc.start(t);
-      osc.stop(t + 3.1);
+      osc.stop(t + MOOD.arpDur + 0.1);
+    };
+
+    /* lo-fi rhythm section — kick, snare, hats and a bassline at each level's tempo */
+    let stepTimer = null, stepIdx = 0;
+    const drumNoise = (dur, filterType, freq, gain) => {
+      const len = Math.ceil(actx.sampleRate * dur);
+      const buf = actx.createBuffer(1, len, actx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      const src = actx.createBufferSource();
+      src.buffer = buf;
+      const f = actx.createBiquadFilter();
+      f.type = filterType;
+      f.frequency.value = freq;
+      const g = actx.createGain();
+      const t = actx.currentTime;
+      g.gain.setValueAtTime(gain, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(f).connect(g).connect(actx.destination);
+      src.start(t);
+      src.stop(t + dur + 0.02);
+    };
+    const playKick = () => {
+      const t = actx.currentTime;
+      const osc = actx.createOscillator();
+      const g = actx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(130, t);
+      osc.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+      g.gain.setValueAtTime(0.45, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      osc.connect(g).connect(actx.destination);
+      osc.start(t);
+      osc.stop(t + 0.2);
+    };
+    const playBassNote = () => {
+      const t = actx.currentTime;
+      const osc = actx.createOscillator();
+      const g = actx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = MOOD.chords[chordIdx][0];
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      osc.connect(g).connect(master);
+      osc.start(t);
+      osc.stop(t + 0.4);
+    };
+    const playStep = () => {
+      const s = stepIdx % 8;
+      if (s === 0 || s === 6) playKick();
+      if (s === 4) drumNoise(0.12, 'bandpass', 1800, 0.13); // snare
+      if (s % 2 === 1) drumNoise(0.04, 'highpass', 6000, 0.05); // hats
+      if (s === 0 || s === 3 || s === 6) playBassNote();
+      stepIdx++;
     };
 
     const startMusic = () => {
@@ -485,7 +568,7 @@
         actx = new AudioCtx();
         const warmth = actx.createBiquadFilter(); // rounds off any sharpness
         warmth.type = 'lowpass';
-        warmth.frequency.value = 1400;
+        warmth.frequency.value = MOOD.cutoff;
         warmth.Q.value = 0.4;
         master = actx.createGain();
         master.gain.value = 0.32;
@@ -499,13 +582,15 @@
       }
       actx.resume();
       playPad();
-      padTimer = setInterval(playPad, 12000);
-      arpTimer = setInterval(playArpNote, 900);
+      padTimer = setInterval(playPad, MOOD.padEvery);
+      arpTimer = setInterval(playArpNote, MOOD.arpEvery);
+      stepTimer = setInterval(playStep, Math.round(30000 / (MOOD.bpm || 76))); // 8th notes at the level's tempo
     };
 
     const stopMusic = () => {
       clearInterval(padTimer);
       clearInterval(arpTimer);
+      clearInterval(stepTimer);
       if (actx) actx.suspend();
     };
 
@@ -1035,7 +1120,6 @@
   /* ---------- level-clear: exit portals unlock when you finish the level ---------- */
   const pageNext = document.querySelector('.page-next');
   const LEVELS = { 'about.html': '01', 'journey.html': '02', 'projects.html': '03', 'hostel-app.html': '03★', 'contact.html': '04' };
-  const pageFile = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   // remember every page this browser has visited — encounters never pitch a page you've already seen
   const visitedPages = (() => { try { return JSON.parse(localStorage.getItem('aa_visited') || '[]'); } catch (e) { return []; } })();
   if (visitedPages.indexOf(pageFile) === -1) {
@@ -1132,9 +1216,9 @@
     { id: 'home-portals', page: 'index.html', q: 'Four portals are waiting on this page — each hides something the others don’t. Skip one, and you’ll never know what you missed…', a: 'Take me to them →', target: '.explore-grid' },
     { id: 'about-facts', page: 'about.html', q: 'A quick-facts panel is hiding right under the [ LEVEL 01 ] label. Want a peek?', a: 'Reveal it →', target: '.section-label-row', reveal: true },
     { id: 'journey-roadmap', page: 'journey.html', q: 'Further down this page sits the full roadmap of the run — cleared levels and locked ones. Seen it?', a: 'Jump to the roadmap →', target: '.roadmap' },
-    { id: 'journey-snapshot', page: 'journey.html', q: 'A CP snapshot hides under the [ LEVEL 02 ] label — live solve count included.', a: 'Reveal it →', target: '.section-label-row', reveal: true },
+    { id: 'journey-snapshot', page: 'journey.html', q: '{p}, a CP snapshot hides under the [ LEVEL 02 ] label — live solve count included.', a: 'Reveal it →', target: '.section-label-row', reveal: true },
     { id: 'projects-hood', page: 'projects.html', q: 'Most visitors never find these: every project card hides an “under the hood” panel. Want one opened — or will you hunt them yourself?', a: 'Open one →', target: '.project-card', reveal: true },
-    { id: 'app-sim', page: 'hostel-app.html', q: 'That 🛠️ bar at the bottom of the phone is a real dev tool from the app — you can flip time itself.', a: 'Show me →', target: '.rn-devbar' },
+    { id: 'app-sim', page: 'hostel-app.html', q: '{p}, that 🛠️ bar at the bottom of the phone is a real dev tool from the app — you can flip time itself.', a: 'Show me →', target: '.rn-devbar' },
     { id: 'contact-copy', page: 'contact.html', q: '{p}, tap the email row on the connect card and it copies instantly — one tap, no typing.', a: 'Show me →', target: '.connect-card' },
     { id: 'log', page: '*', q: 'Your explorer log is watching you. Some entries are still ??? — how many have YOU unlocked?', a: 'Check my log', action: 'log' },
     { id: 'music', page: '*', q: 'This universe has a soundtrack — synthesized live in your browser, zero audio files. Want it on?', a: 'Play the soundtrack', action: 'music' },
@@ -1160,7 +1244,10 @@
       ov.setAttribute('aria-label', 'Random encounter');
       const card = document.createElement('div');
       card.className = 'enc-card';
-      card.innerHTML = '<p class="enc-eyebrow">⚡ RANDOM ENCOUNTER</p>';
+      const eyebrow = document.createElement('p');
+      eyebrow.className = 'enc-eyebrow';
+      eyebrow.textContent = `⚡ ${pilot.toUpperCase()} · RANDOM ENCOUNTER`;
+      card.appendChild(eyebrow);
       const h = document.createElement('h3');
       h.textContent = enc.q.replace('{p}', pilot);
       card.appendChild(h);

@@ -192,6 +192,8 @@ h1 em,h2 em{background:linear-gradient(110deg,var(--accent) 15%,var(--accent-2) 
 .about-copy{max-width:490px;color:var(--muted);font-size:15px;line-height:1.8}
 .about-copy p{margin-bottom:20px;transition:color .35s ease,transform .35s ease}
 .about-copy p:hover{color:#d5e6fa;transform:translateX(6px)}
+.about-copy strong{color:var(--text);font-weight:700}
+.hl-name{background:linear-gradient(110deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
 
 /* about: player profile cards */
 .about-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:80px}
