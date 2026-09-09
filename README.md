@@ -1,4 +1,4 @@
-# Arvin Aroa — Portfolio
+# Arvin Arora — Portfolio
 
 My personal developer portfolio: hand-written HTML, CSS, and JavaScript — no frameworks.
 
