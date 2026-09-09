@@ -1,14 +1,19 @@
 :root{
-  --bg:#f8f7f4;
-  --bg-soft:#efede8;
-  --surface:#ffffff;
-  --surface-2:#f1efea;
-  --text:#1c1c1c;
-  --muted:#666666;
-  --line:#e2e0db;
-  --accent:#315e8d;
-  --accent-2:#315e8d;
-  --accent-3:#7ea6c9;
+  --background:#F8F7F4;
+  --surface:#FFFFFF;
+  --text:#1C1C1C;
+  --text-secondary:#666666;
+  --accent:#315E8D;
+  --accent-hover:#244A70;
+  --border:#E2E0DB;
+  /* internal aliases used throughout this stylesheet */
+  --bg:var(--background);
+  --bg-soft:#EFEDE8;
+  --surface-2:#F1EFEA;
+  --muted:var(--text-secondary);
+  --line:var(--border);
+  --accent-2:var(--accent);
+  --accent-3:#7EA6C9;
   --serif:Georgia,'Times New Roman',serif;
 }
 *{box-sizing:border-box}
@@ -123,7 +128,7 @@ h1 em,h2 em{color:var(--accent-2)}
 .button{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:18px;padding:14px 18px;border-radius:4px;font-size:13px;font-weight:800}
 /* calm lift: solid blue, gentle rise with a soft shadow on hover */
 .button-primary{background:var(--accent);color:#ffffff;box-shadow:0 1px 2px #00000014;transition:transform .2s ease,box-shadow .2s ease}
-.button-primary:hover{transform:translateY(-2px);background:#244a70;box-shadow:0 8px 20px #315e8d3d}
+.button-primary:hover{transform:translateY(-2px);background:var(--accent-hover);box-shadow:0 8px 20px #315e8d3d}
 .button-primary:active{transform:translateY(0);box-shadow:0 3px 10px #315e8d33}
 .button-primary::before{content:none}
 .button span,.text-link span{display:inline-block;transition:transform .25s ease}
