@@ -168,12 +168,14 @@
 
   /* ---------- Codeforces solved-count display ---------- */
   // The public API only returns public submissions; Arvin's profile total also
-  // includes private group-contest solves the API can't see (89 total as of
-  // Sep 2026 vs 66 public). Use the known floor so we never under-report,
-  // and let the live count take over once it grows past it.
+  // includes private group-contest solves the API can't see. As of Sep 2026 the
+  // profile showed 89 total while the API showed 66 public — a gap of 23 private
+  // solves. Display = live public count + that offset, so every new public solve
+  // moves the number immediately; the floor is a safety net if the fetch fails.
+  const CF_PRIVATE_OFFSET = 23;
   const CF_SOLVED_FLOOR = 89;
   const CF_STREAK_FLOOR = 15; // profile max streak incl. private group-contest days
-  const cfDisplay = (n) => `${Math.max(n || 0, CF_SOLVED_FLOOR)}+`;
+  const cfDisplay = (n) => `${Math.max((n || 0) + CF_PRIVATE_OFFSET, CF_SOLVED_FLOOR)}+`;
 
   /* ---------- live terminal in hero ---------- */
   let cfSolvedCount = cfDisplay(0); // refined by the Codeforces fetch below
